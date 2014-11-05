@@ -1,0 +1,571 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Campus.Validator</name>
+    </assembly>
+    <members>
+        <member name="T:Campus.Validator.ReportProgress">
+            <summary>
+            進度回報宣告
+            </summary>
+            <param name="Pair"></param>
+            <param name="ErrorCount"></param>
+            <param name="WarningCount"></param>
+            <param name="AutoCorrectCount"></param>
+            <param name="Message"></param>
+            <param name="CurrentProgress"></param>
+        </member>
+        <member name="T:Campus.Validator.Validator">
+            <summary>
+            簡化後的資料驗證器，可直接傳入多組驗證規則及Excel檔案進行驗證
+            </summary>
+        </member>
+        <member name="F:Campus.Validator.Validator.Progress">
+            <summary>
+            驗證進度
+            </summary>
+        </member>
+        <member name="F:Campus.Validator.Validator.CustomValidate">
+            <summary>
+            自行驗證
+            </summary>
+        </member>
+        <member name="F:Campus.Validator.Validator.Complete">
+            <summary>
+            驗證完成訊息
+            </summary>
+        </member>
+        <member name="F:Campus.Validator.Validator.RowMessages">
+            <summary>
+            驗證中的訊息記錄
+            </summary>
+        </member>
+        <member name="F:Campus.Validator.Validator.ErrorCount">
+            <summary>
+            錯誤數量
+            </summary>
+        </member>
+        <member name="F:Campus.Validator.Validator.WarningCount">
+            <summary>
+            警告數量
+            </summary>
+        </member>
+        <member name="F:Campus.Validator.Validator.AutoCorrectCount">
+            <summary>
+            自動修正數量
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.Validator.#ctor">
+            <summary>
+            建構式
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.Validator.Validate(System.String,System.String,System.String,System.String)">
+            <summary>
+            資料驗證
+            </summary>
+            <param name="ValidatorFile">驗證規則路徑</param>
+            <param name="DataFile">驗證檔案路徑</param>
+            <param name="DataSheet">驗證的工作表</param>
+            <param name="OutputFile">報告輸出路徑</param>
+        </member>
+        <member name="M:Campus.Validator.Validator.Validate(Campus.Validator.ValidatePair,System.String)">
+            <summary>
+            資料驗證
+            </summary>
+            <param name="ValidatePair">資料驗證相關資訊(檔案,工作表,規則)</param>
+            <param name="OutputFile">報告輸出路徑</param>
+        </member>
+        <member name="M:Campus.Validator.Validator.Validate(System.Collections.Generic.IEnumerable{Campus.Validator.ValidatePair},System.String)">
+            <summary>
+            資料驗證
+            </summary>
+            <param name="ValidatorPairs">資料驗證相關資訊清單(檔案,工作表,規則)</param>
+            <param name="OutputFile">報告輸出路徑</param>
+        </member>
+        <member name="M:Campus.Validator.Validator.Validate(System.Collections.Generic.IEnumerable{Campus.Validator.ValidatePair},System.String,Campus.Validator.OutputOptions)">
+            <summary>
+            資料驗證
+            </summary>
+            <param name="ValidatorPairs">資料驗證相關資訊清單(檔案,工作表,規則)</param>
+            <param name="OutputFile">報告輸出路徑</param>
+            <param name="OutputOptions">輸出類型:全部(Full),正確(Correct),錯誤(Error)</param>
+        </member>
+        <member name="M:Campus.Validator.Validator.ReportProgress(Campus.Validator.ValidatePair,System.Int32,System.Int32,System.Int32,System.String,System.Int32)">
+            <summary>
+            回報驗證中的訊息
+            </summary>
+            <param name="Pair">驗證資料及規則組合</param>
+            <param name="ErrorCount">錯誤數目</param>
+            <param name="WarningCount">警告數目</param>
+            <param name="AutoCorrectCount">自動修正數目</param>
+            <param name="Message">進度回報訊息</param>
+            <param name="CurrentProgress">目前進度</param>
+        </member>
+        <member name="M:Campus.Validator.Validator.docValidate_AutoCorrect(System.Object,Campus.DocumentValidator.AutoCorrectEventArgs)">
+            <summary>
+            自動修正事件
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Campus.Validator.Validator.docValidate_ErrorCaptured(System.Object,Campus.DocumentValidator.ErrorCapturedEventArgs)">
+            <summary>
+            錯誤或警告事件
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:Campus.Validator.ValidatedInfo">
+            <summary>
+            驗證完後的訊息
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.ValidatedInfo.#ctor">
+            <summary>
+            預設建構式
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatedInfo.OutputFile">
+            <summary>
+            存檔位置
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatedInfo.OutputOptions">
+            <summary>
+            產生驗證報告方式
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatedInfo.ValidatedPairs">
+            <summary>
+            驗證後的訊息
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatedInfo.DefaultDataFile">
+            <summary>
+            取得預設的DataFile路徑，為ValidatedPairs中的第一個DataFile
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatedInfo.DefaultDataFileName">
+            <summary>
+            根據DefaultDataFile取得檔案名稱
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatedInfo.Result">
+            <summary>
+            驗證完後的實際資料
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatedInfo.ResultHelper">
+            <summary>
+            驗證完後的資料可用SheetHelper讀取
+            </summary>
+        </member>
+        <member name="T:Campus.Validator.ValidatedPair">
+            已驗證完的驗證規則及驗證資料組合
+        </member>
+        <member name="T:Campus.Validator.ValidatingPair">
+            <summary>
+            驗證中的驗證規則及驗證資料組合
+            </summary>
+        </member>
+        <member name="T:Campus.Validator.ValidatePair">
+            <summary>
+            尚未驗證的驗證規則及驗證資料組合
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.ValidatePair.#ctor">
+            <summary>
+            空白建構式
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.ValidatePair.#ctor(System.String,System.String,System.String)">
+            <summary>
+            建構式，傳入驗證檔案、來源Excel檔案路徑及資料表
+            </summary>
+            <param name="ValidatorFile"></param>
+            <param name="DataFile"></param>
+            <param name="DataSheet"></param>
+        </member>
+        <member name="P:Campus.Validator.ValidatePair.ValidatorFile">
+            <summary>
+            驗證規則路徑
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatePair.DataFile">
+            <summary>
+            驗證File路徑
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatePair.DataSheet">
+            <summary>
+            驗證Sheet名稱
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatingPair.Message">
+            <summary>
+            指定訊息
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatingPair.ErrorCount">
+            <summary>
+            錯誤計數
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatingPair.WarningCount">
+            <summary>
+            警告計數
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatingPair.AutoCorrectCount">
+            <summary>
+            自動修正計數
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.ValidatedPair.#ctor">
+            <summary>
+            建構式
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.ValidatedPair.UpdateMessage">
+            <summary>
+            更新訊息
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatedPair.Rows">
+            <summary>
+            實際抽象化資料列
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatedPair.FieldDescriptions">
+            <summary>
+            經過欄位驗證後的資訊
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatedPair.Duplicates">
+            <summary>
+            資料重覆驗證結果
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatedPair.Exceptions">
+            <summary>
+            驗證過程中是否有錯誤
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.ValidatedPair.Importable">
+            <summary>
+            判斷是否可匯入，其條件為必填欄位都有，並且錯誤數目為0
+            </summary>
+        </member>
+        <member name="T:Campus.Validator.UpdateDateRowValidator">
+            <summary>
+            只處理異動日期
+            自動修正：(學年度+1911)/8/31
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.RowMessages.Sort">
+            <summary>
+            排序 RowMessages。
+            依 Position，由小到大。
+            </summary>
+        </member>
+        <member name="T:Campus.Validator.UpdatePermrecReasonValidator">
+            <summary>
+            處理學籍異動中的更正學籍自動修正
+            </summary>
+        </member>
+        <member name="T:Campus.Validator.OutputBuilder">
+            <summary>
+            協助產生驗證報告類別
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.OutputBuilder.SameSource(System.Collections.Generic.IEnumerable{Campus.Validator.ValidatePair},Campus.Validator.OutputOptions)">
+            <summary>
+            判斷來源檔案路徑是否都屬於同一個檔案，並且輸出選項只為Full
+            </summary>
+            <param name="ValidatorPairs"></param>
+            <param name="OutputOptions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Validator.OutputBuilder.#ctor(System.Collections.Generic.IEnumerable{Campus.Validator.ValidatePair},System.String,Campus.Validator.OutputOptions,Campus.Validator.ReportProgress)">
+            <summary>
+            建構式，將Validator的Validate方法參數傳入
+            </summary>
+            <param name="ValidatorPairs"></param>
+            <param name="OutputFile"></param>
+            <param name="OutputOptions"></param>
+        </member>
+        <member name="M:Campus.Validator.OutputBuilder.InitialMessageHeader">
+            <summary>
+            最後已有『驗證訊息』欄位，則將其下所有欄位值清空，若無的話加上『驗證訊息』表頭
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.OutputBuilder.SetHeaderMessage(System.String)">
+            <summary>
+            設定欄位驗證訊息
+            </summary>
+            <param name="Message"></param>
+        </member>
+        <member name="M:Campus.Validator.OutputBuilder.SetMessage(System.Int32,System.String)">
+            <summary>
+            寫入單筆資料驗證訊息
+            </summary>
+            <param name="Position"></param>
+            <param name="Message"></param>
+        </member>
+        <member name="M:Campus.Validator.OutputBuilder.SetMessages(Campus.Validator.RowMessages)">
+            <summary>
+            寫入多筆資料驗證訊息
+            </summary>
+            <param name="Messages"></param>
+        </member>
+        <member name="M:Campus.Validator.OutputBuilder.AutoFitMessage">
+            <summary>
+            依『驗證訊息』欄位中的內容調整最適欄寬
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.OutputBuilder.Switch(Campus.Validator.ValidatePair)">
+            <summary>
+            根據ValidatePair來切換作用中的活頁簿
+            1.若是最佳化模式，則直接切換資料表。
+            2.若非最佳化模式，則開啟新的活頁簿。
+            </summary>
+            <param name="Pair"></param>
+        </member>
+        <member name="M:Campus.Validator.OutputBuilder.Save">
+            <summary>
+            將驗證報告存檔
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.OutputBuilder.Sheet">
+            <summary>
+            取得作用中的活頁簿
+            </summary>
+        </member>
+        <member name="T:Campus.Validator.EnrollYearMonthRowValidator">
+            <summary>
+            只處理入學年月
+            自動修正：(學年度+1911) + "09"
+            </summary>
+        </member>
+        <member name="T:Campus.Validator.RowStream">
+            <summary>
+            IRowStream的簡單實作，傳入Dictionary及Position即可運作
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.RowStream.#ctor(System.Collections.Generic.Dictionary{System.String,System.String},System.Int32)">
+            <summary>
+            建構式，傳入Dictionary及Position
+            </summary>
+            <param name="FieldValues"></param>
+            <param name="Position"></param>
+        </member>
+        <member name="M:Campus.Validator.RowStream.GetValue(System.String)">
+            <summary>
+            根據欄位名稱取得值
+            </summary>
+            <param name="fieldName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Validator.RowStream.Contains(System.String)">
+            <summary>
+            是否包含某欄位
+            </summary>
+            <param name="fieldName"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Campus.Validator.RowStream.Position">
+            <summary>
+            在來源資料的所在位置
+            </summary>
+        </member>
+        <!-- 忽略成員 "M:Campus.Validator.Validator_ExtensionMethod.Load(Campus.DocumentValidator.DocumentValidate,System.String)" 中格式錯誤的 XML 註解 -->
+        <member name="P:Campus.Validator.RowMessage.Position">
+            <summary>
+            RowMessage 對應的資料行位置。
+            </summary>
+        </member>
+        <member name="T:Campus.Validator.SheetRowSource">
+            <summary>
+            代表Excel當中的資料列
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.SheetRowSource.#ctor(Campus.Validator.SheetHelper)">
+            <summary>
+            建構式，傳入解析Excel物件
+            </summary>
+            <param name="Sheet"></param>
+        </member>
+        <member name="M:Campus.Validator.SheetRowSource.BindRow(System.Int32)">
+            <summary>
+            移至指定的資料列
+            </summary>
+            <param name="index">資料列索引</param>
+        </member>
+        <member name="P:Campus.Validator.SheetRowSource.Sheet">
+            <summary>
+            解析Excel的物件
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.SheetRowSource.Fields">
+            <summary>
+            取得或設定欄位名稱集合
+            設定：必須是Excel worksheet中既有的欄位，若不在當中則會忽略
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.SheetRowSource.CurrentRowIndex">
+            <summary>
+            取得目前資料列索引
+            </summary>
+        </member>
+        <member name="T:Campus.Validator.SheetHelper">
+            <summary>
+            協助讀取資料表的類別
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.#ctor(Aspose.Cells.Workbook,System.String)">
+            <summary>
+            建構式，傳入Excel檔案以及指定的Sheet名稱，會將此Excel設為預設值，並切換到指定的Sheet。
+            </summary>
+            <param name="sourceBook">Workbook物件</param>
+            <param name="sheetName">Worksheet名稱</param>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.#ctor(System.String,System.String)">
+            <summary>
+            建構式，傳入Excel檔案路徑以及指定的Sheet名稱，會開啟此Excel檔案，並切換到指定的Sheet。
+            </summary>
+            <param name="sourceFile">Excel檔案路徑</param>
+            <param name="sheetName">指定的Sheet名稱</param>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.SwitchSeet(System.String)">
+            <summary>
+            切換資料表
+            </summary>
+            <param name="sheetName">資料表名稱</param>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.GetFieldIndex(System.String)">
+            <summary>
+            根據欄位名稱取得在資料表中的順序
+            </summary>
+            <param name="fieldName">欄位名稱</param>
+            <returns>順序</returns>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.GetFieldsByColor(System.Drawing.Color)">
+            <summary>
+            根據顏色來取得欄位名稱
+            </summary>
+            <param name="color"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.SetFieldsStyle(System.Collections.Generic.List{System.String},Aspose.Cells.Style)">
+            <summary>
+            設定多個欄位的格式
+            </summary>
+            <param name="fields"></param>
+            <param name="style"></param>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.GetValue(System.Int32,System.Int32)">
+            <summary>
+            設定儲存格值。*
+            </summary>
+            <param name="row">zero based.</param>
+            <param name="column">zero based.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.SetValue(System.Int32,System.Int32,System.String)">
+            <summary>
+            設定儲存格值。
+            </summary>
+            <param name="row">zero based.</param>
+            <param name="column">zero based.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.SetAllStyle(Aspose.Cells.Style)">
+            <summary>
+            將所有含有資料的儲存格設成統一的樣式。
+            </summary>
+            <param name="style"></param>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.SetComment(System.Int32,System.Int32,System.String)">
+            <summary>
+            設定某個儲存格的註解
+            </summary>
+            <param name="row">資料列</param>
+            <param name="column">資料行</param>
+            <param name="msg">註解內容</param>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.ClearComments">
+            <summary>
+            清除資料表中的所有註解
+            </summary>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.NewStyle">
+            <summary>
+            建立一個新的樣式。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.GetWorksheet(Aspose.Cells.Workbook,System.String)">
+            <summary>
+            根據活頁簿物件及資料表名稱取得對應的資料表物件參照
+            </summary>
+            <param name="book">活頁簿物件</param>
+            <param name="sheetName">資料表名稱</param>
+            <returns>對應資料表名稱的資料表物件</returns>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.GetWorkbook(System.String)">
+            <summary>
+            根據檔案路徑取得活頁簿物件
+            </summary>
+            <param name="sourceFile">檔案路徑</param>
+            <returns>活頁簿物件</returns>
+        </member>
+        <member name="M:Campus.Validator.SheetHelper.GetFieldList(Aspose.Cells.Worksheet)">
+            <summary>
+            根據資料表讀取欄位定義
+            </summary>
+            <param name="sheet">資料表</param>
+            <returns></returns>
+        </member>
+        <member name="P:Campus.Validator.SheetHelper.Book">
+            <summary>
+            取得作用中的活頁簿
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.SheetHelper.Sheet">
+            <summary>
+            取得作用中的資料表
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.SheetHelper.Fields">
+            <summary>
+            資料表中的欄位名稱列表
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.SheetHelper.FirstDataRowIndex">
+            <summary>
+            第一個有資料的列索引
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.SheetHelper.MaxDataRowIndex">
+            <summary>
+            最大資料列索引
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.SheetHelper.DataRowCount">
+            <summary>
+            資料列個數，去除標題列
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.SheetHelper.SheetField.FieldName">
+            <summary>
+            欄位名稱
+            </summary>
+        </member>
+        <member name="P:Campus.Validator.SheetHelper.SheetField.AbsoluteIndex">
+            <summary>
+            欄位索引，以0為開始
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,733 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Campus.Import</name>
+    </assembly>
+    <members>
+        <member name="T:Campus.Import.ImportMessages">
+            <summary>
+            匯入訊息
+            </summary>
+        </member>
+        <member name="M:Campus.Import.ImportMessages.#ctor">
+            <summary>
+            建構式
+            </summary>
+        </member>
+        <member name="M:Campus.Import.ImportMessages.Clear">
+            <summary>
+            清除所有訊息
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportMessages.Positions">
+            <summary>
+            回傳匯入訊息所有位置
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportMessages.Item(System.Int32)">
+            <summary>
+            取得或設定特定位置匯入訊息
+            </summary>
+            <param name="Position"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Campus.Import.ImportOption">
+            <summary>
+            使用者匯入選項
+            </summary>
+        </member>
+        <member name="M:Campus.Import.ImportOption.#ctor">
+            <summary>
+            建構式，初始化鍵值及匯入欄位
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportOption.SelectedKeyFields">
+            <summary>
+            使用者選擇的鍵值
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportOption.SelectedFields">
+            <summary>
+            使用者選擇的匯入欄位
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportOption.Action">
+            <summary>
+            匯入動作，新增或更新、刪除
+            </summary>
+        </member>
+        <member name="P:Campus.Import.Constants.ValidationReportsFolder">
+            <summary>
+            取得設定檔 - 資料夾路徑
+            </summary>
+        </member>
+        <member name="M:Campus.Import.FunctionSpliter`2.Execute(System.Collections.Generic.List{`0})">
+            <summary>
+            執行方法，內部會以多執行緒執行，但是只有當所有執行緒完成時，才會回傳。
+            </summary>
+            <param name="parameters">參數。</param>
+            <returns>執行結果。</returns>
+        </member>
+        <member name="P:Campus.Import.FunctionSpliter`2.Function">
+            <summary>
+            要分批執行的動作。
+            </summary>
+        </member>
+        <member name="P:Campus.Import.FunctionSpliter`2.ProgressChange">
+            <summary>
+            分批執行進度，以每完成一個執行緒為單位回報。
+            </summary>
+        </member>
+        <member name="T:Campus.Import.FunctionSpliter`2.MultiThreadWorker`1">
+            <summary>
+            切割封包並以多執行緒模式逐一處理各個封包
+            </summary>
+        </member>
+        <member name="M:Campus.Import.FunctionSpliter`2.MultiThreadWorker`1.Run(System.Collections.Generic.IEnumerable{`2},System.Object)">
+            <summary>
+            執行
+            </summary>
+            <param name="list">要處理的資料</param>
+            <param name="argument">額外的參數</param>
+        </member>
+        <member name="M:Campus.Import.FunctionSpliter`2.MultiThreadWorker`1.Run(System.Collections.Generic.IEnumerable{`2})">
+            <summary>
+            執行
+            </summary>
+            <param name="list">要處理的資料</param>
+        </member>
+        <member name="P:Campus.Import.FunctionSpliter`2.MultiThreadWorker`1.PackageSize">
+            <summary>
+            每個封包的最大容量
+            </summary>
+        </member>
+        <member name="P:Campus.Import.FunctionSpliter`2.MultiThreadWorker`1.MaxThreads">
+            <summary>
+            同時執行的最大執行緒數量
+            </summary>
+        </member>
+        <member name="E:Campus.Import.FunctionSpliter`2.MultiThreadWorker`1.PackageWorker">
+            <summary>
+            處理單一封包
+            </summary>
+        </member>
+        <member name="T:Campus.Import.FunctionSpliter`2.PackageWorkEventArgs`1">
+            <summary>
+            處理單一封包事件傳遞
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:Campus.Import.FunctionSpliter`2.PackageWorkEventArgs`1.HasException">
+            <summary>
+            是否發生錯誤
+            </summary>
+        </member>
+        <member name="P:Campus.Import.FunctionSpliter`2.PackageWorkEventArgs`1.Exception">
+            <summary>
+            發生錯誤時的錯誤內容
+            </summary>
+        </member>
+        <member name="P:Campus.Import.FunctionSpliter`2.PackageWorkEventArgs`1.List">
+            <summary>
+            封包內容
+            </summary>
+        </member>
+        <member name="P:Campus.Import.FunctionSpliter`2.PackageWorkEventArgs`1.Result">
+            <summary>
+            回傳
+            </summary>
+        </member>
+        <member name="P:Campus.Import.FunctionSpliter`2.PackageWorkEventArgs`1.Argument">
+            <summary>
+            額外的參數
+            </summary>
+        </member>
+        <member name="T:Campus.Import.SelectFields">
+            <summary>
+            使用者選擇欄位
+            1.若是沒有可選擇欄位，此畫面可不用出現，直接進入到下個畫面。
+            2.顯示工作表所有欄位名稱部份暫不設計。
+            </summary>
+        </member>
+        <member name="F:Campus.Import.WizardForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Campus.Import.WizardForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Campus.Import.WizardForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectFields.#ctor(FISCA.ArgDictionary)">
+            <summary>
+            建構式，傳入精靈參數
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:Campus.Import.SelectFields.RefreshFields">
+            <summary>
+            列出使用者可選擇匯入的欄位
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectFields.ValidateNext">
+            <summary>
+            驗證是否可進行到下個畫面
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Campus.Import.SelectFields.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectFields.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Campus.Import.SelectFields.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Campus.Import.SelectSource">
+            <summary>
+            選擇來源檔案及資料表：
+            重要說明：
+            1.
+            待處理：
+            1.選擇資料表時顯示欄位。
+            2.選擇下一步時錯誤訊息呈現方式目前是用MessageBox，呈現方式可以更精緻。
+            3.撰寫驗證規則呈現UI。
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectSource.#ctor(FISCA.ArgDictionary)">
+            <summary>
+            建構式，傳入精靈選項
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:Campus.Import.SelectSource.TryGetOption">
+            <summary>
+            嘗試取得之前的記錄
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.SelectSource.ToggleUI(System.Boolean)">
+            <summary>
+            將介面啟用或失效
+            </summary>
+            <param name="IsEnable"></param>
+        </member>
+        <member name="M:Campus.Import.SelectSource.LoadValudateRule">
+            <summary>
+            載入驗證規則
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectSource.ValidateNext">
+            <summary>
+            驗證是否可進行到下一步
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.SelectSource.OnNextButtonClick">
+            <summary>
+            進行到下一步
+            </summary>
+        </member>
+        <member name="F:Campus.Import.SelectSource.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectSource.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Campus.Import.SelectSource.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Campus.Import.SelectValidate">
+            <summary>
+            資料驗證畫面
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectValidate.#ctor(FISCA.ArgDictionary)">
+            <summary>
+            建構式，傳入精靈參數
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:Campus.Import.SelectValidate.StartValidate">
+            <summary>
+            開始進行資料驗證
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectValidate.OnNextButtonClick">
+            <summary>
+            按下進到匯入畫面，並將驗證結果儲存起來
+            </summary>
+        </member>
+        <member name="F:Campus.Import.SelectValidate.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectValidate.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Campus.Import.SelectValidate.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Campus.Import.SelectKey">
+            <summary>
+            選擇鍵值及異動動作表單
+            1.預設的動作為新增或更新。
+            2.待處理，若隨時將畫面關閉則會爆掉。
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectKey.#ctor(FISCA.ArgDictionary)">
+            <summary>
+            建構式，傳入精靈參數
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:Campus.Import.SelectKey.GetSelectedImportAction">
+            <summary>
+            取得使用者選擇的匯入類型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.SelectKey.ValidateNext">
+            <summary>
+            驗證是否可進行到下個畫面
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Campus.Import.SelectKey.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectKey.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Campus.Import.SelectKey.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Campus.Import.SelectImport">
+            <summary>
+            匯入畫面
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectImport.#ctor">
+            <summary>
+            無參數建構式
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectImport.#ctor(FISCA.ArgDictionary)">
+            <summary>
+            建構式，傳入精靈參數
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:Campus.Import.SelectImport.StartImport">
+            <summary>
+            開始匯入
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectImport.CompleteImport(System.Collections.Generic.List{System.String})">
+            <summary>
+            匯入完成
+            </summary>
+            <param name="Result"></param>
+        </member>
+        <member name="M:Campus.Import.SelectImport.SaveImportMessage">
+            <summary>
+            將匯入訊息寫入到最後的Excel中
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectImport.InitialMessageHeader(Aspose.Cells.Worksheet)">
+            <summary>
+            最後已有『匯入訊息』欄位，則將其下所有欄位值清空，若無的話加上『匯入訊息』表頭
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectImport.ExecuteImport(System.Collections.Generic.List{Campus.DocumentValidator.IRowStream})">
+            <summary>
+            包裝執行匯入程式，供FunctionSpliter使用
+            </summary>
+            <param name="Rows"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.SelectImport.SelectImport_Shown(System.Object,System.EventArgs)">
+            <summary>
+            顯示表單
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="F:Campus.Import.SelectImport.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Campus.Import.SelectImport.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Campus.Import.SelectImport.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Campus.Import.ImportFullOption">
+            <summary>
+            完整的使用者匯入選項
+            </summary>
+        </member>
+        <member name="M:Campus.Import.ImportFullOption.#ctor">
+            <summary>
+            建構式，初始化欄位列表
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportFullOption.SelectedDataFile">
+            <summary>
+            使用者選取的Excel檔
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportFullOption.SelectedValidateFile">
+            <summary>
+            匯入程式所使用的驗證檔案，會快取至本機
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportFullOption.SelectedSheetName">
+            <summary>
+            使用者選取的資料表名稱
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportFullOption.SheetFields">
+            <summary>
+            資料表名稱欄位列表
+            </summary>
+        </member>
+        <member name="T:Campus.Import.XmlExtensions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.GetElementText(System.Xml.Linq.XElement,System.Xml.Linq.XName)">
+            <summary>
+            取得 Element 的字串值，如果該 Element 不存在，則回傳 string.Emtpy。
+            </summary>
+            <param name="xml"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.GetElementText(System.Xml.Linq.XElement,System.Xml.Linq.XName,System.String)">
+            <summary>
+            取得 Element 的字串值。
+            </summary>
+            <param name="xml"></param>
+            <param name="name"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.GetElementInt(System.Xml.Linq.XElement,System.Xml.Linq.XName,System.Int32)">
+            <summary>
+            取得 Element 的數字值。
+            </summary>
+            <param name="xml"></param>
+            <param name="name"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.GetElementBool(System.Xml.Linq.XElement,System.Xml.Linq.XName,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="xml"></param>
+            <param name="name"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.GetAttributeText(System.Xml.Linq.XElement,System.Xml.Linq.XName)">
+            <summary>
+            取得 Attribute 的字串值，如果該 Attribute 不存在，則回傳 string.Empty。
+            </summary>
+            <param name="xml"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.GetAttributeText(System.Xml.Linq.XElement,System.Xml.Linq.XName,System.String)">
+            <summary>
+            取得 Attribute 的字串值。
+            </summary>
+            <param name="xml"></param>
+            <param name="name"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.GetAttributeInt(System.Xml.Linq.XElement,System.Xml.Linq.XName,System.Int32)">
+            <summary>
+            取得 Attribute 的數字值。
+            </summary>
+            <param name="xml"></param>
+            <param name="name"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.GetAttributeBool(System.Xml.Linq.XElement,System.Xml.Linq.XName,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="xml"></param>
+            <param name="name"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.GetThenAction(System.Xml.Linq.XElement,System.Xml.Linq.XName,System.Action{System.Xml.Linq.XElement})">
+            <summary>
+            取得指定名稱的 Element，如果該 Element 存在，則執行 action 所指定的方法。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.SelectElement(System.Xml.Linq.XElement,System.Xml.Linq.XName,System.String)">
+            <summary>
+            取得指定 Xml Namespace 的 Element。
+            </summary>
+            <param name="xml"></param>
+            <param name="name"></param>
+            <param name="ns"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.ToXmlElement(System.Xml.Linq.XElement)">
+            <summary>
+            將 XElement 轉換成 XmlElement。
+            </summary>
+            <param name="xml"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.ToXmlElement(System.Xml.Linq.XElement,System.Boolean)">
+            <summary>
+            將 XElement 轉換成 XmlElement。
+            </summary>
+            <param name="xml"></param>
+            <param name="preserveWhitespace"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.XmlExtensions.ToXLinq(System.String)">
+            <summary>
+            將字串轉換成 XLinq 物件。
+            </summary>
+            <param name="xml"></param>
+            <returns></returns>
+        </member>
+        <member name="F:Campus.Import.XmlViewForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Campus.Import.XmlViewForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Campus.Import.XmlViewForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Campus.Import.ImportWizard">
+            <summary>
+            匯入功能抽象類別
+            </summary>
+        </member>
+        <member name="T:Campus.Import.IRowStreamImport">
+            <summary>
+            將IRowStream匯入
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Campus.Import.IRowStreamImport.GetValidateRule">
+            <summary>
+            取得驗證規則描述檔，可以直接是描述內容XML或是URL。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.IRowStreamImport.GetSupportActions">
+            <summary>
+            取得支援的匯入動作
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.IRowStreamImport.Prepare(Campus.Import.ImportOption)">
+            <summary>
+            初始化匯入動作並傳入使用者匯入選項
+            </summary>
+            <param name="Option"></param>
+        </member>
+        <member name="M:Campus.Import.IRowStreamImport.Import(System.Collections.Generic.List{Campus.DocumentValidator.IRowStream})">
+            <summary>
+            根據使用者的選項轉換結構
+            </summary>
+        </member>
+        <member name="F:Campus.Import.ImportWizard.mValidateRule">
+            <summary>
+            驗證規則
+            </summary>
+        </member>
+        <member name="F:Campus.Import.ImportWizard.mFieldProcessor">
+            <summary>
+            驗證欄位解析器
+            </summary>
+        </member>
+        <member name="M:Campus.Import.ImportWizard.#ctor">
+            <summary>
+            建構式
+            </summary>
+        </member>
+        <member name="M:Campus.Import.ImportWizard.Execute">
+            <summary>
+            執行匯入功能
+            </summary>
+        </member>
+        <member name="M:Campus.Import.ImportWizard.LoadRule">
+            <summary>
+            載入驗證規則
+            </summary>
+        </member>
+        <member name="M:Campus.Import.ImportWizard.GetValidateRule">
+            <summary>
+            取得驗證規則
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.ImportWizard.GetSupportActions">
+            <summary>
+            取得支援的匯入動作
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Campus.Import.ImportWizard.Prepare(Campus.Import.ImportOption)">
+            <summary>
+            準備匯入
+            </summary>
+            <param name="Option"></param>
+        </member>
+        <member name="M:Campus.Import.ImportWizard.Import(System.Collections.Generic.List{Campus.DocumentValidator.IRowStream})">
+            <summary>
+            實際分批匯入
+            </summary>
+            <param name="Rows"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Campus.Import.ImportWizard.ImportOption">
+            <summary>
+            匯入選項
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportWizard.ValidateRule">
+            <summary>
+            驗證規則
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportWizard.FieldProcessor">
+            <summary>
+            驗證欄位解析器
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportWizard.CustomValidate">
+            <summary>
+            客製驗證規則
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportWizard.Complete">
+            <summary>
+            匯入完成函式，函式可傳回要在畫面上顯示的資訊，例如成功新增或更新幾筆。
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportWizard.ImportMessages">
+            <summary>
+            匯入訊息
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportWizard.IsSplit">
+            <summary>
+            是否分批，預設為True
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportWizard.IsLog">
+            <summary>
+            將傳回的字串做Log
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportWizard.SplitThreadCount">
+            <summary>
+            分批的最大執行緒數量，預設為3，只有在IsSplit為True才會有用
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportWizard.SplitSize">
+            <summary>
+            每次分批的資料量，預設為1000，只有在IsSplit為True才會有用
+            </summary>
+        </member>
+        <member name="P:Campus.Import.ImportWizard.ImportProgress">
+            <summary>
+            匯入進度
+            </summary>
+        </member>
+        <member name="E:Campus.Import.ImportWizard.PropertyChanged">
+            <summary>
+            屬性改變通知
+            </summary>
+        </member>
+        <member name="T:Campus.Import.Properties.Resources">
+            <summary>
+              用於查詢當地語系化字串等的強型別資源類別
+            </summary>
+        </member>
+        <member name="P:Campus.Import.Properties.Resources.ResourceManager">
+            <summary>
+              傳回這個類別使用的快取的 ResourceManager 執行個體。
+            </summary>
+        </member>
+        <member name="P:Campus.Import.Properties.Resources.Culture">
+            <summary>
+              覆寫目前執行緒的 CurrentUICulture 屬性，對象是所有
+              使用這個強型別資源類別的資源查閱。
+            </summary>
+        </member>
+    </members>
+</doc>

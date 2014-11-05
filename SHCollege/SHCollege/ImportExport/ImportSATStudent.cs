@@ -1,0 +1,105 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Campus.DocumentValidator;
+using Campus.Import;
+using K12.Data;
+using System.Windows.Forms;
+using SHCollege.DAO;
+
+namespace SHCollege.ImportExport
+{
+    public class ImportSATStudent : ImportWizard
+    {
+
+        private ImportOption _Option;
+        Dictionary<string, UDT_SHSATStudent> _SHSATStudentListDict = new Dictionary<string, UDT_SHSATStudent>();
+        Dictionary<string, string> _StudentNumIDDict = new Dictionary<string, string>();
+        Dictionary<string, StudentRecord> _StudentRecDict = new Dictionary<string, StudentRecord>();
+
+        EventHandler eh;
+        string EventCode = "SH_College_SATStudentContent";
+
+        public ImportSATStudent()
+        {
+            this.IsSplit = false;
+            this.IsLog = false;
+            //啟動更新事件
+            eh = FISCA.InteractionService.PublishEvent(EventCode);
+        }
+
+        public override ImportAction GetSupportActions()
+        {
+            return ImportAction.InsertOrUpdate;
+        }
+
+        public override string GetValidateRule()
+        {
+            return Properties.Resources.ImportSATStudXML;
+        }
+
+        public override string Import(List<IRowStream> Rows)
+        {
+            if (_Option.Action == ImportAction.InsertOrUpdate)
+            {
+                List<UDT_SHSATStudent> SHSATStudentList = new List<UDT_SHSATStudent>();
+                foreach (IRowStream row in Rows)
+                {
+                    string StudentNumber = "", IDNumber = "", SATSerNo = "", SATClassName = "", SATSeatNo = "";
+                    StudentNumber = row.GetValue("學號");                    
+                    SATSerNo = row.GetValue("報名序號");
+                    SATClassName = row.GetValue("學測班級");
+                    SATSerNo = row.GetValue("學測座號");
+
+                    if (_StudentNumIDDict.ContainsKey(StudentNumber))
+                    {
+                        string sid = _StudentNumIDDict[StudentNumber];
+
+                        StudentRecord rec = _StudentRecDict[sid];
+                        IDNumber = rec.IDNumber;
+
+
+                        if (_SHSATStudentListDict.ContainsKey(sid))
+                        {
+                            // 更新
+                            _SHSATStudentListDict[sid].SatClassName = SATClassName;
+                            _SHSATStudentListDict[sid].SatSeatNo = SATSeatNo;
+                            _SHSATStudentListDict[sid].SatSerNo = SATSerNo;
+                            _SHSATStudentListDict[sid].IDNumber = IDNumber;
+                            SHSATStudentList.Add(_SHSATStudentListDict[sid]);
+                        }
+                        else
+                        {
+                            // 新增
+                            UDT_SHSATStudent newData = new UDT_SHSATStudent();
+                            newData.SatClassName = SATClassName;
+                            newData.SatSeatNo = SATSeatNo;
+                            newData.SatSerNo = SATSerNo;
+                            newData.IDNumber = IDNumber;
+                            newData.RefStudentID = sid;
+                  
+                            SHSATStudentList.Add(newData);
+                        }
+                    }
+
+                }
+                SHSATStudentList.SaveAll();
+                eh(this, EventArgs.Empty);
+            }
+            return "";
+        }
+
+        public override void Prepare(ImportOption Option)
+        {
+            _Option = Option;
+            _SHSATStudentListDict = UDTTransfer.GetSHSATStudentListDictAll();
+            _StudentNumIDDict = UDTTransfer.GetStudentNumIDDictAll();
+            // 取得學生資料
+            List<string> studentIDList = _StudentNumIDDict.Values.ToList();
+            List<StudentRecord> recList = Student.SelectByIDs(studentIDList);
+            foreach (StudentRecord rec in recList)
+                _StudentRecDict.Add(rec.ID, rec);
+        }
+    }
+}

@@ -1,0 +1,68 @@
+﻿using Campus.DocumentValidator;
+using FISCA.Permission;
+using FISCA.Presentation;
+using SHCollege.DAO;
+using SHCollege.ImportExport.ValidationRule;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+
+namespace SHCollege
+{
+    public class Program
+    {
+
+        static BackgroundWorker _bgLLoadUDT = new BackgroundWorker();
+
+        [FISCA.MainMethod()]
+        public static void Main()
+        {
+
+            _bgLLoadUDT.DoWork += _bgLLoadUDT_DoWork;
+            _bgLLoadUDT.RunWorkerCompleted += _bgLLoadUDT_RunWorkerCompleted;
+            _bgLLoadUDT.RunWorkerAsync();
+                       
+        }
+
+        static void _bgLLoadUDT_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            // 列印綜合紀錄表未輸入完整名單
+            Catalog catalog1 = RoleAclSource.Instance["學生"]["功能按鈕"];
+            catalog1.Add(new RibbonFeature("SH_College_ImportSATStudent", "匯入大學繁星學測報名序號"));
+
+            Catalog catalog02 = RoleAclSource.Instance["學生"]["資料項目"];
+            catalog02.Add(new DetailItemFeature(typeof(DetailContent.SatStudentContent)));
+
+            RibbonBarItem rbImport = MotherForm.RibbonBarItems["學生", "大學繁星"];
+            rbImport["匯入"].Image = Properties.Resources.Import_Image;
+            rbImport["匯入"].Size = RibbonBarButton.MenuButtonSize.Large;
+            rbImport["匯入"]["匯入學測報名序號"].Enable = UserAcl.Current["SH_College_ImportSATStudent"].Executable;
+            rbImport["匯入"]["匯入學測報名序號"].Click += delegate
+            {
+                new ImportExport.ImportSATStudent().Execute();
+            };
+
+            RibbonBarItem rbExport = MotherForm.RibbonBarItems["學生", "大學繁星"];
+            rbExport["匯出"].Image = Properties.Resources.匯出;
+            rbExport["匯出"].Size = RibbonBarButton.MenuButtonSize.Large;
+
+
+            FeatureAce UserPermission = FISCA.Permission.UserAcl.Current["SH_College_SATStudentContent"];
+
+            if (UserPermission.Editable)
+                K12.Presentation.NLDPanels.Student.AddDetailBulider(new DetailBulider<DetailContent.SatStudentContent>());
+        }
+
+        static void _bgLLoadUDT_DoWork(object sender, DoWorkEventArgs e)
+        {
+            UDTTransfer.CreateUDTTable();
+
+            #region 自訂驗證規則
+            FactoryProvider.FieldFactory.Add(new FieldValidatorFactory());
+            #endregion
+        }
+
+    }
+}
