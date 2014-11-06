@@ -150,6 +150,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAO\FieldConfig.cs" />
+    <Compile Include="DAO\LogTransfer.cs" />
+    <Compile Include="DAO\LogValue.cs" />
     <Compile Include="DAO\UDTTransfer.cs" />
     <Compile Include="DAO\UDT_SHSATStudent.cs" />
     <Compile Include="DetailContent\SatStudentContent.cs">
@@ -163,6 +166,12 @@
     </Compile>
     <Compile Include="ExportStudentV2.designer.cs">
       <DependentUpon>ExportStudentV2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ScoreForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ScoreForm.Designer.cs">
+      <DependentUpon>ScoreForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ImportExport\ExportSATStudent.cs" />
     <Compile Include="ImportExport\ImportSATStudent.cs" />
@@ -241,6 +250,7 @@
     <Content Include="Library\SmartSchool.ErrorReporting.dll" />
     <Content Include="Library\SmartSchool.ErrorReporting.pdb" />
     <Content Include="Library\SmartSchool.ErrorReporting.xml" />
+    <Content Include="Report.png" />
     <Content Include="匯出.png" />
   </ItemGroup>
   <ItemGroup>
@@ -250,10 +260,14 @@
     <EmbeddedResource Include="ExportStudentV2.resx">
       <DependentUpon>ExportStudentV2.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ScoreForm.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="template.xls" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

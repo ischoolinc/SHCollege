@@ -73,21 +73,43 @@ namespace SHCollege.Properties {
         /// <summary>
         ///   查詢類似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;format.xsl&quot; ?&gt;
-        ///&lt;ValidateRule Name=&quot;高關懷特殊身分註記&quot;&gt;
+        ///&lt;ValidateRule Name=&quot;匯入學測報名序號&quot;&gt;
         ///  &lt;DuplicateDetection&gt;
         ///    &lt;Detector Name=&quot;組合鍵值&quot;&gt;
         ///      &lt;Field Name=&quot;學號&quot; /&gt;
+        ///      &lt;Field Name=&quot;報名序號&quot; /&gt;
+        ///    &lt;Field Name=&quot;學測班級&quot; /&gt;
+        ///    &lt;Field Name=&quot;學測座號&quot; /&gt;
         ///    &lt;/Detector&gt;
         ///  &lt;/DuplicateDetection&gt;
         ///  &lt;FieldList&gt;
         ///
         ///    &lt;Field Required=&quot;True&quot; Name=&quot;學號&quot; Description=&quot;學號&quot;&gt;
-        ///      &lt;Validate AutoCorrect=&quot;False&quot; Description=&quot;「學號」不允許空白。&quot; ErrorType=&quot;Error&quot; Validator=&quot;不可空白&quot; When=&quot;&quot; /&gt;
-        ///      &lt;Validate AutoCorrect=&quot;False&quot; Description=&quot;「學號」在一般狀態不存在。&quot; ErrorType=&quot;Error&quot; [字串的其餘部分已遭截斷]&quot;; 的當地語系化字串。
+        ///      &lt;Validate AutoCorrect=&quot;False&quot; Description=&quot;「學號」不允許空白。&quot; ErrorType=&quot;Error&quot; Validator=&quot;不可空白&quot; When=&quot;&quot; /&gt;        /// [字串的其餘部分已遭截斷]&quot;; 的當地語系化字串。
         /// </summary>
         internal static string ImportSATStudXML {
             get {
                 return ResourceManager.GetString("ImportSATStudXML", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Report {
+            get {
+                object obj = ResourceManager.GetObject("Report", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類型 System.Byte[] 的當地語系化資源。
+        /// </summary>
+        internal static byte[] template {
+            get {
+                object obj = ResourceManager.GetObject("template", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
