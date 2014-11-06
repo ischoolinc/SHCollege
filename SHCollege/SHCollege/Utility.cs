@@ -7,5 +7,7 @@ namespace SHCollege
 {
     public class Utility
     {
+        public static List<string> _tmpSerNoList = new List<string>();
+
     }
 }

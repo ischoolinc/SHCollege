@@ -44,7 +44,7 @@ namespace SHCollege.DAO
         /// 透過學生ID取得大學繁星學測學生
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<string, UDT_SHSATStudent> GetSATStudentByStudentIDList(List<string> StudentIDList)
+        public static Dictionary<string, UDT_SHSATStudent> GetSATStudentByStudentIDListDict(List<string> StudentIDList)
         {
             Dictionary<string, UDT_SHSATStudent> retVal = new Dictionary<string, UDT_SHSATStudent>();
             if (StudentIDList.Count > 0)
@@ -76,6 +76,23 @@ namespace SHCollege.DAO
                 if (!retVal.ContainsKey(data.RefStudentID))
                     retVal.Add(data.RefStudentID, data);
             }
+
+            return retVal;
+        }
+
+        public static List<DataRow> GetSATStudentByStudentIDList(List<string> StudentIDList)
+        {
+            List<DataRow> retVal = new List<DataRow>();
+            QueryHelper qh = new QueryHelper();
+            // 取得 student.id,身分證號,
+            string query = "";
+            DataTable dt = qh.Select(query);
+            foreach (DataRow dr in dt.Rows)
+            { 
+            
+            
+            }
+
 
             return retVal;
         }

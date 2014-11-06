@@ -44,13 +44,20 @@ namespace SHCollege.ImportExport
             if (_Option.Action == ImportAction.InsertOrUpdate)
             {
                 List<UDT_SHSATStudent> SHSATStudentList = new List<UDT_SHSATStudent>();
+                int pIdx = 0;
                 foreach (IRowStream row in Rows)
                 {
+                    pIdx++;
+                    this.ImportProgress = pIdx;
+
                     string StudentNumber = "", IDNumber = "", SATSerNo = "", SATClassName = "", SATSeatNo = "";
                     StudentNumber = row.GetValue("學號");                    
                     SATSerNo = row.GetValue("報名序號");
                     SATClassName = row.GetValue("學測班級");
-                    SATSerNo = row.GetValue("學測座號");
+                    SATSeatNo = row.GetValue("學測座號");
+
+                    if (SATSeatNo.Length == 1)
+                        SATSeatNo = "0" + SATSeatNo;
 
                     if (_StudentNumIDDict.ContainsKey(StudentNumber))
                     {
@@ -67,6 +74,7 @@ namespace SHCollege.ImportExport
                             _SHSATStudentListDict[sid].SatSeatNo = SATSeatNo;
                             _SHSATStudentListDict[sid].SatSerNo = SATSerNo;
                             _SHSATStudentListDict[sid].IDNumber = IDNumber;
+                            _SHSATStudentListDict[sid].StudentNumber = StudentNumber;
                             SHSATStudentList.Add(_SHSATStudentListDict[sid]);
                         }
                         else
@@ -77,6 +85,7 @@ namespace SHCollege.ImportExport
                             newData.SatSeatNo = SATSeatNo;
                             newData.SatSerNo = SATSerNo;
                             newData.IDNumber = IDNumber;
+                            newData.StudentNumber = StudentNumber;
                             newData.RefStudentID = sid;
                   
                             SHSATStudentList.Add(newData);

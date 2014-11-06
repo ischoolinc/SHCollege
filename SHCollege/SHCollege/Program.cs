@@ -35,19 +35,30 @@ namespace SHCollege
             Catalog catalog02 = RoleAclSource.Instance["學生"]["資料項目"];
             catalog02.Add(new DetailItemFeature(typeof(DetailContent.SatStudentContent)));
 
+            Catalog catalog3 = RoleAclSource.Instance["學生"]["功能按鈕"];
+            catalog3.Add(new RibbonFeature("SH_College_ExportSATStudent", "匯出大學繁星學測報名序號"));
+
+            RibbonBarItem rbExport = MotherForm.RibbonBarItems["學生", "大學繁星"];
+            rbExport["匯出"].Image = Properties.Resources.匯出;
+            rbExport["匯出"].Size = RibbonBarButton.MenuButtonSize.Large;
+            rbExport["匯出"]["匯出學測報名序號"].Enable = UserAcl.Current["SH_College_ExportSATStudent"].Executable;
+            rbExport["匯出"]["匯出學測報名序號"].Click += delegate
+            {
+                SmartSchool.API.PlugIn.Export.Exporter exporter = new ImportExport.ExportSATStudent();
+                ExportStudentV2 wizard = new ExportStudentV2(exporter.Text, exporter.Image);
+                exporter.InitializeExport(wizard);
+                wizard.ShowDialog();
+            }; 
+
             RibbonBarItem rbImport = MotherForm.RibbonBarItems["學生", "大學繁星"];
             rbImport["匯入"].Image = Properties.Resources.Import_Image;
             rbImport["匯入"].Size = RibbonBarButton.MenuButtonSize.Large;
             rbImport["匯入"]["匯入學測報名序號"].Enable = UserAcl.Current["SH_College_ImportSATStudent"].Executable;
             rbImport["匯入"]["匯入學測報名序號"].Click += delegate
             {
+                Utility._tmpSerNoList.Clear();
                 new ImportExport.ImportSATStudent().Execute();
-            };
-
-            RibbonBarItem rbExport = MotherForm.RibbonBarItems["學生", "大學繁星"];
-            rbExport["匯出"].Image = Properties.Resources.匯出;
-            rbExport["匯出"].Size = RibbonBarButton.MenuButtonSize.Large;
-
+            };           
 
             FeatureAce UserPermission = FISCA.Permission.UserAcl.Current["SH_College_SATStudentContent"];
 
