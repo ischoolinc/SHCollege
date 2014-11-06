@@ -80,21 +80,24 @@ namespace SHCollege.DAO
             return retVal;
         }
 
-        public static List<DataRow> GetSATStudentByStudentIDList(List<string> StudentIDList)
+        /// <summary>
+        /// 刪除學測報名資料
+        /// </summary>
+        /// <param name="StudentIDList"></param>
+        public static void DelSHSATStudentListByStudentIDList(List<string> StudentIDList)
         {
-            List<DataRow> retVal = new List<DataRow>();
-            QueryHelper qh = new QueryHelper();
-            // 取得 student.id,身分證號,
-            string query = "";
-            DataTable dt = qh.Select(query);
-            foreach (DataRow dr in dt.Rows)
-            { 
-            
-            
+            if (StudentIDList.Count > 0)
+            {
+                AccessHelper accessHelper = new AccessHelper();
+                string query = "ref_student_id in('" + string.Join("','", StudentIDList.ToArray()) + "')";
+                List<UDT_SHSATStudent> SHSATStudentList = accessHelper.Select<UDT_SHSATStudent>(query);
+                foreach (UDT_SHSATStudent data in SHSATStudentList)
+                    data.Deleted = true;
+
+                SHSATStudentList.SaveAll();
             }
-
-
-            return retVal;
+        
         }
+        
     }
 }

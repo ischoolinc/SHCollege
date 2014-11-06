@@ -82,6 +82,33 @@ namespace SHCollege
                 }
             };
 
+            Catalog catalog05 = RoleAclSource.Instance["學生"]["功能按鈕"];
+            catalog05.Add(new RibbonFeature("SH_College_SATStudentDelete", "刪除學測報名序號"));
+
+            K12.Presentation.NLDPanels.Student.ListPaneContexMenu["刪除學測報名序號"].Enable = UserAcl.Current["SH_College_SATStudentDelete"].Executable;
+
+            K12.Presentation.NLDPanels.Student.ListPaneContexMenu["刪除學測報名序號"].Click += delegate
+            {
+                if (K12.Presentation.NLDPanels.Student.SelectedSource.Count > 0)
+                {
+                    if (FISCA.Presentation.Controls.MsgBox.Show("請問要刪除學測報名序號?", "刪除學測報名序號", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question, System.Windows.Forms.MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        EventHandler eh;
+                        string EventCode = "SH_College_SATStudentContent";
+                        //啟動更新事件
+                        eh = FISCA.InteractionService.PublishEvent(EventCode);
+                        DAO.UDTTransfer.DelSHSATStudentListByStudentIDList(K12.Presentation.NLDPanels.Student.SelectedSource);
+                        FISCA.Presentation.Controls.MsgBox.Show("刪除學測報名序號完成.");
+                        
+                        eh(e, EventArgs.Empty);
+                    }
+                }
+                else
+                {
+                    FISCA.Presentation.Controls.MsgBox.Show("請選擇學生!");
+                }
+            };
+
             FeatureAce UserPermission = FISCA.Permission.UserAcl.Current["SH_College_SATStudentContent"];
 
             if (UserPermission.Editable)
