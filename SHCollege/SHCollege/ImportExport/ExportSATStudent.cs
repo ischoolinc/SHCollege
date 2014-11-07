@@ -18,7 +18,7 @@ namespace SHCollege.ImportExport
         public ExportSATStudent()
         {
             this.Image = null;
-            this.Text = "會出學生學測報名序號";
+            this.Text = "匯出學生學測報名序號";
             ExportItemList = new List<string>();
             ExportItemList.Add("身分證號");
             ExportItemList.Add("報名序號");

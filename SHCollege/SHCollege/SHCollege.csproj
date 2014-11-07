@@ -167,6 +167,18 @@
     <Compile Include="ExportStudentV2.designer.cs">
       <DependentUpon>ExportStudentV2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\BAS_B_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\BAS_B_Form.Designer.cs">
+      <DependentUpon>BAS_B_Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SAT_B_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SAT_B_Form.Designer.cs">
+      <DependentUpon>SAT_B_Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ScoreForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -177,6 +189,7 @@
     <Compile Include="ImportExport\ImportSATStudent.cs" />
     <Compile Include="ImportExport\ValidationRule\CheckSameSerNo.cs" />
     <Compile Include="ImportExport\ValidationRule\FieldValidatorFactory.cs" />
+    <Compile Include="ImportExport\ValidationRule\IDNumberCheck.cs" />
     <Compile Include="ImportExport\ValidationRule\RowValidatorFactory.cs" />
     <Compile Include="ImportExport\ValidationRule\StudentNumberCheck.cs" />
     <Compile Include="Program.cs" />
@@ -259,6 +272,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ExportStudentV2.resx">
       <DependentUpon>ExportStudentV2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\BAS_B_Form.resx">
+      <DependentUpon>BAS_B_Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SAT_B_Form.resx">
+      <DependentUpon>SAT_B_Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ScoreForm.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">

@@ -41,6 +41,8 @@ namespace SHCollege.ImportExport
 
         public override string Import(List<IRowStream> Rows)
         {
+            FISCA.Presentation.Controls.MsgBox.Show("以匯入檔內容為主，新增與更新系統內報名序號、學測班級、學測座號。");
+
             if (_Option.Action == ImportAction.InsertOrUpdate)
             {
                 List<UDT_SHSATStudent> SHSATStudentList = new List<UDT_SHSATStudent>();
@@ -51,7 +53,7 @@ namespace SHCollege.ImportExport
                     this.ImportProgress = pIdx;
 
                     string StudentNumber = "", IDNumber = "", SATSerNo = "", SATClassName = "", SATSeatNo = "";
-                    StudentNumber = row.GetValue("學號");                    
+                    IDNumber = row.GetValue("身分證號");                    
                     SATSerNo = row.GetValue("報名序號");
                     SATClassName = row.GetValue("學測班級");
                     SATSeatNo = row.GetValue("學測座號");
@@ -59,9 +61,9 @@ namespace SHCollege.ImportExport
                     if (SATSeatNo.Length == 1)
                         SATSeatNo = "0" + SATSeatNo;
 
-                    if (_StudentNumIDDict.ContainsKey(StudentNumber))
+                    if (_StudentNumIDDict.ContainsKey(IDNumber))
                     {
-                        string sid = _StudentNumIDDict[StudentNumber];
+                        string sid = _StudentNumIDDict[IDNumber];
 
                         StudentRecord rec = _StudentRecDict[sid];
                         IDNumber = rec.IDNumber;
@@ -103,7 +105,8 @@ namespace SHCollege.ImportExport
         {
             _Option = Option;
             _SHSATStudentListDict = UDTTransfer.GetSHSATStudentListDictAll();
-            _StudentNumIDDict = UDTTransfer.GetStudentNumIDDictAll();
+            // 身分證號
+            _StudentNumIDDict = UDTTransfer.GetStudentIDNumIDDictAll();
             // 取得學生資料
             List<string> studentIDList = _StudentNumIDDict.Values.ToList();
             List<StudentRecord> recList = Student.SelectByIDs(studentIDList);

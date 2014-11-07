@@ -16,6 +16,8 @@ namespace SHCollege.ImportExport.ValidationRule
                     return new StudentNumberCheck();
                 case "SHCOLLEGESATSTUDENTCHECKSAMESERNO":
                     return new CheckSameSerNo();
+                case "IMPORTSATSTUDIDNUMBERCHECK":
+                    return new IDNumberCheck();
                 default:
                     return null;
             }

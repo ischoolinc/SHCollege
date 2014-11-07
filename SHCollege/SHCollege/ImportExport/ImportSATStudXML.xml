@@ -3,7 +3,7 @@
 <ValidateRule Name="匯入學測報名序號">
   <DuplicateDetection>
     <Detector Name="組合鍵值">
-      <Field Name="學號" />
+      <Field Name="身分證號" />
       <Field Name="報名序號" />
     <Field Name="學測班級" />
     <Field Name="學測座號" />
@@ -11,9 +11,9 @@
   </DuplicateDetection>
   <FieldList>
 
-    <Field Required="True" Name="學號" Description="學號">
-      <Validate AutoCorrect="False" Description="「學號」不允許空白。" ErrorType="Error" Validator="不可空白" When="" />
-      <Validate AutoCorrect="False" Description="「學號」在一般狀態不存在。" ErrorType="Error" Validator="學號是否存在" When="" />
+    <Field Required="True" Name="身分證號" Description="身分證號">
+      <Validate AutoCorrect="False" Description="「身分證號」不允許空白。" ErrorType="Error" Validator="不可空白" When="" />
+      <Validate AutoCorrect="False" Description="「身分證號」在一般狀態不存在。" ErrorType="Error" Validator="身分證號是否存在" When="" />
     </Field>
     <!--<Field Required="false" Name="身分證" Description="身分證">
 
@@ -36,7 +36,7 @@
 
   </FieldList>
   <ValidatorList>
-    <FieldValidator Name="學號是否存在" Type="IMPORTSATSTUDSTUDENTNUMBERCHECK"/>
+    <FieldValidator Name="身分證號是否存在" Type="IMPORTSATSTUDIDNUMBERCHECK"/>
     <FieldValidator Name="報名序號在檔案內是否重覆" Type="SHCOLLEGESATSTUDENTCHECKSAMESERNO"/>
     
     <FieldValidator Name="不可空白" Type="STRINGLENGTH">

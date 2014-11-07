@@ -82,6 +82,49 @@ namespace SHCollege
                 }
             };
 
+            // 大學學科能力測驗報考資料檔
+            Catalog catalog11 = RoleAclSource.Instance["學生"]["大學繁星"];
+            catalog11.Add(new RibbonFeature("SH_College_SAT_B_Form", "大學學科能力測驗報考資料檔"));
+
+            RibbonBarItem item11 = K12.Presentation.NLDPanels.Student.RibbonBarItems["大學繁星"];
+            item11["報表"].Image = Properties.Resources.Report;
+            item11["報表"].Size = RibbonBarButton.MenuButtonSize.Large;
+            item11["報表"]["大學學科能力測驗報考資料檔"].Enable = UserAcl.Current["SH_College_SAT_B_Form"].Executable;
+            item11["報表"]["大學學科能力測驗報考資料檔"].Click += delegate
+            {
+                if (K12.Presentation.NLDPanels.Student.SelectedSource.Count > 0)
+                {
+                    SAT_B_Form satb = new SAT_B_Form(K12.Presentation.NLDPanels.Student.SelectedSource);
+                    satb.ShowDialog();
+                }
+                else
+                {
+                    FISCA.Presentation.Controls.MsgBox.Show("請選擇學生!");
+                }
+            };
+
+            // 大學各項考試考生基本資料檔
+            Catalog catalog12 = RoleAclSource.Instance["學生"]["大學繁星"];
+            catalog12.Add(new RibbonFeature("SH_College_BAS_B_Form", "大學各項考試考生基本資料檔"));
+
+            RibbonBarItem item12 = K12.Presentation.NLDPanels.Student.RibbonBarItems["大學繁星"];
+            item12["報表"].Image = Properties.Resources.Report;
+            item12["報表"].Size = RibbonBarButton.MenuButtonSize.Large;
+            item12["報表"]["大學各項考試考生基本資料檔"].Enable = UserAcl.Current["SH_College_BAS_B_Form"].Executable;
+            item12["報表"]["大學各項考試考生基本資料檔"].Click += delegate
+            {
+                if (K12.Presentation.NLDPanels.Student.SelectedSource.Count > 0)
+                {
+                    BAS_B_Form satb = new BAS_B_Form(K12.Presentation.NLDPanels.Student.SelectedSource);
+                    satb.ShowDialog();
+                }
+                else
+                {
+                    FISCA.Presentation.Controls.MsgBox.Show("請選擇學生!");
+                }
+            };
+
+
             Catalog catalog05 = RoleAclSource.Instance["學生"]["功能按鈕"];
             catalog05.Add(new RibbonFeature("SH_College_SATStudentDelete", "刪除學測報名序號"));
 

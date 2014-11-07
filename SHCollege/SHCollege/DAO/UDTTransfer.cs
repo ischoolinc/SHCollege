@@ -6,6 +6,7 @@ using FISCA.UDT;
 using FISCA.Data;
 using System.Data;
 using FISCA.DSAUtil;
+using K12.Data;
 
 namespace SHCollege.DAO
 {
@@ -23,6 +24,25 @@ namespace SHCollege.DAO
             foreach (DataRow dr in dt.Rows)
             {
                 string key = dr["student_number"].ToString();
+                if (!retVal.ContainsKey(key))
+                    retVal.Add(key, dr["id"].ToString());
+
+            }
+            return retVal;
+        }
+
+        /// <summary>
+        /// 取得系統內所有一般狀態學生身分證號,ID
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<string, string> GetStudentIDNumIDDictAll()
+        {
+            Dictionary<string, string> retVal = new Dictionary<string, string>();
+            QueryHelper qh = new QueryHelper();
+            DataTable dt = qh.Select("select id_number,id from student where status=1 and id_number is not null order by id_number");
+            foreach (DataRow dr in dt.Rows)
+            {
+                string key = dr["id_number"].ToString();
                 if (!retVal.ContainsKey(key))
                     retVal.Add(key, dr["id"].ToString());
 
@@ -62,6 +82,38 @@ namespace SHCollege.DAO
         }
 
         /// <summary>
+        /// 透過學生ID取得大學繁星學測學生
+        /// </summary>
+        /// <returns></returns>
+        public static List<UDT_SHSATStudent> GetSATStudentByStudentIDListList(List<string> StudentIDList)
+        {
+            List<UDT_SHSATStudent> retVal = new List<UDT_SHSATStudent>();
+            if (StudentIDList.Count > 0)
+            {
+                AccessHelper accessHelper = new AccessHelper();
+                string query = "ref_student_id in('" + string.Join("','", StudentIDList.ToArray()) + "')";
+                retVal = accessHelper.Select<UDT_SHSATStudent>(query);
+            }
+            return retVal;
+        }
+
+        /// <summary>
+        /// 透過學生ID取得學生資料
+        /// </summary>
+        /// <param name="StudentIDList"></param>
+        /// <returns></returns>
+        public static Dictionary<string, StudentRecord> GetStudentDictByStudentList(List<string> StudentIDList)
+        {
+            Dictionary<string, StudentRecord> retVal = new Dictionary<string, StudentRecord>();
+
+            List<StudentRecord> studList=Student.SelectByIDs(StudentIDList);
+            foreach (StudentRecord stud in studList)
+                retVal.Add(stud.ID, stud);
+                        
+            return retVal;
+        }
+
+        /// <summary>
         /// 取得系統內所有大學繁星學測學生
         /// </summary>
         /// <returns></returns>
@@ -97,6 +149,74 @@ namespace SHCollege.DAO
                 SHSATStudentList.SaveAll();
             }
         
+        }
+
+        /// <summary>
+        /// 透過學生ID,科別，取得學生報考學程對照
+        /// </summary>
+        /// <param name="StudentIDList"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> GetStudentSATDeptMappingDict(List<string> StudentIDList)
+        {
+            Dictionary<string, string> mappingDict = new Dictionary<string, string>();
+            mappingDict.Add("普通科", "1");
+            mappingDict.Add("普通科科學班", "1");
+            mappingDict.Add("普通科資優班", "1");
+            mappingDict.Add("普通科音樂班", "2");
+            mappingDict.Add("普通科美術班", "3");
+            mappingDict.Add("普通科舞蹈班", "4");
+            mappingDict.Add("普通科體育班", "5");
+            mappingDict.Add("綜合高中學術學程", "6");
+
+
+            Dictionary<string, string> retVal = new Dictionary<string, string>();
+            Dictionary<string, string> DeptDict = new Dictionary<string, string>();
+
+            // 取得學生所屬班級科別
+            QueryHelper qh1 = new QueryHelper();
+            string query1 = "select student.id as sid,dept.name as deptname from student inner join class on student.ref_class_id=class.id inner join dept on class.ref_dept_id=dept.id";
+            DataTable dt1 = qh1.Select(query1);
+            foreach (DataRow dr1 in dt1.Rows)
+            {
+                string sid = dr1["sid"].ToString();
+
+                if (!DeptDict.ContainsKey(sid))
+                    DeptDict.Add(sid, dr1["deptname"].ToString().Trim());            
+            }
+
+            // 取得學生本身科別，如果有覆蓋。
+            QueryHelper qh2 = new QueryHelper();
+            string query2 = "select student.id as sid,dept.name as deptname from student inner join dept on student.ref_dept_id=dept.id";
+            DataTable dt2 = qh2.Select(query2);
+            foreach (DataRow dr2 in dt2.Rows)
+            {
+                string sid = dr2["sid"].ToString();
+                string deptName = dr2["deptname"].ToString().Trim();
+                if (!DeptDict.ContainsKey(sid))
+                    DeptDict.Add(sid, deptName);
+                else
+                    DeptDict[sid] = deptName;
+            }
+
+            // 過濾符號
+            foreach (string key in retVal.Keys)
+                retVal[key].Replace("：", "").Replace(":", "");
+
+            // 比對學程資料並填入，沒有資料填空白
+            foreach (string key in DeptDict.Keys)
+            {
+                string no = "";
+                foreach (string k in mappingDict.Keys)
+                {
+                    if (DeptDict[key].Contains(k))
+                    {
+                        no = mappingDict[k];
+                        break;
+                    }
+                }
+                retVal.Add(key, no);
+            }            
+            return retVal;
         }
         
     }

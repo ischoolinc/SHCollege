@@ -73,6 +73,49 @@ namespace SHCollege
         }
 
 
+        /// <summary>
+        /// 匯出 Excel(固定名稱)
+        /// </summary>
+        /// <param name="inputReportName"></param>
+        /// <param name="inputXls"></param>
+        public static void CompletedXlsFName(string inputReportName, Workbook inputXls)
+        {
+            string reportName = inputReportName;
+
+            string path = Path.Combine(Application.StartupPath, "Reports");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            path = Path.Combine(path, reportName + ".xls");
+
+            Workbook wb = inputXls;
+         
+            try
+            {
+                wb.Save(path, SaveFormat.Excel97To2003);
+                System.Diagnostics.Process.Start(path);
+            }
+            catch
+            {
+                SaveFileDialog sd = new SaveFileDialog();
+                sd.Title = "另存新檔";
+                sd.FileName = reportName + ".xls";
+                sd.Filter = "Excel檔案 (*.xls)|*.xls|所有檔案 (*.*)|*.*";
+                if (sd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        wb.Save(sd.FileName, SaveFormat.Excel97To2003);
+
+                    }
+                    catch
+                    {
+                        MsgBox.Show("指定路徑無法存取。", "建立檔案失敗", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+            }
+        }
+
         public static void CompletedXls(string inputReportName, DataTable dt)
         {
             string reportName = inputReportName;

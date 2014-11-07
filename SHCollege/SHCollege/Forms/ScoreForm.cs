@@ -81,7 +81,7 @@ namespace SHCollege.Forms
                     fc.FieldName = str;
                     dgData.Rows[rowIdx].Tag = fc;
                     dgData.Rows[rowIdx].Cells[colFieldName.Index].Value = fc.FieldName;
-                    string ffName = fc.FieldName.Replace("(高一上)", "").Replace("(高一下)", "");
+                    string ffName = fc.FieldName.Replace("(高一上)", "").Replace("(高一下)", "").Replace("(高二上)", "").Replace("(高二下)", "");
                     dgData.Rows[rowIdx].Cells[colFieldMapping.Index].Value = ffName;
                 }
 
@@ -113,9 +113,7 @@ namespace SHCollege.Forms
                     // 需要產生xls與csv                  
                     
                     Utility.CompletedXls("大學甄選", dt);
-                    Utility.CompletedXlsCsv("大學甄選", dt);
-
-                    _bgExporData.ReportProgress(100);
+                    Utility.CompletedXlsCsv("大學甄選", dt);                                    
                 }
             }
             catch (Exception ex)
@@ -146,7 +144,11 @@ namespace SHCollege.Forms
 
                 // 取得學測報名資料
                 Dictionary<string, UDT_SHSATStudent> SHSATStudentDict = DAO.UDTTransfer.GetSATStudentByStudentIDListDict(StudentIDList);
-                _bgExporData.ReportProgress(50);
+
+                // 取得科別對照
+                Dictionary<string, string> studDeptDict = DAO.UDTTransfer.GetStudentSATDeptMappingDict(StudentIDList);
+
+                _bgExporData.ReportProgress(60);
 
                 // 輸出用 
                 DataTable exportDT = new DataTable();                
@@ -197,7 +199,18 @@ namespace SHCollege.Forms
 
                     if (exportDT.Columns.Contains("姓名"))
                         newRow["姓名"] = dr["姓名"];
+
+                    // 就讀科、學程、班別
+                    if (exportDT.Columns.Contains("就讀科、學程、班別"))
+                    {
+                        if (studDeptDict.ContainsKey(sid))
+                            newRow["就讀科、學程、班別"] = studDeptDict[sid];
+                    }
+
                     
+                    // 預設報考1
+                    if (exportDT.Columns.Contains("是否報名學測"))
+                        newRow["是否報名學測"] = "1";
 
                     if (SHSATStudentDict.ContainsKey(sid))
                     {
@@ -574,7 +587,7 @@ namespace SHCollege.Forms
 
                     exportDT.Rows.Add(newRow);
                 }
-                _bgExporData.ReportProgress(90);
+                _bgExporData.ReportProgress(100);
                 e.Result = exportDT;
             }
         }
