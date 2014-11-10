@@ -76,7 +76,7 @@ namespace SHCollege.Properties {
         ///&lt;ValidateRule Name=&quot;匯入學測報名序號&quot;&gt;
         ///  &lt;DuplicateDetection&gt;
         ///    &lt;Detector Name=&quot;組合鍵值&quot;&gt;
-        ///      &lt;Field Name=&quot;學號&quot; /&gt;
+        ///      &lt;Field Name=&quot;身分證號&quot; /&gt;
         ///      &lt;Field Name=&quot;報名序號&quot; /&gt;
         ///    &lt;Field Name=&quot;學測班級&quot; /&gt;
         ///    &lt;Field Name=&quot;學測座號&quot; /&gt;
@@ -84,8 +84,8 @@ namespace SHCollege.Properties {
         ///  &lt;/DuplicateDetection&gt;
         ///  &lt;FieldList&gt;
         ///
-        ///    &lt;Field Required=&quot;True&quot; Name=&quot;學號&quot; Description=&quot;學號&quot;&gt;
-        ///      &lt;Validate AutoCorrect=&quot;False&quot; Description=&quot;「學號」不允許空白。&quot; ErrorType=&quot;Error&quot; Validator=&quot;不可空白&quot; When=&quot;&quot; /&gt;        /// [字串的其餘部分已遭截斷]&quot;; 的當地語系化字串。
+        ///    &lt;Field Required=&quot;True&quot; Name=&quot;身分證號&quot; Description=&quot;身分證號&quot;&gt;
+        ///      &lt;Validate AutoCorrect=&quot;False&quot; Description=&quot;「身分證號」不允許空白。&quot; ErrorType=&quot;Error&quot; Validator=&quot;不可空白&quot; Whe [字串的其餘部分已遭截斷]&quot;; 的當地語系化字串。
         /// </summary>
         internal static string ImportSATStudXML {
             get {
@@ -119,6 +119,16 @@ namespace SHCollege.Properties {
         internal static System.Drawing.Bitmap 匯出 {
             get {
                 object obj = ResourceManager.GetObject("匯出", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        internal static System.Drawing.Bitmap 設定 {
+            get {
+                object obj = ResourceManager.GetObject("設定", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

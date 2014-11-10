@@ -218,6 +218,37 @@ namespace SHCollege.DAO
             }            
             return retVal;
         }
-        
+
+
+        /// <summary>
+        /// 取得班級代碼
+        /// </summary>
+        /// <returns></returns>
+        public static List<UDT_SHSATClassCode> GetClassCodeList()
+        {
+            List<UDT_SHSATClassCode> retVal = new List<UDT_SHSATClassCode>();
+            
+            // 取得 UDT ClassCode
+            AccessHelper accessHelper = new AccessHelper();
+            List<UDT_SHSATClassCode> SHSATClassCodeList = accessHelper.Select<UDT_SHSATClassCode>();
+            
+            // 如果沒有資料，產生預設名稱，讀取系統內班級，依年級、班級名稱排序
+            if (SHSATClassCodeList.Count == 0)
+            {
+                QueryHelper qh = new QueryHelper();
+                string query = "select distinct class.id as cid,class_name,class.grade_year from class inner join student on class.id=student.ref_class_id where student.status=1 order by class.grade_year desc,class_name";
+                DataTable dt = qh.Select(query);
+                foreach (DataRow dr in dt.Rows)
+                {
+                    UDT_SHSATClassCode code = new UDT_SHSATClassCode();
+                    code.ClassName = dr["class_name"].ToString();                   
+                    retVal.Add(code);
+                }
+            }
+            else
+                retVal = SHSATClassCodeList;
+
+            return retVal;        
+        }
     }
 }

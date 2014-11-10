@@ -124,6 +124,41 @@ namespace SHCollege
                 }
             };
 
+            // 設定班級代碼
+            Catalog catalog31 = RoleAclSource.Instance["學生"]["大學繁星"];
+            catalog31.Add(new RibbonFeature("SH_College_SetClassCodeConfig", "設定班級代碼"));
+
+            RibbonBarItem item31 = K12.Presentation.NLDPanels.Student.RibbonBarItems["大學繁星"];
+            item31["設定"].Image = Properties.Resources.設定;
+            item31["設定"].Size = RibbonBarButton.MenuButtonSize.Large;
+            item31["設定"]["設定班級代碼"].Enable = UserAcl.Current["SH_College_SetClassCodeConfig"].Executable;
+            item31["設定"]["設定班級代碼"].Click += delegate
+            {
+                SetClassCodeForm sccf = new SetClassCodeForm();
+                sccf.ShowDialog();
+            };
+
+            // 設定學測報名序號
+            Catalog catalog32 = RoleAclSource.Instance["學生"]["大學繁星"];
+            catalog32.Add(new RibbonFeature("SH_College_SetStudentSATSerNo", "設定學測報名序號"));
+
+            RibbonBarItem item32 = K12.Presentation.NLDPanels.Student.RibbonBarItems["大學繁星"];
+            item32["設定"].Image = Properties.Resources.設定;
+            item32["設定"].Size = RibbonBarButton.MenuButtonSize.Large;
+            item32["設定"]["設定學測報名序號"].Enable = UserAcl.Current["SH_College_SetStudentSATSerNo"].Executable;
+            item32["設定"]["設定學測報名序號"].Click += delegate
+            {
+
+                if (K12.Presentation.NLDPanels.Student.SelectedSource.Count > 0)
+                {
+                    CreateSerNoForm csnf = new CreateSerNoForm(K12.Presentation.NLDPanels.Student.SelectedSource);
+                    csnf.ShowDialog();
+                }
+                else
+                {
+                    FISCA.Presentation.Controls.MsgBox.Show("請選擇學生!");
+                }
+            };
 
             Catalog catalog05 = RoleAclSource.Instance["學生"]["功能按鈕"];
             catalog05.Add(new RibbonFeature("SH_College_SATStudentDelete", "刪除學測報名序號"));

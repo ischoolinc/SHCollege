@@ -153,7 +153,9 @@
     <Compile Include="DAO\FieldConfig.cs" />
     <Compile Include="DAO\LogTransfer.cs" />
     <Compile Include="DAO\LogValue.cs" />
+    <Compile Include="DAO\StudData.cs" />
     <Compile Include="DAO\UDTTransfer.cs" />
+    <Compile Include="DAO\UDT_SHSATClassCode.cs" />
     <Compile Include="DAO\UDT_SHSATStudent.cs" />
     <Compile Include="DetailContent\SatStudentContent.cs">
       <SubType>UserControl</SubType>
@@ -173,6 +175,12 @@
     <Compile Include="Forms\BAS_B_Form.Designer.cs">
       <DependentUpon>BAS_B_Form.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\CreateSerNoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CreateSerNoForm.Designer.cs">
+      <DependentUpon>CreateSerNoForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SAT_B_Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -184,6 +192,12 @@
     </Compile>
     <Compile Include="Forms\ScoreForm.Designer.cs">
       <DependentUpon>ScoreForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SetClassCodeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SetClassCodeForm.Designer.cs">
+      <DependentUpon>SetClassCodeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ImportExport\ExportSATStudent.cs" />
     <Compile Include="ImportExport\ImportSATStudent.cs" />
@@ -265,6 +279,7 @@
     <Content Include="Library\SmartSchool.ErrorReporting.xml" />
     <Content Include="Report.png" />
     <Content Include="匯出.png" />
+    <Content Include="設定.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DetailContent\SatStudentContent.resx">
@@ -276,10 +291,16 @@
     <EmbeddedResource Include="Forms\BAS_B_Form.resx">
       <DependentUpon>BAS_B_Form.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CreateSerNoForm.resx">
+      <DependentUpon>CreateSerNoForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\SAT_B_Form.resx">
       <DependentUpon>SAT_B_Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ScoreForm.resx" />
+    <EmbeddedResource Include="Forms\SetClassCodeForm.resx">
+      <DependentUpon>SetClassCodeForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
