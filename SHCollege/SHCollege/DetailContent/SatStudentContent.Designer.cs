@@ -30,10 +30,8 @@
         {
             this.txtSATSerNo = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.labelX3 = new DevComponents.DotNetBar.LabelX();
-            this.txtSatClassName = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.txtSatClassSeatNo = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.labelX1 = new DevComponents.DotNetBar.LabelX();
-            this.txtSatSeatNo = new DevComponents.DotNetBar.Controls.TextBoxX();
-            this.labelX2 = new DevComponents.DotNetBar.LabelX();
             this.SuspendLayout();
             // 
             // txtSATSerNo
@@ -63,18 +61,18 @@
             this.labelX3.TabIndex = 8;
             this.labelX3.Text = "報名序號";
             // 
-            // txtSatClassName
+            // txtSatClassSeatNo
             // 
             // 
             // 
             // 
-            this.txtSatClassName.Border.Class = "TextBoxBorder";
-            this.txtSatClassName.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txtSatClassName.Location = new System.Drawing.Point(323, 23);
-            this.txtSatClassName.Name = "txtSatClassName";
-            this.txtSatClassName.Size = new System.Drawing.Size(78, 25);
-            this.txtSatClassName.TabIndex = 11;
-            this.txtSatClassName.TextChanged += new System.EventHandler(this.txtSatClassName_TextChanged);
+            this.txtSatClassSeatNo.Border.Class = "TextBoxBorder";
+            this.txtSatClassSeatNo.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txtSatClassSeatNo.Location = new System.Drawing.Point(350, 23);
+            this.txtSatClassSeatNo.Name = "txtSatClassSeatNo";
+            this.txtSatClassSeatNo.Size = new System.Drawing.Size(158, 25);
+            this.txtSatClassSeatNo.TabIndex = 11;
+            this.txtSatClassSeatNo.TextChanged += new System.EventHandler(this.txtSatClassSeatNo_TextChanged);
             // 
             // labelX1
             // 
@@ -84,46 +82,17 @@
             // 
             this.labelX1.BackgroundStyle.Class = "";
             this.labelX1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX1.Location = new System.Drawing.Point(257, 25);
+            this.labelX1.Location = new System.Drawing.Point(283, 25);
             this.labelX1.Name = "labelX1";
             this.labelX1.Size = new System.Drawing.Size(60, 21);
             this.labelX1.TabIndex = 10;
-            this.labelX1.Text = "學測班級";
-            // 
-            // txtSatSeatNo
-            // 
-            // 
-            // 
-            // 
-            this.txtSatSeatNo.Border.Class = "TextBoxBorder";
-            this.txtSatSeatNo.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txtSatSeatNo.Location = new System.Drawing.Point(482, 23);
-            this.txtSatSeatNo.Name = "txtSatSeatNo";
-            this.txtSatSeatNo.Size = new System.Drawing.Size(48, 25);
-            this.txtSatSeatNo.TabIndex = 13;
-            this.txtSatSeatNo.TextChanged += new System.EventHandler(this.txtSatSeatNo_TextChanged);
-            // 
-            // labelX2
-            // 
-            this.labelX2.AutoSize = true;
-            // 
-            // 
-            // 
-            this.labelX2.BackgroundStyle.Class = "";
-            this.labelX2.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX2.Location = new System.Drawing.Point(416, 25);
-            this.labelX2.Name = "labelX2";
-            this.labelX2.Size = new System.Drawing.Size(60, 21);
-            this.labelX2.TabIndex = 12;
-            this.labelX2.Text = "學測座號";
+            this.labelX1.Text = "班級座號";
             // 
             // SatStudentContent
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.txtSatSeatNo);
-            this.Controls.Add(this.labelX2);
-            this.Controls.Add(this.txtSatClassName);
+            this.Controls.Add(this.txtSatClassSeatNo);
             this.Controls.Add(this.labelX1);
             this.Controls.Add(this.txtSATSerNo);
             this.Controls.Add(this.labelX3);
@@ -138,9 +107,7 @@
 
         private DevComponents.DotNetBar.Controls.TextBoxX txtSATSerNo;
         private DevComponents.DotNetBar.LabelX labelX3;
-        private DevComponents.DotNetBar.Controls.TextBoxX txtSatClassName;
+        private DevComponents.DotNetBar.Controls.TextBoxX txtSatClassSeatNo;
         private DevComponents.DotNetBar.LabelX labelX1;
-        private DevComponents.DotNetBar.Controls.TextBoxX txtSatSeatNo;
-        private DevComponents.DotNetBar.LabelX labelX2;
     }
 }

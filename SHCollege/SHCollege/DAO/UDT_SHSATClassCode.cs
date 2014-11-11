@@ -24,6 +24,11 @@ namespace SHCollege.DAO
         /// 班級代碼
         ///</summary>
         [Field(Field = "class_code", Indexed = false)]
-        public string ClassCode { get; set; }        
+        public string ClassCode { get; set; }
+        
+        /// <summary>
+        /// 年級(不儲存)
+        /// </summary>
+        public int GradeYear { get; set; }
     }
 }

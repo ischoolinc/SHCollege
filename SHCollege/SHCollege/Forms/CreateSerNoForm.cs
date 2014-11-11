@@ -86,9 +86,11 @@ namespace SHCollege.Forms
 
                 // 使用學生班級比對班級代碼
                 if (classNameDict.ContainsKey(rec.RefClassID))
+                {
+                    sd.ClassName = classNameDict[rec.RefClassID];
                     if (classCodeDict.ContainsKey(classNameDict[rec.RefClassID]))
                         sd.ClassCode = classCodeDict[classNameDict[rec.RefClassID]];
-
+                }
                 // 座號
                 sd.SeatNo = "99";
                 if (rec.SeatNo.HasValue)
@@ -112,8 +114,9 @@ namespace SHCollege.Forms
                     UDT_SHSATStudent udata = new UDT_SHSATStudent();
                     udata.IDNumber = sd.IDNumber;
                     udata.RefStudentID = sd.StudentID;
-                    udata.SatClassName = sd.ClassCode;
+                    udata.SatClassName = sd.ClassName;
                     udata.SatSeatNo = sd.SeatNo;
+                    udata.SatClassSeatNo = sd.ClassCode + sd.SeatNo;
                     // 學校代碼+班級代碼+座號
                     udata.SatSerNo = _SchoolCode+ sd.ClassCode + sd.SeatNo;
                     udt_studList.Add(udata);
@@ -140,6 +143,7 @@ namespace SHCollege.Forms
                     udata.RefStudentID = sd.StudentID;
                     udata.SatClassName = srStr.Substring(0, 3);
                     udata.SatSeatNo = srStr.Substring(3, 2);
+                    udata.SatClassSeatNo = srStr;
                     // 學校代碼+班級代碼+座號
                     udata.SatSerNo = _SchoolCode + srStr;
                     udt_studList.Add(udata);

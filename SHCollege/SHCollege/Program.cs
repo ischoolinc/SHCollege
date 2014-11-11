@@ -31,7 +31,9 @@ namespace SHCollege
         {
             // 列印綜合紀錄表未輸入完整名單
             Catalog catalog1 = RoleAclSource.Instance["學生"]["功能按鈕"];
-            catalog1.Add(new RibbonFeature("SH_College_ImportSATStudent", "匯入大學繁星學測報名序號"));
+            catalog1.Add(new RibbonFeature("SH_College_ImportSATStudent", "匯入大學繁星學測報名序號(身分證號)"));
+            Catalog catalog2 = RoleAclSource.Instance["學生"]["功能按鈕"];
+            catalog2.Add(new RibbonFeature("SH_College_ImportSATStudent_SNum", "匯入大學繁星學測報名序號(學號)"));
 
             Catalog catalog02 = RoleAclSource.Instance["學生"]["資料項目"];
             catalog02.Add(new DetailItemFeature(typeof(DetailContent.SatStudentContent)));
@@ -54,12 +56,23 @@ namespace SHCollege
             RibbonBarItem rbImport = MotherForm.RibbonBarItems["學生", "大學繁星"];
             rbImport["匯入"].Image = Properties.Resources.Import_Image;
             rbImport["匯入"].Size = RibbonBarButton.MenuButtonSize.Large;
-            rbImport["匯入"]["匯入學測報名序號"].Enable = UserAcl.Current["SH_College_ImportSATStudent"].Executable;
-            rbImport["匯入"]["匯入學測報名序號"].Click += delegate
+            rbImport["匯入"]["匯入學測報名序號(身分證號)"].Enable = UserAcl.Current["SH_College_ImportSATStudent"].Executable;
+            rbImport["匯入"]["匯入學測報名序號(身分證號)"].Click += delegate
             {
                 Utility._tmpSerNoList.Clear();
                 new ImportExport.ImportSATStudent().Execute();
             };
+
+            RibbonBarItem rbImport1 = MotherForm.RibbonBarItems["學生", "大學繁星"];
+            rbImport1["匯入"].Image = Properties.Resources.Import_Image;
+            rbImport1["匯入"].Size = RibbonBarButton.MenuButtonSize.Large;
+            rbImport1["匯入"]["匯入學測報名序號(學號)"].Enable = UserAcl.Current["SH_College_ImportSATStudent_SNum"].Executable;
+            rbImport1["匯入"]["匯入學測報名序號(學號)"].Click += delegate
+            {
+                Utility._tmpSerNoList.Clear();
+                new ImportExport.ImportSATStudent_SNum().Execute();
+            };
+
 
             // 產生繁星成績
             Catalog catalog01 = RoleAclSource.Instance["學生"]["大學繁星"];

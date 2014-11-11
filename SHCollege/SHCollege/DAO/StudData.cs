@@ -18,6 +18,11 @@ namespace SHCollege.DAO
         public string ClassCode { get; set; }
 
         /// <summary>
+        /// 班級名稱
+        /// </summary>
+        public string ClassName { get; set; }
+
+        /// <summary>
         /// 座號
         /// </summary>
         public string SeatNo { get; set; }

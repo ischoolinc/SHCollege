@@ -241,13 +241,35 @@ namespace SHCollege.DAO
                 foreach (DataRow dr in dt.Rows)
                 {
                     UDT_SHSATClassCode code = new UDT_SHSATClassCode();
-                    code.ClassName = dr["class_name"].ToString();                   
+                    code.ClassName = dr["class_name"].ToString();
+                    code.GradeYear = 0;
+                    int gg;
+                    if (int.TryParse(dr["grade_year"].ToString(), out gg))
+                        code.GradeYear = gg;
                     retVal.Add(code);
                 }
             }
             else
-                retVal = SHSATClassCodeList;
+            {
+                Dictionary<string, ClassRecord> cNameDict = new Dictionary<string, ClassRecord>();
+                List<ClassRecord> ccList = Class.SelectAll();
+                foreach (ClassRecord cr in ccList)
+                {
+                    cNameDict.Add(cr.Name, cr);
+                }
 
+                foreach (UDT_SHSATClassCode code in SHSATClassCodeList)
+                {
+                    if (cNameDict.ContainsKey(code.ClassName))
+                    {
+                        code.GradeYear = 0;
+                        if (cNameDict[code.ClassName].GradeYear.HasValue)
+                            code.GradeYear = cNameDict[code.ClassName].GradeYear.Value;
+                    }
+                }
+
+                retVal = SHSATClassCodeList;
+            }
             return retVal;        
         }
     }

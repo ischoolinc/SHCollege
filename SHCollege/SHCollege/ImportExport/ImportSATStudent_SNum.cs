@@ -7,12 +7,10 @@ using Campus.Import;
 using K12.Data;
 using System.Windows.Forms;
 using SHCollege.DAO;
-
 namespace SHCollege.ImportExport
 {
-    public class ImportSATStudent : ImportWizard
+    public class ImportSATStudent_SNum : ImportWizard
     {
-
         private ImportOption _Option;
         Dictionary<string, UDT_SHSATStudent> _SHSATStudentListDict = new Dictionary<string, UDT_SHSATStudent>();
         Dictionary<string, string> _StudentNumIDDict = new Dictionary<string, string>();
@@ -22,7 +20,7 @@ namespace SHCollege.ImportExport
         EventHandler eh;
         string EventCode = "SH_College_SATStudentContent";
 
-        public ImportSATStudent()
+        public ImportSATStudent_SNum()
         {
             this.IsSplit = false;
             this.IsLog = false;
@@ -37,7 +35,7 @@ namespace SHCollege.ImportExport
 
         public override string GetValidateRule()
         {
-            return Properties.Resources.ImportSATStudXML;
+            return Properties.Resources.ImportSATStudXML_Snum;
         }
 
         public override string Import(List<IRowStream> Rows)
@@ -48,7 +46,7 @@ namespace SHCollege.ImportExport
             {
                 List<UDT_SHSATStudent> SHSATStudentList = new List<UDT_SHSATStudent>();
 
-                
+
 
                 int pIdx = 0;
                 foreach (IRowStream row in Rows)
@@ -56,14 +54,14 @@ namespace SHCollege.ImportExport
                     pIdx++;
                     this.ImportProgress = pIdx;
 
-                    string StudentNumber = "", IDNumber = "", SATSerNo = "", SATClassName = "", SATSeatNo = "",SATClassSeatNo="";
-                    IDNumber = row.GetValue("身分證號");
-                    SATSerNo = row.GetValue("報名序號");                    
-                    SATClassSeatNo = row.GetValue("班級座號"); 
+                    string StudentNumber = "", IDNumber = "", SATSerNo = "", SATClassName = "", SATSeatNo = "", SATClassSeatNo = "";
+                    StudentNumber = row.GetValue("學號");
+                    SATSerNo = row.GetValue("報名序號");
+                    SATClassSeatNo = row.GetValue("班級座號");
 
-                    if (_StudentNumIDDict.ContainsKey(IDNumber))
+                    if (_StudentNumIDDict.ContainsKey(StudentNumber))
                     {
-                        string sid = _StudentNumIDDict[IDNumber];
+                        string sid = _StudentNumIDDict[StudentNumber];
 
                         StudentRecord rec = _StudentRecDict[sid];
                         IDNumber = rec.IDNumber;
@@ -111,8 +109,8 @@ namespace SHCollege.ImportExport
         {
             _Option = Option;
             _SHSATStudentListDict = UDTTransfer.GetSHSATStudentListDictAll();
-            // 身分證號
-            _StudentNumIDDict = UDTTransfer.GetStudentIDNumIDDictAll();
+            // 學號
+            _StudentNumIDDict = UDTTransfer.GetStudentNumIDDictAll();
             // 取得學生資料
             List<string> studentIDList = _StudentNumIDDict.Values.ToList();
             List<StudentRecord> recList = Student.SelectByIDs(studentIDList);
@@ -123,7 +121,6 @@ namespace SHCollege.ImportExport
             _ClassNameDict.Clear();
             foreach (ClassRecord cr in crList)
                 _ClassNameDict.Add(cr.ID, cr.Name);
-
         }
     }
 }

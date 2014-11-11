@@ -26,8 +26,8 @@ namespace SHCollege.DetailContent
         ErrorProvider _errorP;
 
         int _SatSerNoLen = 8;
-        int _SatClassNameLen = 3;
-        int _SatSeatNoLen = 2;
+        int _SatClassSeatNoLen = 5;
+        
 
         public SatStudentContent()
         {
@@ -42,8 +42,7 @@ namespace SHCollege.DetailContent
             _bgWorker.RunWorkerCompleted += _bgWorker_RunWorkerCompleted;
 
             // 加入控制項變動檢查                        
-            _ChangeListener.Add(new TextBoxSource(txtSatClassName));
-            _ChangeListener.Add(new TextBoxSource(txtSatSeatNo));
+            _ChangeListener.Add(new TextBoxSource(txtSatClassSeatNo));            
             _ChangeListener.Add(new TextBoxSource(txtSATSerNo));
             _ChangeListener.StatusChanged += _ChangeListener_StatusChanged;
             //啟動更新事件
@@ -87,14 +86,12 @@ namespace SHCollege.DetailContent
         {
             _ChangeListener.SuspendListen();
 
-            txtSatClassName.Text = "";
-            txtSatSeatNo.Text = "";
+            txtSatClassSeatNo.Text = "";            
             txtSATSerNo.Text = "";
             if (_SHSATStudentDict.Count > 0)
             {
                 txtSATSerNo.Text = _SHSATStudentDict[PrimaryKey].SatSerNo;
-                txtSatSeatNo.Text = _SHSATStudentDict[PrimaryKey].SatSeatNo;
-                txtSatClassName.Text = _SHSATStudentDict[PrimaryKey].SatClassName;
+                txtSatClassSeatNo.Text = _SHSATStudentDict[PrimaryKey].SatClassSeatNo;
             }
 
             _ChangeListener.Reset();
@@ -142,48 +139,27 @@ namespace SHCollege.DetailContent
                 }
             }            
 
-            if (string.IsNullOrEmpty(txtSatClassName.Text))
+            if (string.IsNullOrEmpty(txtSatClassSeatNo.Text))
             {
-                _errorP.SetError(txtSatClassName, "學測班級不能空白!");
+                _errorP.SetError(txtSatClassSeatNo, "學測班級不能空白!");
                 pass = false;
             }
             else
             {
                 int x;
-                if (int.TryParse(txtSatClassName.Text, out x) == false)
+                if (int.TryParse(txtSatClassSeatNo.Text, out x) == false)
                 {
-                    _errorP.SetError(txtSatClassName, "學測班級必須數字!");
+                    _errorP.SetError(txtSatClassSeatNo, "學測班級座號必須數字!");
                     pass = false;
                 }
 
-                if (txtSatClassName.Text.Length != _SatClassNameLen)
+                if (txtSatClassSeatNo.Text.Length != _SatClassSeatNoLen)
                 {
-                    _errorP.SetError(txtSatClassName, "學測班級必須" + _SatClassNameLen + "碼!");
+                    _errorP.SetError(txtSatClassSeatNo, "學測班級座號必須" + _SatClassSeatNoLen + "碼!");
                     pass = false;
                 }
             }
-
-            if (string.IsNullOrEmpty(txtSatSeatNo.Text))
-            {
-                _errorP.SetError(txtSatSeatNo, "學測座號不能空白!");
-                pass = false;
-            }
-            else
-            {
-                int x;
-                if (int.TryParse(txtSatSeatNo.Text, out x) == false)
-                {
-                    _errorP.SetError(txtSatSeatNo, "學測座號必須數字!");
-                    pass = false;
-                }
-
-                if (txtSatSeatNo.Text.Length != _SatSeatNoLen)
-                {
-                    _errorP.SetError(txtSatSeatNo, "學測座號必須" + _SatSeatNoLen + "碼!");
-                    pass = false;
-                }
-            }            
-
+            
             return pass;
         }
 
@@ -193,15 +169,15 @@ namespace SHCollege.DetailContent
         {
             if (ChkData())
             {
-                string IDNumber = "", StudentNumber = "", SATClassName = "", SATSeatNo = "", SATSerNo = "";
+                string IDNumber = "", StudentNumber = "", SATClassName = "", SATSeatNo = "", SATSerNo = "",SATClassSeatNo="";
 
                 IDNumber = _StudRec.IDNumber;
                 StudentNumber = _StudRec.StudentNumber;
                 SATSerNo = txtSATSerNo.Text;
-                SATClassName = txtSatClassName.Text;
-                SATSeatNo = txtSatSeatNo.Text;
-
-                // 檢查當已是高關懷
+                SATClassSeatNo = txtSatClassSeatNo.Text;
+                if (_StudRec.Class != null)
+                    SATClassName = _StudRec.Class.Name;
+                
                 if (_SHSATStudentDict.ContainsKey(PrimaryKey))
                 {
                     _SHSATStudentDict[PrimaryKey].IDNumber = IDNumber;
@@ -209,6 +185,7 @@ namespace SHCollege.DetailContent
                     _SHSATStudentDict[PrimaryKey].SatSeatNo = SATSeatNo;
                     _SHSATStudentDict[PrimaryKey].SatClassName = SATClassName;
                     _SHSATStudentDict[PrimaryKey].SatSerNo = SATSerNo;
+                    _SHSATStudentDict[PrimaryKey].SatClassSeatNo = SATClassSeatNo;
                     _SHSATStudentDict[PrimaryKey].Save();
                 }
                 else
@@ -220,6 +197,7 @@ namespace SHCollege.DetailContent
                     newData.SatClassName = SATClassName;
                     newData.SatSeatNo = SATSeatNo;
                     newData.SatSerNo = SATSerNo;
+                    newData.SatClassSeatNo = SATClassSeatNo;
                     newData.Save();
                 }
 
@@ -236,15 +214,9 @@ namespace SHCollege.DetailContent
             _errorP.SetError(txtSATSerNo, "");
         }
 
-        private void txtSatClassName_TextChanged(object sender, EventArgs e)
+        private void txtSatClassSeatNo_TextChanged(object sender, EventArgs e)
         {
-            _errorP.SetError(txtSatClassName, "");
-        }
-
-        private void txtSatSeatNo_TextChanged(object sender, EventArgs e)
-        {
-            _errorP.SetError(txtSatSeatNo, "");
-        }
-        
+            _errorP.SetError(txtSatClassSeatNo, "");
+        }        
     }
 }

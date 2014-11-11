@@ -19,12 +19,10 @@ namespace SHCollege.ImportExport
         {
             this.Image = null;
             this.Text = "匯出學生學測報名序號";
-            ExportItemList = new List<string>();
+            ExportItemList = new List<string>();            
             ExportItemList.Add("身分證號");
             ExportItemList.Add("報名序號");
-            ExportItemList.Add("學測班級");
-            ExportItemList.Add("學測座號");
-            
+            ExportItemList.Add("班級座號");
         }
 
         public override void InitializeExport(SmartSchool.API.PlugIn.Export.ExportWizard wizard)
@@ -43,19 +41,16 @@ namespace SHCollege.ImportExport
                             if (wizard.ExportableFields.Contains(field))
                             {
                                 switch (field)
-                                {
+                                {                                  
                                     case "身分證號":
                                         row.Add(field,data.IDNumber);
                                         break;
                                     case "報名序號":
                                         row.Add(field, data.SatSerNo);
                                         break;
-                                    case "學測班級":
-                                        row.Add(field,data.SatClassName);
-                                        break;
-                                    case "學測座號":
-                                        row.Add(field, data.SatSeatNo);
-                                        break;
+                                    case "班級座號":
+                                        row.Add(field,data.SatClassSeatNo);
+                                        break;                
                                 }
                             }
                         }

@@ -49,5 +49,12 @@ namespace SHCollege.DAO
         [Field(Field = "sat_seat_no", Indexed = false)]
         public string SatSeatNo { get; set; }
 
+        ///<summary>
+        /// 學測報名用班級座號
+        ///</summary>
+        [Field(Field = "sat_class_seat_no", Indexed = false)]
+        public string SatClassSeatNo { get; set; }
+
+
     }
 }

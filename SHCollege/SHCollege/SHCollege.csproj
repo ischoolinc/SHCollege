@@ -201,6 +201,7 @@
     </Compile>
     <Compile Include="ImportExport\ExportSATStudent.cs" />
     <Compile Include="ImportExport\ImportSATStudent.cs" />
+    <Compile Include="ImportExport\ImportSATStudent_SNum.cs" />
     <Compile Include="ImportExport\ValidationRule\CheckSameSerNo.cs" />
     <Compile Include="ImportExport\ValidationRule\FieldValidatorFactory.cs" />
     <Compile Include="ImportExport\ValidationRule\IDNumberCheck.cs" />
@@ -221,6 +222,7 @@
   <ItemGroup>
     <Content Include="Import.Image.png" />
     <Content Include="ImportExport\ImportSATStudXML.xml" />
+    <Content Include="ImportExport\ImportSATStudXML_Snum.xml" />
     <Content Include="Library\Aspose.Cells_201402.dll" />
     <Content Include="Library\Aspose.Cells_201402.xml" />
     <Content Include="Library\Campus.dll" />

@@ -36,7 +36,7 @@ namespace SHCollege.Forms
             btnSave.Enabled = true;
             dgData.Rows.Clear();
             // 將UDT資料填入畫面                       
-            _ClassCodeList = (from data in _ClassCodeList orderby data.ClassName select data).ToList();
+            _ClassCodeList = (from data in _ClassCodeList orderby data.GradeYear descending,data.ClassName ascending select data).ToList();
             foreach (UDT_SHSATClassCode code in _ClassCodeList)
             {
                 int rowIdx = dgData.Rows.Add();
@@ -49,6 +49,8 @@ namespace SHCollege.Forms
         void _bgLoadMapping_DoWork(object sender, DoWorkEventArgs e)
         {
             _ClassCodeList = UDTTransfer.GetClassCodeList();
+
+
         }
 
         private void btnExit_Click(object sender, EventArgs e)
