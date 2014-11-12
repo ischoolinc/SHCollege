@@ -172,50 +172,59 @@ namespace SHCollege.DAO
             Dictionary<string, string> retVal = new Dictionary<string, string>();
             Dictionary<string, string> DeptDict = new Dictionary<string, string>();
 
-            // 取得學生所屬班級科別
-            QueryHelper qh1 = new QueryHelper();
-            string query1 = "select student.id as sid,dept.name as deptname from student inner join class on student.ref_class_id=class.id inner join dept on class.ref_dept_id=dept.id";
-            DataTable dt1 = qh1.Select(query1);
-            foreach (DataRow dr1 in dt1.Rows)
+            if (StudentIDList.Count > 0)
             {
-                string sid = dr1["sid"].ToString();
-
-                if (!DeptDict.ContainsKey(sid))
-                    DeptDict.Add(sid, dr1["deptname"].ToString().Trim());            
-            }
-
-            // 取得學生本身科別，如果有覆蓋。
-            QueryHelper qh2 = new QueryHelper();
-            string query2 = "select student.id as sid,dept.name as deptname from student inner join dept on student.ref_dept_id=dept.id";
-            DataTable dt2 = qh2.Select(query2);
-            foreach (DataRow dr2 in dt2.Rows)
-            {
-                string sid = dr2["sid"].ToString();
-                string deptName = dr2["deptname"].ToString().Trim();
-                if (!DeptDict.ContainsKey(sid))
-                    DeptDict.Add(sid, deptName);
-                else
-                    DeptDict[sid] = deptName;
-            }
-
-            // 過濾符號
-            foreach (string key in retVal.Keys)
-                retVal[key].Replace("：", "").Replace(":", "");
-
-            // 比對學程資料並填入，沒有資料填空白
-            foreach (string key in DeptDict.Keys)
-            {
-                string no = "";
-                foreach (string k in mappingDict.Keys)
+                // 取得學生所屬班級科別
+                QueryHelper qh1 = new QueryHelper();
+                string query1 = "select student.id as sid,dept.name as deptname from student inner join class on student.ref_class_id=class.id inner join dept on class.ref_dept_id=dept.id where student.id in(" + string.Join(",", StudentIDList.ToArray()) + ")";
+                DataTable dt1 = qh1.Select(query1);
+                foreach (DataRow dr1 in dt1.Rows)
                 {
-                    if (DeptDict[key].Contains(k))
-                    {
-                        no = mappingDict[k];
-                        break;
-                    }
+                    string sid = dr1["sid"].ToString();
+
+                    if (!DeptDict.ContainsKey(sid))
+                        DeptDict.Add(sid, dr1["deptname"].ToString().Trim().Replace(":","").Replace("：",""));
                 }
-                retVal.Add(key, no);
-            }            
+
+                // 取得學生本身科別，如果有覆蓋。
+                QueryHelper qh2 = new QueryHelper();
+                string query2 = "select student.id as sid,dept.name as deptname from student inner join dept on student.ref_dept_id=dept.id where student.id in("+string.Join(",",StudentIDList.ToArray())+")";
+                DataTable dt2 = qh2.Select(query2);
+                foreach (DataRow dr2 in dt2.Rows)
+                {
+                    string sid = dr2["sid"].ToString();
+                    string deptName = dr2["deptname"].ToString().Trim().Replace(":", "").Replace("：", "");
+                    if (!DeptDict.ContainsKey(sid))
+                        DeptDict.Add(sid, deptName);
+                    else
+                        DeptDict[sid] = deptName;
+                }
+
+          
+                // 比對學程資料並填入，沒有資料填空白
+                foreach (string key in DeptDict.Keys)
+                {
+                    // 預設値
+                    string no = "-1";
+                    foreach (string k in mappingDict.Keys)
+                    {
+
+                        // 使用完整比對
+                        if (DeptDict[key] == k)
+                        {
+                            no = mappingDict[k];
+                            break;
+                        }
+
+                        //if (DeptDict[key].Contains(k))
+                        //{
+                        //    no = mappingDict[k];
+                        //    break;
+                        //}
+                    }
+                    retVal.Add(key, no);
+                }
+            }
             return retVal;
         }
 

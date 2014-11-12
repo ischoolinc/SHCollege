@@ -203,6 +203,8 @@ namespace SHCollege.Forms
                     // 就讀科、學程、班別
                     if (exportDT.Columns.Contains("就讀科、學程、班別"))
                     {
+                        // 預設値
+                        newRow["就讀科、學程、班別"] = -1;
                         if (studDeptDict.ContainsKey(sid))
                             newRow["就讀科、學程、班別"] = studDeptDict[sid];
                     }
@@ -210,7 +212,7 @@ namespace SHCollege.Forms
                     
                     // 預設報考1
                     if (exportDT.Columns.Contains("是否報名學測"))
-                        newRow["是否報名學測"] = "1";
+                        newRow["是否報名學測"] = "1";  // 預設値
 
                     if (SHSATStudentDict.ContainsKey(sid))
                     {
