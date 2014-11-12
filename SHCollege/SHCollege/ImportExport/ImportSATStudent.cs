@@ -37,6 +37,7 @@ namespace SHCollege.ImportExport
 
         public override string GetValidateRule()
         {
+            Utility._tmpSerNoList.Clear();
             return Properties.Resources.ImportSATStudXML;
         }
 

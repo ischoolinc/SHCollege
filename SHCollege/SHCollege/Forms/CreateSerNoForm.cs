@@ -17,11 +17,13 @@ namespace SHCollege.Forms
         List<UDT_SHSATStudent> _SATStudent;
         List<string> _StudentIDList;
 
-        string _SelType1 = "學校代碼+班座";
-        string _SelType2 = "學校代碼+流水序號";
+        string _SelType1 = "報名單位代碼+班座";
+        string _SelType2 = "報名單位代碼+流水序號";
         string _UserSel = "";
         string _SchoolCode = "";
         int _SeNoStart = 1;
+
+        List<string> _ClassCodeListErr = new List<string>();
 
         public CreateSerNoForm(List<string> StudentIDList)
         {
@@ -43,12 +45,16 @@ namespace SHCollege.Forms
         void _bgSetData_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             btnSave.Enabled = true;
-            FISCA.Presentation.Controls.MsgBox.Show("設定學測報名序號完成.");
+            if (_ClassCodeListErr.Count>0)
+                FISCA.Presentation.Controls.MsgBox.Show(string.Join(",",_ClassCodeListErr.ToArray())+"，班級代碼設定有缺少請檢查，請設定班級代碼後重新產生。");
+            else
+                FISCA.Presentation.Controls.MsgBox.Show("設定學測報名序號完成.");
             this.Close();
         }
 
         void _bgSetData_DoWork(object sender, DoWorkEventArgs e)
         {
+            _ClassCodeListErr.Clear();
             _bgSetData.ReportProgress(1);
             // 刪除學生學生學測報名序號
             UDTTransfer.DelSHSATStudentListByStudentIDList(_StudentIDList);            
@@ -119,10 +125,18 @@ namespace SHCollege.Forms
                     udata.SatClassSeatNo = sd.ClassCode + sd.SeatNo;
                     // 學校代碼+班級代碼+座號
                     udata.SatSerNo = _SchoolCode+ sd.ClassCode + sd.SeatNo;
-                    udt_studList.Add(udata);
+
+                    if (!string.IsNullOrEmpty(sd.ClassCode))
+                        udt_studList.Add(udata);
+                    else
+                    {
+                        if (!_ClassCodeListErr.Contains(sd.ClassName))
+                            _ClassCodeListErr.Add(sd.ClassName);
+                    }
                 }
 
                 // 儲存資料
+                if(udt_studList.Count>0)
                 udt_studList.SaveAll();                
             }
 
@@ -144,7 +158,7 @@ namespace SHCollege.Forms
                     udata.SatClassName = srStr.Substring(0, 3);
                     udata.SatSeatNo = srStr.Substring(3, 2);
                     udata.SatClassSeatNo = srStr;
-                    // 學校代碼+班級代碼+座號
+                    // 報名單位代碼+班級代碼+座號
                     udata.SatSerNo = _SchoolCode + srStr;
                     udt_studList.Add(udata);
                     sno++;
@@ -165,7 +179,7 @@ namespace SHCollege.Forms
         {
             if (CheckData())
             {
-                if (FISCA.Presentation.Controls.MsgBox.Show("按「是」將取代學生原有學測報名序號、班級代碼、座號!", "設定學測報名序號", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
+                if (FISCA.Presentation.Controls.MsgBox.Show("按「是」將取代學生原有學測報名序號、班級座號!", "設定學測報名序號", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
                 {
                     _UserSel = cboSerNoType.Text;
                     _SchoolCode = txtRegCode.Text;
@@ -187,7 +201,7 @@ namespace SHCollege.Forms
             // 檢查學校代碼是否輸入與輸入三位數字
             if (txtRegCode.Text.Length != 3)
             {
-                errMsg.Add("學校代碼必須3碼");
+                errMsg.Add("報名單位代碼必須3碼");
                 pass = false;
             }
             else
@@ -195,7 +209,7 @@ namespace SHCollege.Forms
                 int dd;
                 if (int.TryParse(txtRegCode.Text, out dd) == false)
                 {
-                    errMsg.Add("學校代碼必須數字");
+                    errMsg.Add("報名單位代碼必須數字");
                     pass = false;
                 }            
             }

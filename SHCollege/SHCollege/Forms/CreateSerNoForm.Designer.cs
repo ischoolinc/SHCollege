@@ -113,6 +113,7 @@
             // 
             this.cboSerNoType.DisplayMember = "Text";
             this.cboSerNoType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cboSerNoType.DropDownWidth = 200;
             this.cboSerNoType.FormattingEnabled = true;
             this.cboSerNoType.ItemHeight = 19;
             this.cboSerNoType.Location = new System.Drawing.Point(128, 61);

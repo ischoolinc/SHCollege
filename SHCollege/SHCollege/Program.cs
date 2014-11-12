@@ -59,7 +59,7 @@ namespace SHCollege
             rbImport["匯入"]["匯入學測報名序號(身分證號)"].Enable = UserAcl.Current["SH_College_ImportSATStudent"].Executable;
             rbImport["匯入"]["匯入學測報名序號(身分證號)"].Click += delegate
             {
-                Utility._tmpSerNoList.Clear();
+               // Utility._tmpSerNoList.Clear();
                 new ImportExport.ImportSATStudent().Execute();
             };
 
@@ -69,7 +69,7 @@ namespace SHCollege
             rbImport1["匯入"]["匯入學測報名序號(學號)"].Enable = UserAcl.Current["SH_College_ImportSATStudent_SNum"].Executable;
             rbImport1["匯入"]["匯入學測報名序號(學號)"].Click += delegate
             {
-                Utility._tmpSerNoList.Clear();
+                //Utility._tmpSerNoList.Clear();
                 new ImportExport.ImportSATStudent_SNum().Execute();
             };
 
