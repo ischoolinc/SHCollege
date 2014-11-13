@@ -19,11 +19,13 @@ namespace SHCollege.Forms
 
         string _SelType1 = "報名單位代碼+班座";
         string _SelType2 = "報名單位代碼+流水序號";
+        string _SelType3 = "報名單位代碼+學號";
         string _UserSel = "";
         string _SchoolCode = "";
         int _SeNoStart = 1;
 
         List<string> _ClassCodeListErr = new List<string>();
+        List<string> _StudentNumberErr = new List<string>();
 
         public CreateSerNoForm(List<string> StudentIDList)
         {
@@ -47,6 +49,10 @@ namespace SHCollege.Forms
             btnSave.Enabled = true;
             if (_ClassCodeListErr.Count>0)
                 FISCA.Presentation.Controls.MsgBox.Show(string.Join(",",_ClassCodeListErr.ToArray())+"，班級代碼設定有缺少請檢查，請設定班級代碼後重新產生。");
+            else if (_StudentNumberErr.Count > 0)
+            {
+                FISCA.Presentation.Controls.MsgBox.Show("設定學測報名序號完成，學號：" + string.Join(",", _StudentNumberErr.ToArray()) + "，產生後會超過學測報名序號8碼。","學號長度超過5碼",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+            }
             else
                 FISCA.Presentation.Controls.MsgBox.Show("設定學測報名序號完成.");
             this.Close();
@@ -55,6 +61,7 @@ namespace SHCollege.Forms
         void _bgSetData_DoWork(object sender, DoWorkEventArgs e)
         {
             _ClassCodeListErr.Clear();
+            _StudentNumberErr.Clear();
             _bgSetData.ReportProgress(1);
             // 刪除學生學生學測報名序號
             UDTTransfer.DelSHSATStudentListByStudentIDList(_StudentIDList);            
@@ -158,7 +165,7 @@ namespace SHCollege.Forms
                     udata.SatClassName = srStr.Substring(0, 3);
                     udata.SatSeatNo = srStr.Substring(3, 2);
                     udata.SatClassSeatNo = srStr;
-                    // 報名單位代碼+班級代碼+座號
+                    // 報名單位代碼+流水號
                     udata.SatSerNo = _SchoolCode + srStr;
                     udt_studList.Add(udata);
                     sno++;
@@ -167,6 +174,42 @@ namespace SHCollege.Forms
                 // 儲存資料
                 udt_studList.SaveAll();               
             }
+
+            // 報名代碼+學號
+            if (_UserSel == _SelType3)
+            {
+                int sno = 1;
+
+                // 排序:依學號
+                List<StudData> dataList = (from data in sdList orderby data.StudentNumber ascending select data).ToList();
+                List<UDT_SHSATStudent> udt_studList = new List<UDT_SHSATStudent>();
+                foreach (StudData sd in dataList)
+                {
+                    UDT_SHSATStudent udata = new UDT_SHSATStudent();
+                    string srStr = sd.StudentNumber;
+                    udata.IDNumber = sd.IDNumber;
+                    udata.RefStudentID = sd.StudentID;
+                    if (srStr.Length == 5)
+                    {
+                        udata.SatClassName = srStr.Substring(0, 3);
+                        udata.SatSeatNo = srStr.Substring(3, 2);
+                    }
+
+                    if (srStr.Length > 5)
+                        _StudentNumberErr.Add(srStr);
+
+                    udata.SatClassSeatNo = srStr;
+                    // 報名單位代碼+學號
+                    udata.SatSerNo = _SchoolCode + srStr;
+                    udt_studList.Add(udata);
+                    sno++;
+                }
+
+                // 儲存資料
+                udt_studList.SaveAll();
+            }
+
+
             _bgSetData.ReportProgress(100);
         }
 
@@ -233,6 +276,7 @@ namespace SHCollege.Forms
             // 序號排序可選模式
             cboSerNoType.Items.Add(_SelType1);
             cboSerNoType.Items.Add(_SelType2);
+            cboSerNoType.Items.Add(_SelType3);
         }
     }
 }
