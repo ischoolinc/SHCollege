@@ -234,8 +234,11 @@ CAST(regexp_replace(s0.d14, '^$', '0') as decimal) as 學期科目開課學分�
 |/SemesterSubjectScoreInfo/Subject/@開課分項類別
 |/SemesterSubjectScoreInfo/Subject/@開課學分數'
 ,'ref_student_id in(" + string.Join(",", sids.ToArray()) + @")')
-as s0(id integer,d1 character varying(30),d2 character varying(30),d3 character varying(30),d4 character varying(30),d5 character varying(30),d6 character varying(30),d7 character varying(30),d8 character varying(30),d9 character varying(30),d10 character varying(30),d11 character varying(30),d12 character varying(30),d13 character varying(30),d14 character varying(30)) on sems_subj_score.id=s0.id";
+as s0(id integer,d1 character varying(30),d2 character varying(30),d3 character varying(30),d4 character varying(30),d5 character varying(30),d6 character varying(30),d7 character varying(30),d8 character varying(30),d9 character varying(30),d10 character varying(30),d11 character varying(30),d12 character varying(30),d13 character varying(30),d14 character varying(30)) on sems_subj_score.id=s0.id order by sid,學期科目成績年級 asc,學期科目成績學年度 desc,學期科目成績學期";
                 dt = qh.Select(query);
+
+
+                Dictionary<string, bool> chkSameDict = new Dictionary<string, bool>();
 
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -244,7 +247,13 @@ as s0(id integer,d1 character varying(30),d2 character varying(30),d3 character 
                     if (!retVal.ContainsKey(sid))
                         retVal.Add(sid, new List<DataRow>());
 
-                    retVal[sid].Add(dr);
+                    // 檢查是否有重讀資料sid 年級、學期、科目名稱、科目級別
+                    string kk=sid+dr["學期科目成績年級"].ToString()+dr["學期科目成績學期"].ToString()+dr["學期科目名稱"].ToString()+dr["學期科目級別"].ToString();
+                    if (!chkSameDict.ContainsKey(kk))
+                    {
+                        chkSameDict.Add(kk,true);
+                        retVal[sid].Add(dr);
+                    }
                 }
             }
             return retVal;
@@ -260,8 +269,10 @@ as s0(id integer,d1 character varying(30),d2 character varying(30),d3 character 
                 string query = @"select sems_entry_score.id as seid,ref_student_id as sid,school_year 
 as 學年度,semester as 學期,grade_year as 年級,se1.d1 as 分項, cast(regexp_replace(se1.d2, '^$', '0') as decimal) as 成績 
 from sems_entry_score inner join xpath_table('id','score_info','sems_entry_score','/SemesterEntryScore/Entry/@分項|/SemesterEntryScore/Entry/@成績',
-'ref_student_id in(" + sKey + @")') as se1(id integer,d1 character varying(30),d2 character varying(10)) on sems_entry_score.id=se1.id where sems_entry_score.ref_student_id in(" + sKey + @") and sems_entry_score.entry_group=1";
+'ref_student_id in(" + sKey + @")') as se1(id integer,d1 character varying(30),d2 character varying(10)) on sems_entry_score.id=se1.id where sems_entry_score.ref_student_id in(" + sKey + @") and sems_entry_score.entry_group=1 order by sid,年級 asc,學年度 desc,學期 asc";
                 DataTable dt = qh.Select(query);
+
+                Dictionary<string, bool> chkSameDict = new Dictionary<string, bool>();
 
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -269,7 +280,14 @@ from sems_entry_score inner join xpath_table('id','score_info','sems_entry_score
                     if (!retVal.ContainsKey(sid))
                         retVal.Add(sid, new List<DataRow>());
 
-                    retVal[sid].Add(dr);
+                        // 檢查是否有重讀資料sid 年級、學期、分項
+                    string kk = sid + dr["年級"].ToString() + dr["學期"].ToString() + dr["分項"].ToString();
+                    if (!chkSameDict.ContainsKey(kk))
+                    {
+                        chkSameDict.Add(kk, true);
+                        retVal[sid].Add(dr);
+                    }
+                    
                 }
             }
             return retVal;
