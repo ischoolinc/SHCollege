@@ -217,7 +217,7 @@ namespace SHCollege.Forms
                     if (SHSATStudentDict.ContainsKey(sid))
                     {
                         if (exportDT.Columns.Contains("班級座號"))
-                            newRow["班級座號"] = SHSATStudentDict[sid].SatClassName + SHSATStudentDict[sid].SatSeatNo;
+                            newRow["班級座號"] = SHSATStudentDict[sid].SatClassSeatNo;
 
                         if (exportDT.Columns.Contains("學測報名序號"))
                             newRow["學測報名序號"] = SHSATStudentDict[sid].SatSerNo;
