@@ -161,6 +161,7 @@ namespace SHCollege.DAO
             Dictionary<string, string> mappingDict = new Dictionary<string, string>();
             mappingDict.Add("普通科", "1");
             mappingDict.Add("普通科科學班", "1");
+            mappingDict.Add("普通科數資班", "1");
             mappingDict.Add("普通科資優班", "1");
             mappingDict.Add("普通科音樂班", "2");
             mappingDict.Add("普通科美術班", "3");
