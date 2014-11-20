@@ -66,6 +66,7 @@
             this.dgData.RowTemplate.Height = 24;
             this.dgData.Size = new System.Drawing.Size(481, 244);
             this.dgData.TabIndex = 0;
+            this.dgData.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgData_CurrentCellDirtyStateChanged);
             // 
             // colFieldName
             // 

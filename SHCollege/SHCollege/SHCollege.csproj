@@ -153,6 +153,7 @@
     <Compile Include="DAO\FieldConfig.cs" />
     <Compile Include="DAO\LogTransfer.cs" />
     <Compile Include="DAO\LogValue.cs" />
+    <Compile Include="DAO\SScore.cs" />
     <Compile Include="DAO\StudData.cs" />
     <Compile Include="DAO\UDTTransfer.cs" />
     <Compile Include="DAO\UDT_SHSATClassCode.cs" />
