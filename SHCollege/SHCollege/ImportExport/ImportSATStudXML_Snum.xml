@@ -19,13 +19,13 @@
     </Field>-->
     <Field Required="True" Name="報名序號" Description="報名序號，長度必須固定8碼">
       <Validate AutoCorrect="False" Description="「報名序號」序號長度必須8碼。" ErrorType="Error" Validator="長度8" When="" />
-      <Validate AutoCorrect="False" Description="「報名序號」序號內容必須整數。" ErrorType="Error" Validator="Integer99999999" When="" />
+      <Validate AutoCorrect="False" Description="「報名序號」序號內容必須英數。" ErrorType="Error" Validator="多個英數字元" When="" />
       <Validate AutoCorrect="False" Description="「報名序號」在檔案內重複。" ErrorType="Error" Validator="報名序號在檔案內是否重覆" When="" />
     </Field>
 
     <Field Required="True" Name="班級座號" Description="學測報名使用班級座號">
       <Validate AutoCorrect="False" Description="「班級座號」長度必須5碼。" ErrorType="Error" Validator="長度5" When="" />
-      <Validate AutoCorrect="False" Description="「班級座號」內容必須整數。" ErrorType="Error" Validator="Integer99999999" When="" />
+      <Validate AutoCorrect="False" Description="「班級座號」內容必須英數。" ErrorType="Error" Validator="多個英數字元" When="" />
     </Field>
 
 
@@ -40,6 +40,12 @@
     <FieldValidator Name="長度8" Type="STRINGLENGTH">
       <MinLength>8</MinLength>
       <MinLength>8</MinLength>
+    </FieldValidator>
+
+    <FieldValidator Name="多個英數字元" Type="Regex">
+      <ValidPattern>
+        <![CDATA[^[A-Za-z0-9]+$]]> <!-- 正規表示法 -->
+      </ValidPattern>
     </FieldValidator>
 
     <FieldValidator Name="長度5" Type="STRINGLENGTH">

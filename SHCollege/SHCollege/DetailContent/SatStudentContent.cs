@@ -117,7 +117,8 @@ namespace SHCollege.DetailContent
         private bool ChkData()
         {
             bool pass = true;
-            
+         
+            string RexPatten="^[0-9a-zA-Z]*$";
             if (string.IsNullOrEmpty(txtSATSerNo.Text))
             {
                 _errorP.SetError(txtSATSerNo, "報名序號不能空白!");
@@ -125,10 +126,9 @@ namespace SHCollege.DetailContent
             }
             else
             {
-                int x;
-                if (int.TryParse(txtSATSerNo.Text, out x) == false)
+                if(System.Text.RegularExpressions.Regex.Match(txtSATSerNo.Text,RexPatten).Success==false)
                 {
-                    _errorP.SetError(txtSATSerNo, "報名序號必須數字!");
+                    _errorP.SetError(txtSATSerNo, "報名序號必須英數!");
                     pass = false;
                 }
 
@@ -146,10 +146,9 @@ namespace SHCollege.DetailContent
             }
             else
             {
-                int x;
-                if (int.TryParse(txtSatClassSeatNo.Text, out x) == false)
+                if(System.Text.RegularExpressions.Regex.Match(txtSatClassSeatNo.Text, RexPatten).Success==false)
                 {
-                    _errorP.SetError(txtSatClassSeatNo, "學測班級座號必須數字!");
+                    _errorP.SetError(txtSatClassSeatNo, "學測班級座號必須英數!");
                     pass = false;
                 }
 

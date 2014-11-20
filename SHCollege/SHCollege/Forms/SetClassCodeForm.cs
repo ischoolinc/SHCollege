@@ -148,6 +148,7 @@ namespace SHCollege.Forms
             }
             btnSave.Enabled = true;
         }
+        string RexPatten = "^[0-9a-zA-Z]*$";
 
         private void dgData_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
@@ -164,12 +165,11 @@ namespace SHCollege.Forms
                         dgData.CurrentCell.ErrorText = "班級代碼必須3碼";
 
                     // 內容數字檢查
-                    int dd;
-                    if (int.TryParse(value, out dd) == false)
+                    if (System.Text.RegularExpressions.Regex.Match(value, RexPatten).Success == false)
                     {
-                        dgData.CurrentCell.ErrorText = "班級代碼必須數字";
+                        dgData.CurrentCell.ErrorText = "班級代碼必須英數";
                     }
-                
+                    
                 }            
             }            
             dgData.BeginEdit(false);
