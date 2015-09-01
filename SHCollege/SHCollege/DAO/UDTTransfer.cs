@@ -237,14 +237,13 @@ namespace SHCollege.DAO
         public static List<UDT_SHSATClassCode> GetClassCodeList()
         {
             List<UDT_SHSATClassCode> retVal = new List<UDT_SHSATClassCode>();
-            
+
+            List<UDT_SHSATClassCode> sysClassNameList = new List<UDT_SHSATClassCode>();
             // 取得 UDT ClassCode
             AccessHelper accessHelper = new AccessHelper();
             List<UDT_SHSATClassCode> SHSATClassCodeList = accessHelper.Select<UDT_SHSATClassCode>();
-            
-            // 如果沒有資料，產生預設名稱，讀取系統內班級，依年級、班級名稱排序
-            if (SHSATClassCodeList.Count == 0)
-            {
+
+            // 取得目前班級
                 QueryHelper qh = new QueryHelper();
                 string query = "select distinct class.id as cid,class_name,class.grade_year from class inner join student on class.id=student.ref_class_id where student.status=1 order by class.grade_year desc,class_name";
                 DataTable dt = qh.Select(query);
@@ -256,8 +255,13 @@ namespace SHCollege.DAO
                     int gg;
                     if (int.TryParse(dr["grade_year"].ToString(), out gg))
                         code.GradeYear = gg;
-                    retVal.Add(code);
+                    sysClassNameList.Add(code);
                 }
+            
+            // 如果沒有資料，產生預設名稱，讀取系統內班級，依年級、班級名稱排序
+            if (SHSATClassCodeList.Count == 0)
+            {
+                retVal = sysClassNameList;
             }
             else
             {
@@ -268,14 +272,25 @@ namespace SHCollege.DAO
                     cNameDict.Add(cr.Name, cr);
                 }
 
+                List<string> chkClassNameList = new List<string>();
+
+                // 原本UDT內
                 foreach (UDT_SHSATClassCode code in SHSATClassCodeList)
                 {
                     if (cNameDict.ContainsKey(code.ClassName))
                     {
                         code.GradeYear = 0;
                         if (cNameDict[code.ClassName].GradeYear.HasValue)
-                            code.GradeYear = cNameDict[code.ClassName].GradeYear.Value;
+                            code.GradeYear = cNameDict[code.ClassName].GradeYear.Value;                        
                     }
+                    chkClassNameList.Add(code.ClassName);
+                }
+
+                // 將系統內有,UDT內沒有的班級加入
+                foreach (UDT_SHSATClassCode nCode in sysClassNameList)
+                {
+                    if (!chkClassNameList.Contains(nCode.ClassName))
+                        SHSATClassCodeList.Add(nCode);
                 }
 
                 retVal = SHSATClassCodeList;
