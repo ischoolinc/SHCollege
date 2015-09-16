@@ -182,7 +182,7 @@ namespace SHCollege
             if (sids.Count > 0)
             {
                 QueryHelper qh = new QueryHelper();
-                string query = @"select id,student_number as 學號,name as 姓名,id_number as 身分證號碼 from student where id in(" + string.Join(",", sids.ToArray()) + ") order by student_number";
+                string query = @"select student.id as sid,student_number as 學號,name as 姓名,id_number as 身分證號碼,class.class_name as 班級名稱 from student inner join class on student.ref_class_id=class.id where student.id in(" + string.Join(",", sids.ToArray()) + ") order by student_number";
                 DataTable dt = qh.Select(query);
                 foreach (DataRow dr in dt.Rows)
                     retVal.Add(dr);
@@ -450,6 +450,63 @@ from sems_entry_score inner join xpath_table('id','score_info','sems_entry_score
             }
             #endregion
 
+        }
+
+        /// <summary>
+        /// 103學年度入學學生高一在校學業成績檔案規格
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> GetScoreFieldList103_1()
+        {
+            List<string> Value = new List<string>();
+            Value.Add("學號");
+            Value.Add("姓名");
+            Value.Add("身分證號碼");
+            Value.Add("學業總平均(高一上)");
+            Value.Add("國文(高一上)");
+            Value.Add("英文(高一上)");
+            Value.Add("數學(高一上)");
+            Value.Add("物理(高一上)");
+            Value.Add("化學(高一上)");
+            Value.Add("生物(高一上)");
+            Value.Add("地球科學(高一上)");
+            Value.Add("歷史(高一上)");
+            Value.Add("地理(高一上)");
+            Value.Add("公民與社會(高一上)");
+            Value.Add("音樂(高一上)");
+            Value.Add("美術(高一上)");
+            Value.Add("舞蹈(高一上)");
+            Value.Add("體育(高一上)");
+            Value.Add("藝術生活(高一上)");
+            Value.Add("生活科技(高一上)");
+            Value.Add("家政(高一上)");
+            Value.Add("資訊科技概論(高一上)");
+            Value.Add("健康與護理(高一上)");
+            Value.Add("全民國防教育(高一上)");
+            Value.Add("學業總平均(高一下)");
+            Value.Add("國文(高一下)");
+            Value.Add("英文(高一下)");
+            Value.Add("數學(高一下)");
+            Value.Add("物理(高一下)");
+            Value.Add("化學(高一下)");
+            Value.Add("生物(高一下)");
+            Value.Add("地球科學(高一下)");
+            Value.Add("歷史(高一下)");
+            Value.Add("地理(高一下)");
+            Value.Add("公民與社會(高一下)");
+            Value.Add("音樂(高一下)");
+            Value.Add("美術(高一下)");
+            Value.Add("舞蹈(高一下)");
+            Value.Add("體育(高一下)");
+            Value.Add("藝術生活(高一下)");
+            Value.Add("生活科技(高一下)");
+            Value.Add("家政(高一下)");
+            Value.Add("資訊科技概論(高一下)");
+            Value.Add("健康與護理(高一下)");
+            Value.Add("全民國防教育(高一下)");
+            Value.Add("就讀科、學程、班別");
+            Value.Add("班級");
+            return Value;
         }
     }
 }

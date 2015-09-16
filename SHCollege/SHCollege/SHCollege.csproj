@@ -194,6 +194,12 @@
     <Compile Include="Forms\ScoreForm.Designer.cs">
       <DependentUpon>ScoreForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ScoreForm103_1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ScoreForm103_1.Designer.cs">
+      <DependentUpon>ScoreForm103_1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SetClassCodeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -301,6 +307,9 @@
       <DependentUpon>SAT_B_Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ScoreForm.resx" />
+    <EmbeddedResource Include="Forms\ScoreForm103_1.resx">
+      <DependentUpon>ScoreForm103_1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\SetClassCodeForm.resx">
       <DependentUpon>SetClassCodeForm.cs</DependentUpon>
     </EmbeddedResource>

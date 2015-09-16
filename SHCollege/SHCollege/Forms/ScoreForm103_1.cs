@@ -10,11 +10,12 @@ using SHCollege.DAO;
 using Aspose.Cells;
 using FISCA.UDT;
 
+
 namespace SHCollege.Forms
 {
-    public partial class ScoreForm : FISCA.Presentation.Controls.BaseForm
+    public partial class ScoreForm103_1 : FISCA.Presentation.Controls.BaseForm
     {
-        // 讀取資料
+                // 讀取資料
         BackgroundWorker _bgLoadMapping;
         // 產生資料
         BackgroundWorker _bgExporData;
@@ -27,8 +28,8 @@ namespace SHCollege.Forms
 
         // 使用原始成績
         bool _chkSScore = true;
-        
-        public ScoreForm()
+
+        public ScoreForm103_1()
         {
             InitializeComponent();
             _FieldConfigList = new List<FieldConfig> ();
@@ -47,7 +48,7 @@ namespace SHCollege.Forms
 
         void _bgExporData_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            FISCA.Presentation.MotherForm.SetStatusBarMessage("大學繁星推甄成績檔產生中..", e.ProgressPercentage);
+            FISCA.Presentation.MotherForm.SetStatusBarMessage("大學繁星(103學年度入學學生高一在校學業成績)產生中..", e.ProgressPercentage);
         }
 
         void _bgLoadMapping_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -111,9 +112,9 @@ namespace SHCollege.Forms
                 if (dt != null)
                 {
                     // 需要產生xls與csv                  
-                    
-                    Utility.CompletedXls("大學甄選", dt);
-                    Utility.CompletedXlsCsv("大學甄選", dt);                                    
+
+                    Utility.CompletedXls("大學甄選(103學年度入學學生高一在校學業成績)", dt);
+                    Utility.CompletedXlsCsv("大學甄選(103學年度入學學生高一在校學業成績)", dt);                                    
                 }
             }
             catch (Exception ex)
@@ -148,22 +149,47 @@ namespace SHCollege.Forms
                 // 取得科別對照
                 Dictionary<string, string> studDeptDict = DAO.UDTTransfer.GetStudentSATDeptMappingDict(StudentIDList);
 
+                // 取得班級代碼對照
+                Dictionary<string, string> classCodeDict = new Dictionary<string, string>();
+                List<UDT_SHSATClassCode> classcodeList = UDTTransfer.GetClassCodeList();
+                foreach (UDT_SHSATClassCode code in classcodeList)
+                {
+                    if (!classCodeDict.ContainsKey(code.ClassName))
+                    {
+                        classCodeDict.Add(code.ClassName, code.ClassCode);
+                    }
+                }
+
                 _bgExporData.ReportProgress(60);
 
                 // 輸出用 
                 DataTable exportDT = new DataTable();
+                DataTable exportDT103_1 = new DataTable();
+
+                // 取得一年級學生規格檔
+                List<string> scoreField103List = Utility.GetScoreFieldList103_1();
+
                 exportDT.Columns.Add("學號");
+                exportDT.Columns.Add("班級");
+
                 // 填入 columns
                 foreach (FieldConfig fc in _SaveFieldConfigList)
-                {
-
+                {                    
                     DataColumn column = new DataColumn();
                     column.DataType = Type.GetType("System.String");
                     column.ColumnName = fc.FieldName;
-                    exportDT.Columns.Add(column);
+                    if(!exportDT.Columns.Contains(fc.FieldName))
+                        exportDT.Columns.Add(column);
                 }
- 
 
+                // 103 規格
+                foreach (string name in scoreField103List)
+                {
+                    DataColumn column = new DataColumn();
+                    column.DataType = Type.GetType("System.String");
+                    column.ColumnName = name;
+                    exportDT103_1.Columns.Add(column);                
+                }
 
                 Dictionary<string, List<string>> _ScoreNameMappingDict = new Dictionary<string, List<string>>();
 
@@ -227,9 +253,18 @@ namespace SHCollege.Forms
                     if (exportDT.Columns.Contains("就讀科、學程、班別"))
                     {
                         // 預設値
-                        newRow["就讀科、學程、班別"] = -1;
+                        newRow["就讀科、學程、班別"] = "";
                         if (studDeptDict.ContainsKey(sid))
                             newRow["就讀科、學程、班別"] = studDeptDict[sid];
+                    }
+
+                    // 班級代碼
+                    if (dr["班級名稱"]!=null)
+                    if (exportDT.Columns.Contains("班級"))
+                    {
+                        string className = dr["班級名稱"].ToString();
+                        if (classCodeDict.ContainsKey(className))
+                            newRow["班級"] = classCodeDict[className];
                     }
 
                     
@@ -776,7 +811,23 @@ namespace SHCollege.Forms
                     exportDT.Rows.Add(newRow);
                 }
                 _bgExporData.ReportProgress(100);
-                e.Result = exportDT;
+
+                // 轉換資料
+                foreach (DataRow dr in exportDT.Rows)
+                {
+                    DataRow newRow = exportDT103_1.NewRow();
+
+                    foreach (string name in scoreField103List)
+                    {
+                        if (exportDT.Columns.Contains(name))
+                        {
+                            newRow[name] = dr[name];
+                        }
+                    }
+
+                    exportDT103_1.Rows.Add(newRow);
+                }
+                e.Result = exportDT103_1;
             }
         }
 
@@ -1156,5 +1207,6 @@ namespace SHCollege.Forms
             }
             dgData.BeginEdit(false);
         }    
+
     }
 }
