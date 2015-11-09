@@ -152,7 +152,7 @@ namespace SHCollege.Forms
 
                 // 輸出用 
                 DataTable exportDT = new DataTable();
-                exportDT.Columns.Add("學號");
+//                exportDT.Columns.Add("學號");
                 // 填入 columns
                 foreach (FieldConfig fc in _SaveFieldConfigList)
                 {
