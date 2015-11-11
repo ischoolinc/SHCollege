@@ -133,7 +133,7 @@ namespace SHCollege.Forms
                 // 取得所選學生ID
                 List<string> StudentIDList = K12.Presentation.NLDPanels.Student.SelectedSource;
 
-                // 取得學生基本資料,已依學號排序
+                // 取得學生基本資料,已依學測報名序號學號排序
                 List<DataRow> StudBaseList = Utility.GetStudentBaseDataByID(StudentIDList);
                 _bgExporData.ReportProgress(30);
                 // 取得學生科目成績資料 key:studentID
@@ -775,6 +775,9 @@ namespace SHCollege.Forms
 
                     exportDT.Rows.Add(newRow);
                 }
+
+                
+
                 _bgExporData.ReportProgress(100);
                 e.Result = exportDT;
             }

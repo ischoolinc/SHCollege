@@ -182,7 +182,7 @@ namespace SHCollege
             if (sids.Count > 0)
             {
                 QueryHelper qh = new QueryHelper();
-                string query = @"select student.id as sid,student_number as 學號,name as 姓名,id_number as 身分證號碼,class.class_name as 班級名稱 from student inner join class on student.ref_class_id=class.id where student.id in(" + string.Join(",", sids.ToArray()) + ") order by student_number";
+                string query = @"select student.id as sid,student.student_number as 學號,name as 姓名,student.id_number as 身分證號碼,class.class_name as 班級名稱 from student inner join class on student.ref_class_id=class.id left join $sh.college.sat.student on student.id=to_number($sh.college.sat.student.ref_student_id,'9999999999') where student.id in(" + string.Join(",", sids.ToArray()) + ") order by $sh.college.sat.student.sat_ser_no asc, student.student_number";
                 DataTable dt = qh.Select(query);
                 foreach (DataRow dr in dt.Rows)
                     retVal.Add(dr);
