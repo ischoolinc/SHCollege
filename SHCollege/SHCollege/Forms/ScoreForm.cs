@@ -25,6 +25,9 @@ namespace SHCollege.Forms
         // 儲存 UDT Mapping 資料用
         List<FieldConfig> _SaveFieldConfigList;
 
+        // 固定對照名稱
+        List<string> _FixedFieldNameList = new List<string>();
+
         // 使用原始成績
         bool _chkSScore = true;
         
@@ -234,8 +237,8 @@ namespace SHCollege.Forms
 
                     
                     // 預設報考1
-                    if (exportDT.Columns.Contains("是否報名學測"))
-                        newRow["是否報名學測"] = "1";  // 預設値
+                    if (exportDT.Columns.Contains("報名學測或術科考試情形"))
+                        newRow["報名學測或術科考試情形"] = "1";  // 預設値
 
                     if (SHSATStudentDict.ContainsKey(sid))
                     {
@@ -615,7 +618,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業總平均(高一上)")
+                                        if (fc.FieldName == "學業成績總平均(高一上)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -626,7 +629,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業總平均(高一下)")
+                                        if (fc.FieldName == "學業成績總平均(高一下)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -638,7 +641,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業總平均(高二上)")
+                                        if (fc.FieldName == "學業成績總平均(高二上)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -650,7 +653,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業總平均(高二下)")
+                                        if (fc.FieldName == "學業成績總平均(高二下)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -663,7 +666,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業總平均(高三上)")
+                                        if (fc.FieldName == "學業成績總平均(高三上)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -675,7 +678,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業總平均(高三下)")
+                                        if (fc.FieldName == "學業成績總平均(高三下)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -691,7 +694,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業總平均(高一上)")
+                                        if (fc.FieldName == "學業成績總平均(高一上)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -703,7 +706,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業總平均(高一下)")
+                                        if (fc.FieldName == "學業成績總平均(高一下)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -715,7 +718,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業總平均(高二上)")
+                                        if (fc.FieldName == "學業成績總平均(高二上)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -727,7 +730,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業總平均(高二下)")
+                                        if (fc.FieldName == "學業成績總平均(高二下)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -739,7 +742,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業總平均(高三上)")
+                                        if (fc.FieldName == "學業成績總平均(高三上)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -751,7 +754,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業總平均(高三下)")
+                                        if (fc.FieldName == "學業成績總平均(高三下)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -840,6 +843,7 @@ namespace SHCollege.Forms
         {
             btnExportMaping.Enabled = bo;
             btnImportMapping.Enabled = bo;
+            btnLoadDefaultField.Enabled = bo;
             btnExportCSV.Enabled = bo;            
         }
 
@@ -912,11 +916,10 @@ namespace SHCollege.Forms
         private List<string> GetDefaultFieldName()
         {
             List<string> retVal = new List<string>();
-            retVal.Add("班級座號");
-            retVal.Add("姓名");
+            retVal.Add("班級座號");      
             retVal.Add("學測報名序號");
             retVal.Add("身分證號碼");
-            retVal.Add("學業總平均(高一上)");
+            retVal.Add("學業成績總平均(高一上)");
             retVal.Add("國文(高一上)");
             retVal.Add("英文(高一上)");
             retVal.Add("數學(高一上)");
@@ -937,7 +940,7 @@ namespace SHCollege.Forms
             retVal.Add("資訊科技概論(高一上)");
             retVal.Add("健康與護理(高一上)");
             retVal.Add("全民國防教育(高一上)");
-            retVal.Add("學業總平均(高一下)");
+            retVal.Add("學業成績總平均(高一下)");
             retVal.Add("國文(高一下)");
             retVal.Add("英文(高一下)");
             retVal.Add("數學(高一下)");
@@ -958,7 +961,7 @@ namespace SHCollege.Forms
             retVal.Add("資訊科技概論(高一下)");
             retVal.Add("健康與護理(高一下)");
             retVal.Add("全民國防教育(高一下)");
-            retVal.Add("學業總平均(高二上)");
+            retVal.Add("學業成績總平均(高二上)");
             retVal.Add("國文(高二上)");
             retVal.Add("英文(高二上)");
             retVal.Add("數學(高二上)");
@@ -979,7 +982,7 @@ namespace SHCollege.Forms
             retVal.Add("資訊科技概論(高二上)");
             retVal.Add("健康與護理(高二上)");
             retVal.Add("全民國防教育(高二上)");
-            retVal.Add("學業總平均(高二下)");
+            retVal.Add("學業成績總平均(高二下)");
             retVal.Add("國文(高二下)");
             retVal.Add("英文(高二下)");
             retVal.Add("數學(高二下)");
@@ -1001,8 +1004,8 @@ namespace SHCollege.Forms
             retVal.Add("健康與護理(高二下)");
             retVal.Add("全民國防教育(高二下)");
             retVal.Add("就讀科、學程、班別");
-            retVal.Add("是否報名學測");
-
+            retVal.Add("報名學測或術科考試情形");
+            retVal.Add("姓名");
             return retVal;
         
         }
@@ -1108,6 +1111,11 @@ namespace SHCollege.Forms
 
                 _FieldConfigList.SaveAll();
 
+                // 處理固定對照名稱讓使用者改也能依原本
+               
+
+
+
                 // 儲存畫面值到 UDT                
                 List<string> fiedNameList = new List<string>();
                 _SaveFieldConfigList.Clear();
@@ -1158,6 +1166,26 @@ namespace SHCollege.Forms
                 }
             }
             dgData.BeginEdit(false);
-        }    
+        }
+
+        private void btnLoadDefaultField_Click(object sender, EventArgs e)
+        {
+            btnLoadDefaultField.Enabled = false;
+            dgData.Rows.Clear();
+            List<string> filedList = GetDefaultFieldName();
+            
+            foreach (string str in filedList)
+            {
+                int rowIdx = dgData.Rows.Add();
+                FieldConfig fc = new FieldConfig();
+                fc.FieldName = str;
+                dgData.Rows[rowIdx].Tag = fc;
+                dgData.Rows[rowIdx].Cells[colFieldName.Index].Value = fc.FieldName;
+                string ffName = fc.FieldName.Replace("(高一上)", "").Replace("(高一下)", "").Replace("(高二上)", "").Replace("(高二下)", "");
+                dgData.Rows[rowIdx].Cells[colFieldMapping.Index].Value = ffName;
+            }
+
+            btnLoadDefaultField.Enabled = true;
+        }
     }
 }

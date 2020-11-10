@@ -269,8 +269,8 @@ namespace SHCollege.Forms
 
                     
                     // 預設報考1
-                    if (exportDT.Columns.Contains("是否報名學測"))
-                        newRow["是否報名學測"] = "1";  // 預設値
+                    if (exportDT.Columns.Contains("報名學測或術科考試情形"))
+                        newRow["報名學測或術科考試情形"] = "1";  // 預設値
 
                     if (SHSATStudentDict.ContainsKey(sid))
                     {
@@ -960,8 +960,7 @@ namespace SHCollege.Forms
         private List<string> GetDefaultFieldName()
         {
             List<string> retVal = new List<string>();
-            retVal.Add("班級座號");
-            retVal.Add("姓名");
+            retVal.Add("班級座號");           
             retVal.Add("學測報名序號");
             retVal.Add("身分證號碼");
             retVal.Add("學業總平均(高一上)");
@@ -1049,8 +1048,8 @@ namespace SHCollege.Forms
             retVal.Add("健康與護理(高二下)");
             retVal.Add("全民國防教育(高二下)");
             retVal.Add("就讀科、學程、班別");
-            retVal.Add("是否報名學測");
-
+            retVal.Add("報名學測或術科考試情形");
+            retVal.Add("姓名");
             return retVal;
         
         }
