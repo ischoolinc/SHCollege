@@ -48,7 +48,7 @@ namespace SHCollege.Forms
 
         void _bgExporData_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            FISCA.Presentation.MotherForm.SetStatusBarMessage("大學繁星(103學年度入學學生高一在校學業成績)產生中..", e.ProgressPercentage);
+            FISCA.Presentation.MotherForm.SetStatusBarMessage("大學繁星(高一在校學業成績)產生中..", e.ProgressPercentage);
         }
 
         void _bgLoadMapping_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -113,8 +113,8 @@ namespace SHCollege.Forms
                 {
                     // 需要產生xls與csv                  
 
-                    Utility.CompletedXls("大學甄選(103學年度入學學生高一在校學業成績)", dt);
-                    Utility.CompletedXlsCsv("大學甄選(103學年度入學學生高一在校學業成績)", dt);                                    
+                    Utility.CompletedXls("大學繁星(高一在校學業成績)", dt);
+                    Utility.CompletedXlsCsv("大學繁星(高一在校學業成績)", dt);                                    
                 }
             }
             catch (Exception ex)
@@ -164,13 +164,13 @@ namespace SHCollege.Forms
 
                 // 輸出用 
                 DataTable exportDT = new DataTable();
-                DataTable exportDT103_1 = new DataTable();
+                //DataTable exportDT103_1 = new DataTable();
 
-                // 取得一年級學生規格檔
-                List<string> scoreField103List = Utility.GetScoreFieldList103_1();
+                //// 取得一年級學生規格檔
+                //List<string> scoreField103List = Utility.GetScoreFieldList103_1();
 
-                exportDT.Columns.Add("學號");
-                exportDT.Columns.Add("班級");
+                //exportDT.Columns.Add("學號");
+                //exportDT.Columns.Add("班級");
 
                 // 填入 columns
                 foreach (FieldConfig fc in _SaveFieldConfigList)
@@ -182,14 +182,14 @@ namespace SHCollege.Forms
                         exportDT.Columns.Add(column);
                 }
 
-                // 103 規格
-                foreach (string name in scoreField103List)
-                {
-                    DataColumn column = new DataColumn();
-                    column.DataType = Type.GetType("System.String");
-                    column.ColumnName = name;
-                    exportDT103_1.Columns.Add(column);                
-                }
+                //// 103 規格
+                //foreach (string name in scoreField103List)
+                //{
+                //    DataColumn column = new DataColumn();
+                //    column.DataType = Type.GetType("System.String");
+                //    column.ColumnName = name;
+                //    exportDT103_1.Columns.Add(column);                
+                //}
 
                 Dictionary<string, List<string>> _ScoreNameMappingDict = new Dictionary<string, List<string>>();
 
@@ -812,22 +812,22 @@ namespace SHCollege.Forms
                 }
                 _bgExporData.ReportProgress(100);
 
-                // 轉換資料
-                foreach (DataRow dr in exportDT.Rows)
-                {
-                    DataRow newRow = exportDT103_1.NewRow();
+                //// 轉換資料
+                //foreach (DataRow dr in exportDT.Rows)
+                //{
+                //    DataRow newRow = exportDT103_1.NewRow();
 
-                    foreach (string name in scoreField103List)
-                    {
-                        if (exportDT.Columns.Contains(name))
-                        {
-                            newRow[name] = dr[name];
-                        }
-                    }
+                //    foreach (string name in scoreField103List)
+                //    {
+                //        if (exportDT.Columns.Contains(name))
+                //        {
+                //            newRow[name] = dr[name];
+                //        }
+                //    }
 
-                    exportDT103_1.Rows.Add(newRow);
-                }
-                e.Result = exportDT103_1;
+                //    exportDT103_1.Rows.Add(newRow);
+                //}
+                e.Result = exportDT;
             }
         }
 
@@ -888,7 +888,8 @@ namespace SHCollege.Forms
         {
             btnExportMaping.Enabled = bo;
             btnImportMapping.Enabled = bo;
-            btnExportCSV.Enabled = bo;            
+            btnExportCSV.Enabled = bo;
+            btnLoadDefaultField.Enabled = bo;
         }
 
         private void btnExportMaping_Click(object sender, EventArgs e)
@@ -960,12 +961,11 @@ namespace SHCollege.Forms
         private List<string> GetDefaultFieldName()
         {
             List<string> retVal = new List<string>();
-            retVal.Add("班級座號");           
-            retVal.Add("學測報名序號");
+            retVal.Add("學號");
             retVal.Add("身分證號碼");
             retVal.Add("學業總平均(高一上)");
-            retVal.Add("國文(高一上)");
-            retVal.Add("英文(高一上)");
+            retVal.Add("國語文(高一上)");
+            retVal.Add("英語文(高一上)");
             retVal.Add("數學(高一上)");
             retVal.Add("物理(高一上)");
             retVal.Add("化學(高一上)");
@@ -978,15 +978,11 @@ namespace SHCollege.Forms
             retVal.Add("美術(高一上)");
             retVal.Add("舞蹈(高一上)");
             retVal.Add("體育(高一上)");
-            retVal.Add("藝術生活(高一上)");
             retVal.Add("生活科技(高一上)");
-            retVal.Add("家政(高一上)");
-            retVal.Add("資訊科技概論(高一上)");
-            retVal.Add("健康與護理(高一上)");
-            retVal.Add("全民國防教育(高一上)");
+            retVal.Add("資訊科技(高一上)");
             retVal.Add("學業總平均(高一下)");
-            retVal.Add("國文(高一下)");
-            retVal.Add("英文(高一下)");
+            retVal.Add("國語文(高一下)");
+            retVal.Add("英語文(高一下)");
             retVal.Add("數學(高一下)");
             retVal.Add("物理(高一下)");
             retVal.Add("化學(高一下)");
@@ -999,57 +995,12 @@ namespace SHCollege.Forms
             retVal.Add("美術(高一下)");
             retVal.Add("舞蹈(高一下)");
             retVal.Add("體育(高一下)");
-            retVal.Add("藝術生活(高一下)");
             retVal.Add("生活科技(高一下)");
-            retVal.Add("家政(高一下)");
-            retVal.Add("資訊科技概論(高一下)");
-            retVal.Add("健康與護理(高一下)");
-            retVal.Add("全民國防教育(高一下)");
-            retVal.Add("學業總平均(高二上)");
-            retVal.Add("國文(高二上)");
-            retVal.Add("英文(高二上)");
-            retVal.Add("數學(高二上)");
-            retVal.Add("物理(高二上)");
-            retVal.Add("化學(高二上)");
-            retVal.Add("生物(高二上)");
-            retVal.Add("地球科學(高二上)");
-            retVal.Add("歷史(高二上)");
-            retVal.Add("地理(高二上)");
-            retVal.Add("公民與社會(高二上)");
-            retVal.Add("音樂(高二上)");
-            retVal.Add("美術(高二上)");
-            retVal.Add("舞蹈(高二上)");
-            retVal.Add("體育(高二上)");
-            retVal.Add("藝術生活(高二上)");
-            retVal.Add("生活科技(高二上)");
-            retVal.Add("家政(高二上)");
-            retVal.Add("資訊科技概論(高二上)");
-            retVal.Add("健康與護理(高二上)");
-            retVal.Add("全民國防教育(高二上)");
-            retVal.Add("學業總平均(高二下)");
-            retVal.Add("國文(高二下)");
-            retVal.Add("英文(高二下)");
-            retVal.Add("數學(高二下)");
-            retVal.Add("物理(高二下)");
-            retVal.Add("化學(高二下)");
-            retVal.Add("生物(高二下)");
-            retVal.Add("地球科學(高二下)");
-            retVal.Add("歷史(高二下)");
-            retVal.Add("地理(高二下)");
-            retVal.Add("公民與社會(高二下)");
-            retVal.Add("音樂(高二下)");
-            retVal.Add("美術(高二下)");
-            retVal.Add("舞蹈(高二下)");
-            retVal.Add("體育(高二下)");
-            retVal.Add("藝術生活(高二下)");
-            retVal.Add("生活科技(高二下)");
-            retVal.Add("家政(高二下)");
-            retVal.Add("資訊科技概論(高二下)");
-            retVal.Add("健康與護理(高二下)");
-            retVal.Add("全民國防教育(高二下)");
+            retVal.Add("資訊科技(高一下)");
             retVal.Add("就讀科、學程、班別");
-            retVal.Add("報名學測或術科考試情形");
+            retVal.Add("班級座號");
             retVal.Add("姓名");
+
             return retVal;
         
         }
@@ -1205,7 +1156,26 @@ namespace SHCollege.Forms
                 }
             }
             dgData.BeginEdit(false);
-        }    
+        }
 
+        private void btnLoadDefaultField_Click(object sender, EventArgs e)
+        {
+            btnLoadDefaultField.Enabled = false;
+            dgData.Rows.Clear();
+            List<string> filedList = GetDefaultFieldName();
+
+            foreach (string str in filedList)
+            {
+                int rowIdx = dgData.Rows.Add();
+                FieldConfig fc = new FieldConfig();
+                fc.FieldName = str;
+                dgData.Rows[rowIdx].Tag = fc;
+                dgData.Rows[rowIdx].Cells[colFieldName.Index].Value = fc.FieldName;
+                string ffName = fc.FieldName.Replace("(高一上)", "").Replace("(高一下)", "").Replace("(高二上)", "").Replace("(高二下)", "");
+                dgData.Rows[rowIdx].Cells[colFieldMapping.Index].Value = ffName;
+            }
+
+            btnLoadDefaultField.Enabled = true;
+        }
     }
 }

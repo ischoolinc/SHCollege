@@ -28,10 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgData = new DevComponents.DotNetBar.Controls.DataGridViewX();
-            this.colFieldName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colFieldMapping = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.labelX1 = new DevComponents.DotNetBar.LabelX();
             this.cboSubjectScoreType = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.btnExportMaping = new DevComponents.DotNetBar.ButtonX();
@@ -39,11 +37,16 @@
             this.btnExit = new DevComponents.DotNetBar.ButtonX();
             this.btnExportCSV = new DevComponents.DotNetBar.ButtonX();
             this.labelX2 = new DevComponents.DotNetBar.LabelX();
+            this.btnLoadDefaultField = new DevComponents.DotNetBar.ButtonX();
+            this.colFieldName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colFieldMapping = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgData)).BeginInit();
             this.SuspendLayout();
             // 
             // dgData
             // 
+            this.dgData.AllowUserToAddRows = false;
+            this.dgData.AllowUserToDeleteRows = false;
             this.dgData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -52,14 +55,14 @@
             this.dgData.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colFieldName,
             this.colFieldMapping});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgData.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgData.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgData.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgData.Location = new System.Drawing.Point(12, 39);
             this.dgData.Name = "dgData";
@@ -67,18 +70,6 @@
             this.dgData.Size = new System.Drawing.Size(481, 244);
             this.dgData.TabIndex = 0;
             this.dgData.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgData_CurrentCellDirtyStateChanged);
-            // 
-            // colFieldName
-            // 
-            this.colFieldName.HeaderText = "甄選欄位名稱";
-            this.colFieldName.Name = "colFieldName";
-            this.colFieldName.Width = 200;
-            // 
-            // colFieldMapping
-            // 
-            this.colFieldMapping.HeaderText = "名稱對應系統內";
-            this.colFieldMapping.Name = "colFieldMapping";
-            this.colFieldMapping.Width = 200;
             // 
             // labelX1
             // 
@@ -107,7 +98,7 @@
             this.cboSubjectScoreType.Name = "cboSubjectScoreType";
             this.cboSubjectScoreType.Size = new System.Drawing.Size(155, 25);
             this.cboSubjectScoreType.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.cboSubjectScoreType.TabIndex = 2;
+            this.cboSubjectScoreType.TabIndex = 0;
             // 
             // btnExportMaping
             // 
@@ -120,7 +111,7 @@
             this.btnExportMaping.Name = "btnExportMaping";
             this.btnExportMaping.Size = new System.Drawing.Size(75, 25);
             this.btnExportMaping.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.btnExportMaping.TabIndex = 3;
+            this.btnExportMaping.TabIndex = 1;
             this.btnExportMaping.Text = "匯出對照";
             this.btnExportMaping.Click += new System.EventHandler(this.btnExportMaping_Click);
             // 
@@ -135,7 +126,7 @@
             this.btnImportMapping.Name = "btnImportMapping";
             this.btnImportMapping.Size = new System.Drawing.Size(75, 25);
             this.btnImportMapping.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.btnImportMapping.TabIndex = 4;
+            this.btnImportMapping.TabIndex = 2;
             this.btnImportMapping.Text = "匯入對照";
             this.btnImportMapping.Click += new System.EventHandler(this.btnImportMapping_Click);
             // 
@@ -150,7 +141,7 @@
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(75, 25);
             this.btnExit.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.btnExit.TabIndex = 6;
+            this.btnExit.TabIndex = 5;
             this.btnExit.Text = "離開";
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
@@ -165,7 +156,7 @@
             this.btnExportCSV.Name = "btnExportCSV";
             this.btnExportCSV.Size = new System.Drawing.Size(75, 25);
             this.btnExportCSV.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.btnExportCSV.TabIndex = 5;
+            this.btnExportCSV.TabIndex = 4;
             this.btnExportCSV.Text = "列印";
             this.btnExportCSV.Click += new System.EventHandler(this.btnExportCSV_Click);
             // 
@@ -184,11 +175,40 @@
             this.labelX2.TabIndex = 7;
             this.labelX2.Text = "欄位對照表";
             // 
+            // btnLoadDefaultField
+            // 
+            this.btnLoadDefaultField.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.btnLoadDefaultField.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnLoadDefaultField.AutoSize = true;
+            this.btnLoadDefaultField.BackColor = System.Drawing.Color.Transparent;
+            this.btnLoadDefaultField.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btnLoadDefaultField.Location = new System.Drawing.Point(182, 341);
+            this.btnLoadDefaultField.Name = "btnLoadDefaultField";
+            this.btnLoadDefaultField.Size = new System.Drawing.Size(91, 25);
+            this.btnLoadDefaultField.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.btnLoadDefaultField.TabIndex = 3;
+            this.btnLoadDefaultField.Text = "恢復預設欄位";
+            this.btnLoadDefaultField.Click += new System.EventHandler(this.btnLoadDefaultField_Click);
+            // 
+            // colFieldName
+            // 
+            this.colFieldName.HeaderText = "甄選欄位名稱";
+            this.colFieldName.Name = "colFieldName";
+            this.colFieldName.ReadOnly = true;
+            this.colFieldName.Width = 200;
+            // 
+            // colFieldMapping
+            // 
+            this.colFieldMapping.HeaderText = "名稱對應系統內";
+            this.colFieldMapping.Name = "colFieldMapping";
+            this.colFieldMapping.Width = 200;
+            // 
             // ScoreForm103_1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(511, 378);
+            this.Controls.Add(this.btnLoadDefaultField);
             this.Controls.Add(this.labelX2);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnExportCSV);
@@ -199,7 +219,7 @@
             this.Controls.Add(this.dgData);
             this.DoubleBuffered = true;
             this.Name = "ScoreForm103_1";
-            this.Text = "大學繁星推甄(103學年度入學學生高一在校學業成績檔案規格)";
+            this.Text = "大學繁星(高一在校學業成績)";
             this.Load += new System.EventHandler(this.ScoreForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgData)).EndInit();
             this.ResumeLayout(false);
@@ -210,8 +230,6 @@
         #endregion
 
         private DevComponents.DotNetBar.Controls.DataGridViewX dgData;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colFieldName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colFieldMapping;
         private DevComponents.DotNetBar.LabelX labelX1;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cboSubjectScoreType;
         private DevComponents.DotNetBar.ButtonX btnExportMaping;
@@ -219,5 +237,8 @@
         private DevComponents.DotNetBar.ButtonX btnExit;
         private DevComponents.DotNetBar.ButtonX btnExportCSV;
         private DevComponents.DotNetBar.LabelX labelX2;
+        private DevComponents.DotNetBar.ButtonX btnLoadDefaultField;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colFieldName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colFieldMapping;
     }
 }
