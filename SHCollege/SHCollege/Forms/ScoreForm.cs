@@ -30,11 +30,11 @@ namespace SHCollege.Forms
 
         // 使用原始成績
         bool _chkSScore = true;
-        
+
         public ScoreForm()
         {
             InitializeComponent();
-            _FieldConfigList = new List<FieldConfig> ();
+            _FieldConfigList = new List<FieldConfig>();
             _SaveFieldConfigList = new List<FieldConfig>();
 
             _bgLoadMapping = new BackgroundWorker();
@@ -71,7 +71,7 @@ namespace SHCollege.Forms
                 }
             }
             else
-            { 
+            {
                 // 使用預設
                 List<string> filedList = GetDefaultFieldName();
                 List<string> ddList = new List<string>();
@@ -100,7 +100,7 @@ namespace SHCollege.Forms
 
             // 排序
             _FieldConfigList = (from data in FieldConfigList orderby data.FieldOrder ascending select data).ToList();
-     
+
         }
 
         void _bgExporData_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -114,17 +114,17 @@ namespace SHCollege.Forms
                 if (dt != null)
                 {
                     // 需要產生xls與csv                  
-                    
+
                     Utility.CompletedXls("大學甄選", dt);
-                    Utility.CompletedXlsCsv("大學甄選", dt);                                    
+                    Utility.CompletedXlsCsv("大學甄選", dt);
                 }
             }
             catch (Exception ex)
             {
                 SmartSchool.ErrorReporting.ErrorMessgae errMsg = new SmartSchool.ErrorReporting.ErrorMessgae(ex);
-                FISCA.Presentation.Controls.MsgBox.Show("產生 csv 檔案發生錯誤:"+ex.Message);                
+                FISCA.Presentation.Controls.MsgBox.Show("產生 csv 檔案發生錯誤:" + ex.Message);
             }
-            _bgLoadMapping.RunWorkerAsync();            
+            _bgLoadMapping.RunWorkerAsync();
         }
 
         void _bgExporData_DoWork(object sender, DoWorkEventArgs e)
@@ -132,7 +132,7 @@ namespace SHCollege.Forms
             _bgExporData.ReportProgress(1);
             if (_SaveFieldConfigList.Count > 0)
             {
-                
+
                 // 取得所選學生ID
                 List<string> StudentIDList = K12.Presentation.NLDPanels.Student.SelectedSource;
 
@@ -140,7 +140,7 @@ namespace SHCollege.Forms
                 List<DataRow> StudBaseList = Utility.GetStudentBaseDataByID(StudentIDList);
                 _bgExporData.ReportProgress(30);
                 // 取得學生科目成績資料 key:studentID
-                Dictionary<string,List<DataRow>> SemsSubjDataDict = Utility.GetStudentSemsSubjScoreByStudentID(StudentIDList);
+                Dictionary<string, List<DataRow>> SemsSubjDataDict = Utility.GetStudentSemsSubjScoreByStudentID(StudentIDList);
 
                 // 取得學生學期總成績
                 Dictionary<string, List<DataRow>> SemsEntryDataDict = Utility.GetStudentSemsEntryScoreByStudentID(StudentIDList);
@@ -155,7 +155,7 @@ namespace SHCollege.Forms
 
                 // 輸出用 
                 DataTable exportDT = new DataTable();
-//                exportDT.Columns.Add("學號");
+                //                exportDT.Columns.Add("學號");
                 // 填入 columns
                 foreach (FieldConfig fc in _SaveFieldConfigList)
                 {
@@ -165,7 +165,7 @@ namespace SHCollege.Forms
                     column.ColumnName = fc.FieldName;
                     exportDT.Columns.Add(column);
                 }
- 
+
 
 
                 Dictionary<string, List<string>> _ScoreNameMappingDict = new Dictionary<string, List<string>>();
@@ -174,21 +174,21 @@ namespace SHCollege.Forms
 
                 // 建立成績對照表,
                 foreach (FieldConfig fc in _SaveFieldConfigList)
-                { 
-                    string[] strS=fc.FieldMapping.Split(',');
+                {
+                    string[] strS = fc.FieldMapping.Split(',');
 
                     if (!_ScoreNameMappingDict.ContainsKey(fc.FieldName))
                         _ScoreNameMappingDict.Add(fc.FieldName, new List<string>());
 
                     foreach (string ss in strS)
                         _ScoreNameMappingDict[fc.FieldName].Add(ss.Trim());
-                
+
                 }
 
                 // 建立成績計算對照+
                 foreach (FieldConfig fc in _SaveFieldConfigList)
                 {
-                    if(fc.FieldMapping.IndexOf('+')>0)
+                    if (fc.FieldMapping.IndexOf('+') > 0)
                     {
                         string[] strS = fc.FieldMapping.Split('+');
 
@@ -235,7 +235,7 @@ namespace SHCollege.Forms
                             newRow["就讀科、學程、班別"] = studDeptDict[sid];
                     }
 
-                    
+
                     // 預設報考1
                     if (exportDT.Columns.Contains("報名學測或術科考試情形"))
                         newRow["報名學測或術科考試情形"] = "1";  // 預設値
@@ -249,360 +249,360 @@ namespace SHCollege.Forms
                             newRow["學測報名序號"] = SHSATStudentDict[sid].SatSerNo;
                     }
 
-                        #region 比對學期科目成績
-                        // 比對學期科目成績
-                        if (SemsSubjDataDict.ContainsKey(sid))
+                    #region 比對學期科目成績
+                    // 比對學期科目成績
+                    if (SemsSubjDataDict.ContainsKey(sid))
+                    {
+                        List<DataRow> dd = SemsSubjDataDict[sid];
+                        foreach (DataRow dr1 in dd)
                         {
-                            List<DataRow> dd = SemsSubjDataDict[sid];
-                            foreach (DataRow dr1 in dd)
+                            if ((dr1["學期科目成績年級"].ToString() == "1" || dr1["學期科目成績年級"].ToString() == "4") && dr1["學期科目成績學期"].ToString() == "1")
                             {
-                                if ((dr1["學期科目成績年級"].ToString() == "1" || dr1["學期科目成績年級"].ToString() == "4") && dr1["學期科目成績學期"].ToString() == "1")
+                                string subjName = dr1["學期科目名稱"].ToString().Trim();
+
+                                foreach (string strKey in _ScoreNameMappingDict.Keys)
                                 {
-                                    string subjName = dr1["學期科目名稱"].ToString().Trim();
-
-                                    foreach (string strKey in _ScoreNameMappingDict.Keys)
+                                    if (strKey.Contains("一上"))
                                     {
-                                        if (strKey.Contains("一上"))
+                                        foreach (string strSKey in _ScoreNameMappingDict[strKey])
                                         {
-                                            foreach (string strSKey in _ScoreNameMappingDict[strKey])
+                                            if (strSKey == subjName)
                                             {
-                                                if (strSKey == subjName)
-                                                {
-                                                    if (newRow[strKey] == null)
-                                                        newRow[strKey] = "-1";
+                                                if (newRow[strKey] == null)
+                                                    newRow[strKey] = "-1";
 
-                                                    if (newRow[strKey].ToString() != "-1")
-                                                    {
-                                                        newRow[strKey] += "_" + ParseSubjScore(dr1);
-                                                        break;
-                                                    }
-                                                    else
-                                                    {
-                                                        newRow[strKey] = ParseSubjScore(dr1);
-                                                        break;
-                                                    }
+                                                if (newRow[strKey].ToString() != "-1")
+                                                {
+                                                    newRow[strKey] += "_" + ParseSubjScore(dr1);
+                                                    break;
                                                 }
-                                            }
-                                        }                                    
-                                    }
-
-                                    // 即時計算
-                                    foreach (string strKey in _CalScoreNameMappingDict.Keys)
-                                    {
-                                        if (strKey.Contains("一上"))
-                                        {
-                                            foreach (string strSKey in _CalScoreNameMappingDict[strKey])
-                                            {
-                                                if (strSKey == subjName)
+                                                else
                                                 {
-                                                    if (!ssScoreDict.ContainsKey(strKey))
-                                                        ssScoreDict.Add(strKey, new SScore());
-
-                                                    ssScoreDict[strKey].MainName = strKey;
-
-                                                    decimal ss=0;
-                                                    decimal cc=0;
-                                                    decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
-                                                    decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
-                                                    ssScoreDict[strKey].AddScore(subjName, ss, cc);
-                                                        break;
-                                                 
+                                                    newRow[strKey] = ParseSubjScore(dr1);
+                                                    break;
                                                 }
                                             }
                                         }
                                     }
                                 }
 
-                                if ((dr1["學期科目成績年級"].ToString() == "1" || dr1["學期科目成績年級"].ToString() == "4") && dr1["學期科目成績學期"].ToString() == "2")
+                                // 即時計算
+                                foreach (string strKey in _CalScoreNameMappingDict.Keys)
                                 {
-                                    string subjName = dr1["學期科目名稱"].ToString().Trim();
-
-                                    foreach (string strKey in _ScoreNameMappingDict.Keys)
+                                    if (strKey.Contains("一上"))
                                     {
-                                        if (strKey.Contains("一下"))
+                                        foreach (string strSKey in _CalScoreNameMappingDict[strKey])
                                         {
-                                            foreach (string strSKey in _ScoreNameMappingDict[strKey])
+                                            if (strSKey == subjName)
                                             {
-                                                if (strSKey == subjName)
-                                                {
-                                                    if (newRow[strKey] == null)
-                                                        newRow[strKey] = "-1";
+                                                if (!ssScoreDict.ContainsKey(strKey))
+                                                    ssScoreDict.Add(strKey, new SScore());
 
-                                                    if (newRow[strKey].ToString() != "-1")
-                                                    {
-                                                        newRow[strKey] +="_" + ParseSubjScore(dr1);
-                                                        break;
-                                                    }
-                                                    else
-                                                    {
-                                                        newRow[strKey] = ParseSubjScore(dr1);
-                                                        break;
-                                                    }
+                                                ssScoreDict[strKey].MainName = strKey;
 
-                                                }
+                                                decimal ss = 0;
+                                                decimal cc = 0;
+                                                decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
+                                                decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
+                                                ssScoreDict[strKey].AddScore(subjName, ss, cc);
+                                                break;
+
                                             }
                                         }
                                     }
+                                }
+                            }
 
-                                    // 即時計算
-                                    foreach (string strKey in _CalScoreNameMappingDict.Keys)
+                            if ((dr1["學期科目成績年級"].ToString() == "1" || dr1["學期科目成績年級"].ToString() == "4") && dr1["學期科目成績學期"].ToString() == "2")
+                            {
+                                string subjName = dr1["學期科目名稱"].ToString().Trim();
+
+                                foreach (string strKey in _ScoreNameMappingDict.Keys)
+                                {
+                                    if (strKey.Contains("一下"))
                                     {
-                                        if (strKey.Contains("一下"))
+                                        foreach (string strSKey in _ScoreNameMappingDict[strKey])
                                         {
-                                            foreach (string strSKey in _CalScoreNameMappingDict[strKey])
+                                            if (strSKey == subjName)
                                             {
-                                                if (strSKey == subjName)
+                                                if (newRow[strKey] == null)
+                                                    newRow[strKey] = "-1";
+
+                                                if (newRow[strKey].ToString() != "-1")
                                                 {
-                                                    if (!ssScoreDict.ContainsKey(strKey))
-                                                        ssScoreDict.Add(strKey, new SScore());
-
-                                                    ssScoreDict[strKey].MainName = strKey;
-
-                                                    decimal ss = 0;
-                                                    decimal cc = 0;
-                                                    decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
-                                                    decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
-                                                    ssScoreDict[strKey].AddScore(subjName, ss, cc);
+                                                    newRow[strKey] += "_" + ParseSubjScore(dr1);
                                                     break;
-
                                                 }
+                                                else
+                                                {
+                                                    newRow[strKey] = ParseSubjScore(dr1);
+                                                    break;
+                                                }
+
                                             }
                                         }
                                     }
                                 }
 
-                                if ((dr1["學期科目成績年級"].ToString() == "2" || dr1["學期科目成績年級"].ToString() == "5") && dr1["學期科目成績學期"].ToString() == "1")
+                                // 即時計算
+                                foreach (string strKey in _CalScoreNameMappingDict.Keys)
                                 {
-                                    string subjName = dr1["學期科目名稱"].ToString().Trim();
-
-                                    foreach (string strKey in _ScoreNameMappingDict.Keys)
+                                    if (strKey.Contains("一下"))
                                     {
-                                        if (strKey.Contains("二上"))
+                                        foreach (string strSKey in _CalScoreNameMappingDict[strKey])
                                         {
-                                            foreach (string strSKey in _ScoreNameMappingDict[strKey])
+                                            if (strSKey == subjName)
                                             {
-                                                if (strSKey == subjName)
-                                                {
-                                                    if (newRow[strKey] == null)
-                                                        newRow[strKey] = "-1";
+                                                if (!ssScoreDict.ContainsKey(strKey))
+                                                    ssScoreDict.Add(strKey, new SScore());
 
-                                                    if (newRow[strKey].ToString() != "-1")
-                                                    {
-                                                        newRow[strKey] +=  "_" + ParseSubjScore(dr1);
-                                                        break;
-                                                    }
-                                                    else
-                                                    {
-                                                        newRow[strKey] = ParseSubjScore(dr1);
-                                                        break;
-                                                    }
+                                                ssScoreDict[strKey].MainName = strKey;
 
-                                                }
+                                                decimal ss = 0;
+                                                decimal cc = 0;
+                                                decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
+                                                decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
+                                                ssScoreDict[strKey].AddScore(subjName, ss, cc);
+                                                break;
+
                                             }
                                         }
                                     }
+                                }
+                            }
 
-                                    // 即時計算
-                                    foreach (string strKey in _CalScoreNameMappingDict.Keys)
+                            if ((dr1["學期科目成績年級"].ToString() == "2" || dr1["學期科目成績年級"].ToString() == "5") && dr1["學期科目成績學期"].ToString() == "1")
+                            {
+                                string subjName = dr1["學期科目名稱"].ToString().Trim();
+
+                                foreach (string strKey in _ScoreNameMappingDict.Keys)
+                                {
+                                    if (strKey.Contains("二上"))
                                     {
-                                        if (strKey.Contains("二上"))
+                                        foreach (string strSKey in _ScoreNameMappingDict[strKey])
                                         {
-                                            foreach (string strSKey in _CalScoreNameMappingDict[strKey])
+                                            if (strSKey == subjName)
                                             {
-                                                if (strSKey == subjName)
+                                                if (newRow[strKey] == null)
+                                                    newRow[strKey] = "-1";
+
+                                                if (newRow[strKey].ToString() != "-1")
                                                 {
-                                                    if (!ssScoreDict.ContainsKey(strKey))
-                                                        ssScoreDict.Add(strKey, new SScore());
-
-                                                    ssScoreDict[strKey].MainName = strKey;
-
-                                                    decimal ss = 0;
-                                                    decimal cc = 0;
-                                                    decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
-                                                    decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
-                                                    ssScoreDict[strKey].AddScore(subjName, ss, cc);
+                                                    newRow[strKey] += "_" + ParseSubjScore(dr1);
                                                     break;
-
                                                 }
+                                                else
+                                                {
+                                                    newRow[strKey] = ParseSubjScore(dr1);
+                                                    break;
+                                                }
+
                                             }
                                         }
                                     }
                                 }
 
-                                if ((dr1["學期科目成績年級"].ToString() == "2" || dr1["學期科目成績年級"].ToString() == "5") && dr1["學期科目成績學期"].ToString() == "2")
+                                // 即時計算
+                                foreach (string strKey in _CalScoreNameMappingDict.Keys)
                                 {
-                                    string subjName = dr1["學期科目名稱"].ToString().Trim();
-                                    foreach (string strKey in _ScoreNameMappingDict.Keys)
+                                    if (strKey.Contains("二上"))
                                     {
-                                        if (strKey.Contains("二下"))
+                                        foreach (string strSKey in _CalScoreNameMappingDict[strKey])
                                         {
-                                            foreach (string strSKey in _ScoreNameMappingDict[strKey])
+                                            if (strSKey == subjName)
                                             {
-                                                if (strSKey == subjName)
-                                                {
-                                                    if (newRow[strKey] == null)
-                                                        newRow[strKey] = "-1";
-                                                    if (newRow[strKey].ToString() != "-1")
-                                                    {
-                                                        newRow[strKey] +=  "_" + ParseSubjScore(dr1);
-                                                        break;
-                                                    }
-                                                    else
-                                                    {
-                                                        newRow[strKey] = ParseSubjScore(dr1);
-                                                        break;
-                                                    }
+                                                if (!ssScoreDict.ContainsKey(strKey))
+                                                    ssScoreDict.Add(strKey, new SScore());
 
-                                                }
+                                                ssScoreDict[strKey].MainName = strKey;
+
+                                                decimal ss = 0;
+                                                decimal cc = 0;
+                                                decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
+                                                decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
+                                                ssScoreDict[strKey].AddScore(subjName, ss, cc);
+                                                break;
+
                                             }
                                         }
                                     }
+                                }
+                            }
 
-                                    // 即時計算
-                                    foreach (string strKey in _CalScoreNameMappingDict.Keys)
+                            if ((dr1["學期科目成績年級"].ToString() == "2" || dr1["學期科目成績年級"].ToString() == "5") && dr1["學期科目成績學期"].ToString() == "2")
+                            {
+                                string subjName = dr1["學期科目名稱"].ToString().Trim();
+                                foreach (string strKey in _ScoreNameMappingDict.Keys)
+                                {
+                                    if (strKey.Contains("二下"))
                                     {
-                                        if (strKey.Contains("二下"))
+                                        foreach (string strSKey in _ScoreNameMappingDict[strKey])
                                         {
-                                            foreach (string strSKey in _CalScoreNameMappingDict[strKey])
+                                            if (strSKey == subjName)
                                             {
-                                                if (strSKey == subjName)
+                                                if (newRow[strKey] == null)
+                                                    newRow[strKey] = "-1";
+                                                if (newRow[strKey].ToString() != "-1")
                                                 {
-                                                    if (!ssScoreDict.ContainsKey(strKey))
-                                                        ssScoreDict.Add(strKey, new SScore());
-
-                                                    ssScoreDict[strKey].MainName = strKey;
-
-                                                    decimal ss = 0;
-                                                    decimal cc = 0;
-                                                    decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
-                                                    decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
-                                                    ssScoreDict[strKey].AddScore(subjName, ss, cc);
+                                                    newRow[strKey] += "_" + ParseSubjScore(dr1);
                                                     break;
-
                                                 }
+                                                else
+                                                {
+                                                    newRow[strKey] = ParseSubjScore(dr1);
+                                                    break;
+                                                }
+
                                             }
                                         }
                                     }
                                 }
 
-
-                                if ((dr1["學期科目成績年級"].ToString() == "3" || dr1["學期科目成績年級"].ToString() == "6") && dr1["學期科目成績學期"].ToString() == "1")
+                                // 即時計算
+                                foreach (string strKey in _CalScoreNameMappingDict.Keys)
                                 {
-                                    string subjName = dr1["學期科目名稱"].ToString().Trim();
-
-                                    foreach (string strKey in _ScoreNameMappingDict.Keys)
+                                    if (strKey.Contains("二下"))
                                     {
-                                        if (strKey.Contains("三上"))
+                                        foreach (string strSKey in _CalScoreNameMappingDict[strKey])
                                         {
-                                            foreach (string strSKey in _ScoreNameMappingDict[strKey])
+                                            if (strSKey == subjName)
                                             {
-                                                if (strSKey == subjName)
-                                                {
-                                                    if (newRow[strKey] == null)
-                                                        newRow[strKey] = "-1";
+                                                if (!ssScoreDict.ContainsKey(strKey))
+                                                    ssScoreDict.Add(strKey, new SScore());
 
-                                                    if (newRow[strKey].ToString() != "-1")
-                                                    {
-                                                        newRow[strKey] += "_" + ParseSubjScore(dr1);
-                                                        break;
-                                                    }
-                                                    else
-                                                    {
-                                                        newRow[strKey] = ParseSubjScore(dr1);
-                                                        break;
-                                                    }
+                                                ssScoreDict[strKey].MainName = strKey;
 
-                                                }
+                                                decimal ss = 0;
+                                                decimal cc = 0;
+                                                decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
+                                                decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
+                                                ssScoreDict[strKey].AddScore(subjName, ss, cc);
+                                                break;
+
                                             }
                                         }
                                     }
+                                }
+                            }
 
-                                    // 即時計算
-                                    foreach (string strKey in _CalScoreNameMappingDict.Keys)
+
+                            if ((dr1["學期科目成績年級"].ToString() == "3" || dr1["學期科目成績年級"].ToString() == "6") && dr1["學期科目成績學期"].ToString() == "1")
+                            {
+                                string subjName = dr1["學期科目名稱"].ToString().Trim();
+
+                                foreach (string strKey in _ScoreNameMappingDict.Keys)
+                                {
+                                    if (strKey.Contains("三上"))
                                     {
-                                        if (strKey.Contains("三上"))
+                                        foreach (string strSKey in _ScoreNameMappingDict[strKey])
                                         {
-                                            foreach (string strSKey in _CalScoreNameMappingDict[strKey])
+                                            if (strSKey == subjName)
                                             {
-                                                if (strSKey == subjName)
+                                                if (newRow[strKey] == null)
+                                                    newRow[strKey] = "-1";
+
+                                                if (newRow[strKey].ToString() != "-1")
                                                 {
-                                                    if (!ssScoreDict.ContainsKey(strKey))
-                                                        ssScoreDict.Add(strKey, new SScore());
-
-                                                    ssScoreDict[strKey].MainName = strKey;
-
-                                                    decimal ss = 0;
-                                                    decimal cc = 0;
-                                                    decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
-                                                    decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
-                                                    ssScoreDict[strKey].AddScore(subjName, ss, cc);
+                                                    newRow[strKey] += "_" + ParseSubjScore(dr1);
                                                     break;
-
                                                 }
+                                                else
+                                                {
+                                                    newRow[strKey] = ParseSubjScore(dr1);
+                                                    break;
+                                                }
+
                                             }
                                         }
                                     }
-
                                 }
 
-                                if ((dr1["學期科目成績年級"].ToString() == "3" || dr1["學期科目成績年級"].ToString() == "6") && dr1["學期科目成績學期"].ToString() == "2")
+                                // 即時計算
+                                foreach (string strKey in _CalScoreNameMappingDict.Keys)
                                 {
-                                    string subjName = dr1["學期科目名稱"].ToString().Trim();
-
-                                    foreach (string strKey in _ScoreNameMappingDict.Keys)
+                                    if (strKey.Contains("三上"))
                                     {
-                                        if (strKey.Contains("三下"))
+                                        foreach (string strSKey in _CalScoreNameMappingDict[strKey])
                                         {
-                                            foreach (string strSKey in _ScoreNameMappingDict[strKey])
+                                            if (strSKey == subjName)
                                             {
-                                                if (strSKey == subjName)
-                                                {
-                                                    if (newRow[strKey] == null)
-                                                        newRow[strKey] = "-1";
+                                                if (!ssScoreDict.ContainsKey(strKey))
+                                                    ssScoreDict.Add(strKey, new SScore());
 
-                                                    if (newRow[strKey].ToString() != "-1")
-                                                    {
-                                                        newRow[strKey] +=  "_" + ParseSubjScore(dr1);
-                                                        break;
-                                                    }
-                                                    else
-                                                    {
-                                                        newRow[strKey] = ParseSubjScore(dr1);
-                                                        break;
-                                                    }
+                                                ssScoreDict[strKey].MainName = strKey;
 
-                                                }
+                                                decimal ss = 0;
+                                                decimal cc = 0;
+                                                decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
+                                                decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
+                                                ssScoreDict[strKey].AddScore(subjName, ss, cc);
+                                                break;
+
                                             }
                                         }
                                     }
-                                    // 即時計算
-                                    foreach (string strKey in _CalScoreNameMappingDict.Keys)
+                                }
+
+                            }
+
+                            if ((dr1["學期科目成績年級"].ToString() == "3" || dr1["學期科目成績年級"].ToString() == "6") && dr1["學期科目成績學期"].ToString() == "2")
+                            {
+                                string subjName = dr1["學期科目名稱"].ToString().Trim();
+
+                                foreach (string strKey in _ScoreNameMappingDict.Keys)
+                                {
+                                    if (strKey.Contains("三下"))
                                     {
-                                        if (strKey.Contains("三下"))
+                                        foreach (string strSKey in _ScoreNameMappingDict[strKey])
                                         {
-                                            foreach (string strSKey in _CalScoreNameMappingDict[strKey])
+                                            if (strSKey == subjName)
                                             {
-                                                if (strSKey == subjName)
+                                                if (newRow[strKey] == null)
+                                                    newRow[strKey] = "-1";
+
+                                                if (newRow[strKey].ToString() != "-1")
                                                 {
-                                                    if (!ssScoreDict.ContainsKey(strKey))
-                                                        ssScoreDict.Add(strKey, new SScore());
-
-                                                    ssScoreDict[strKey].MainName = strKey;
-
-                                                    decimal ss = 0;
-                                                    decimal cc = 0;
-                                                    decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
-                                                    decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
-                                                    ssScoreDict[strKey].AddScore(subjName, ss, cc);
+                                                    newRow[strKey] += "_" + ParseSubjScore(dr1);
                                                     break;
-
                                                 }
+                                                else
+                                                {
+                                                    newRow[strKey] = ParseSubjScore(dr1);
+                                                    break;
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+                                // 即時計算
+                                foreach (string strKey in _CalScoreNameMappingDict.Keys)
+                                {
+                                    if (strKey.Contains("三下"))
+                                    {
+                                        foreach (string strSKey in _CalScoreNameMappingDict[strKey])
+                                        {
+                                            if (strSKey == subjName)
+                                            {
+                                                if (!ssScoreDict.ContainsKey(strKey))
+                                                    ssScoreDict.Add(strKey, new SScore());
+
+                                                ssScoreDict[strKey].MainName = strKey;
+
+                                                decimal ss = 0;
+                                                decimal cc = 0;
+                                                decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
+                                                decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
+                                                ssScoreDict[strKey].AddScore(subjName, ss, cc);
+                                                break;
+
                                             }
                                         }
                                     }
                                 }
                             }
                         }
+                    }
                     #endregion
 
                     #region 比對學期分項成績
@@ -618,7 +618,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業成績總平均(高一上)")
+                                        if (fc.FieldName == "學業成績總平均(高一上)" || fc.FieldName == "學業總平均(高一上)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -629,7 +629,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業成績總平均(高一下)")
+                                        if (fc.FieldName == "學業成績總平均(高一下)" || fc.FieldName == "學業總平均(高一下)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -641,7 +641,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業成績總平均(高二上)")
+                                        if (fc.FieldName == "學業成績總平均(高二上)" || fc.FieldName == "學業總平均(高二上)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -653,7 +653,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業成績總平均(高二下)")
+                                        if (fc.FieldName == "學業成績總平均(高二下)" || fc.FieldName == "學業總平均(高二下)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -666,7 +666,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業成績總平均(高三上)")
+                                        if (fc.FieldName == "學業成績總平均(高三上)" || fc.FieldName == "學業總平均(高三上)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -678,7 +678,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業成績總平均(高三下)")
+                                        if (fc.FieldName == "學業成績總平均(高三下)" || fc.FieldName == "學業總平均(高三下)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -694,7 +694,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業成績總平均(高一上)")
+                                        if (fc.FieldName == "學業成績總平均(高一上)" || fc.FieldName == "學業總平均(高一上)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -706,7 +706,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業成績總平均(高一下)")
+                                        if (fc.FieldName == "學業成績總平均(高一下)" || fc.FieldName == "學業總平均(高一下)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -718,7 +718,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業成績總平均(高二上)")
+                                        if (fc.FieldName == "學業成績總平均(高二上)" || fc.FieldName == "學業總平均(高二上)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -730,7 +730,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業成績總平均(高二下)")
+                                        if (fc.FieldName == "學業成績總平均(高二下)" || fc.FieldName == "學業總平均(高二下)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -742,7 +742,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業成績總平均(高三上)")
+                                        if (fc.FieldName == "學業成績總平均(高三上)" || fc.FieldName == "學業總平均(高三上)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -754,7 +754,7 @@ namespace SHCollege.Forms
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
-                                        if (fc.FieldName == "學業成績總平均(高三下)")
+                                        if (fc.FieldName == "學業成績總平均(高三下)" || fc.FieldName == "學業總平均(高三下)")
                                         {
                                             newRow[fc.FieldName] = ParseEntryScore(dr2);
                                             break;
@@ -779,7 +779,7 @@ namespace SHCollege.Forms
                     exportDT.Rows.Add(newRow);
                 }
 
-                
+
 
                 _bgExporData.ReportProgress(100);
                 e.Result = exportDT;
@@ -796,14 +796,14 @@ namespace SHCollege.Forms
             }
             else
             {
-                    decimal.TryParse(dr["學期科目原始成績"].ToString(), out d1);
-                    decimal.TryParse(dr["學期科目補考成績"].ToString(), out d2);
+                decimal.TryParse(dr["學期科目原始成績"].ToString(), out d1);
+                decimal.TryParse(dr["學期科目補考成績"].ToString(), out d2);
 
-                    if (d1 >= d2)
-                        return d1;
-                    else
-                        return d2;
-            }        
+                if (d1 >= d2)
+                    return d1;
+                else
+                    return d2;
+            }
         }
 
         private string ParseEntryScore(DataRow dr)
@@ -815,13 +815,13 @@ namespace SHCollege.Forms
                 if (dr["分項"].ToString() == "學業(原始)")
                 {
                     retVal = dr["成績"].ToString();
-                
-                }         
+
+                }
             }
             else
             {
                 if (dr["分項"].ToString() == "學業")
-                    retVal = dr["成績"].ToString();                
+                    retVal = dr["成績"].ToString();
             }
             return retVal;
         }
@@ -844,7 +844,7 @@ namespace SHCollege.Forms
             btnExportMaping.Enabled = bo;
             btnImportMapping.Enabled = bo;
             btnLoadDefaultField.Enabled = bo;
-            btnExportCSV.Enabled = bo;            
+            btnExportCSV.Enabled = bo;
         }
 
         private void btnExportMaping_Click(object sender, EventArgs e)
@@ -871,42 +871,42 @@ namespace SHCollege.Forms
                 rowIdx++;
             }
             Utility.CompletedXls("甄選對應表", wb);
-        
+
         }
 
         private void btnImportMapping_Click(object sender, EventArgs e)
         {
             // 匯入對照表
-               OpenFileDialog od = new OpenFileDialog ();
-                od.Title="讀取匯入檔案";
-                od.Filter="Excel檔案 (*.xls)|*.xls|所有檔案 (*.*)|*.*";
+            OpenFileDialog od = new OpenFileDialog();
+            od.Title = "讀取匯入檔案";
+            od.Filter = "Excel檔案 (*.xls)|*.xls|所有檔案 (*.*)|*.*";
 
-                if (od.ShowDialog() == DialogResult.OK)
+            if (od.ShowDialog() == DialogResult.OK)
+            {
+                Workbook iwb = new Workbook(@od.FileName);
+
+                bool chkRead = true;
+
+                if (iwb.Worksheets[0].Cells[0, 0].StringValue != "甄選欄位名稱" || iwb.Worksheets[0].Cells[0, 1].StringValue != "名稱對應系統內")
                 {
-                    Workbook iwb = new Workbook(@od.FileName);
-
-                    bool chkRead = true;
-
-                    if (iwb.Worksheets[0].Cells[0, 0].StringValue != "甄選欄位名稱" || iwb.Worksheets[0].Cells[0, 1].StringValue != "名稱對應系統內")
+                    chkRead = false;
+                    FISCA.Presentation.Controls.MsgBox.Show("欄位名稱錯誤無法開啟檔案。");
+                }
+                if (chkRead)
+                {
+                    dgData.Rows.Clear();
+                    for (int row = 1; row <= iwb.Worksheets[0].Cells.MaxDataRow; row++)
                     {
-                        chkRead = false;
-                        FISCA.Presentation.Controls.MsgBox.Show("欄位名稱錯誤無法開啟檔案。");
+                        int rowIdx = dgData.Rows.Add();
+                        dgData.Rows[rowIdx].Cells[colFieldName.Index].Value = iwb.Worksheets[0].Cells[row, 0].StringValue;
+                        dgData.Rows[rowIdx].Cells[colFieldMapping.Index].Value = iwb.Worksheets[0].Cells[row, 1].StringValue;
                     }
-                    if (chkRead)
-                    {
-                        dgData.Rows.Clear();
-                        for (int row = 1; row <= iwb.Worksheets[0].Cells.MaxDataRow; row++)
-                        {
-                            int rowIdx = dgData.Rows.Add();
-                            dgData.Rows[rowIdx].Cells[colFieldName.Index].Value = iwb.Worksheets[0].Cells[row, 0].StringValue;
-                            dgData.Rows[rowIdx].Cells[colFieldMapping.Index].Value = iwb.Worksheets[0].Cells[row, 1].StringValue;
-                        }
 
-                        FISCA.Presentation.Controls.MsgBox.Show("匯入完成");
-                        SaveConfig();
-                        _bgLoadMapping.RunWorkerAsync();
-                    }
-                }            
+                    FISCA.Presentation.Controls.MsgBox.Show("匯入完成");
+                    SaveConfig();
+                    _bgLoadMapping.RunWorkerAsync();
+                }
+            }
         }
 
         /// <summary>
@@ -916,54 +916,107 @@ namespace SHCollege.Forms
         private List<string> GetDefaultFieldName()
         {
             List<string> retVal = new List<string>();
-            retVal.Add("班級座號");      
-            retVal.Add("學測報名序號");
+
+            #region 舊欄位
+            //retVal.Add("班級座號");      
+            //retVal.Add("學測報名序號");
+            //retVal.Add("身分證號碼");
+            //retVal.Add("學業成績總平均(高一上)");
+            //retVal.Add("國文(高一上)");
+            //retVal.Add("英文(高一上)");
+            //retVal.Add("數學(高一上)");
+            //retVal.Add("物理(高一上)");
+            //retVal.Add("化學(高一上)");
+            //retVal.Add("生物(高一上)");
+            //retVal.Add("地球科學(高一上)");
+            //retVal.Add("歷史(高一上)");
+            //retVal.Add("地理(高一上)");
+            //retVal.Add("公民與社會(高一上)");
+            //retVal.Add("音樂(高一上)");
+            //retVal.Add("美術(高一上)");
+            //retVal.Add("舞蹈(高一上)");
+            //retVal.Add("體育(高一上)");
+            //retVal.Add("藝術生活(高一上)");
+            //retVal.Add("生活科技(高一上)");
+            //retVal.Add("家政(高一上)");
+            //retVal.Add("資訊科技概論(高一上)");
+            //retVal.Add("健康與護理(高一上)");
+            //retVal.Add("全民國防教育(高一上)");
+            //retVal.Add("學業成績總平均(高一下)");
+            //retVal.Add("國文(高一下)");
+            //retVal.Add("英文(高一下)");
+            //retVal.Add("數學(高一下)");
+            //retVal.Add("物理(高一下)");
+            //retVal.Add("化學(高一下)");
+            //retVal.Add("生物(高一下)");
+            //retVal.Add("地球科學(高一下)");
+            //retVal.Add("歷史(高一下)");
+            //retVal.Add("地理(高一下)");
+            //retVal.Add("公民與社會(高一下)");
+            //retVal.Add("音樂(高一下)");
+            //retVal.Add("美術(高一下)");
+            //retVal.Add("舞蹈(高一下)");
+            //retVal.Add("體育(高一下)");
+            //retVal.Add("藝術生活(高一下)");
+            //retVal.Add("生活科技(高一下)");
+            //retVal.Add("家政(高一下)");
+            //retVal.Add("資訊科技概論(高一下)");
+            //retVal.Add("健康與護理(高一下)");
+            //retVal.Add("全民國防教育(高一下)");
+            //retVal.Add("學業成績總平均(高二上)");
+            //retVal.Add("國文(高二上)");
+            //retVal.Add("英文(高二上)");
+            //retVal.Add("數學(高二上)");
+            //retVal.Add("物理(高二上)");
+            //retVal.Add("化學(高二上)");
+            //retVal.Add("生物(高二上)");
+            //retVal.Add("地球科學(高二上)");
+            //retVal.Add("歷史(高二上)");
+            //retVal.Add("地理(高二上)");
+            //retVal.Add("公民與社會(高二上)");
+            //retVal.Add("音樂(高二上)");
+            //retVal.Add("美術(高二上)");
+            //retVal.Add("舞蹈(高二上)");
+            //retVal.Add("體育(高二上)");
+            //retVal.Add("藝術生活(高二上)");
+            //retVal.Add("生活科技(高二上)");
+            //retVal.Add("家政(高二上)");
+            //retVal.Add("資訊科技概論(高二上)");
+            //retVal.Add("健康與護理(高二上)");
+            //retVal.Add("全民國防教育(高二上)");
+            //retVal.Add("學業成績總平均(高二下)");
+            //retVal.Add("國文(高二下)");
+            //retVal.Add("英文(高二下)");
+            //retVal.Add("數學(高二下)");
+            //retVal.Add("物理(高二下)");
+            //retVal.Add("化學(高二下)");
+            //retVal.Add("生物(高二下)");
+            //retVal.Add("地球科學(高二下)");
+            //retVal.Add("歷史(高二下)");
+            //retVal.Add("地理(高二下)");
+            //retVal.Add("公民與社會(高二下)");
+            //retVal.Add("音樂(高二下)");
+            //retVal.Add("美術(高二下)");
+            //retVal.Add("舞蹈(高二下)");
+            //retVal.Add("體育(高二下)");
+            //retVal.Add("藝術生活(高二下)");
+            //retVal.Add("生活科技(高二下)");
+            //retVal.Add("家政(高二下)");
+            //retVal.Add("資訊科技概論(高二下)");
+            //retVal.Add("健康與護理(高二下)");
+            //retVal.Add("全民國防教育(高二下)");
+            //retVal.Add("就讀科、學程、班別");
+            //retVal.Add("報名學測或術科考試情形");
+            //retVal.Add("姓名");
+
+            #endregion
+
+            #region 2021-11 新欄位
+            retVal.Add("學號");
             retVal.Add("身分證號碼");
-            retVal.Add("學業成績總平均(高一上)");
-            retVal.Add("國文(高一上)");
-            retVal.Add("英文(高一上)");
-            retVal.Add("數學(高一上)");
-            retVal.Add("物理(高一上)");
-            retVal.Add("化學(高一上)");
-            retVal.Add("生物(高一上)");
-            retVal.Add("地球科學(高一上)");
-            retVal.Add("歷史(高一上)");
-            retVal.Add("地理(高一上)");
-            retVal.Add("公民與社會(高一上)");
-            retVal.Add("音樂(高一上)");
-            retVal.Add("美術(高一上)");
-            retVal.Add("舞蹈(高一上)");
-            retVal.Add("體育(高一上)");
-            retVal.Add("藝術生活(高一上)");
-            retVal.Add("生活科技(高一上)");
-            retVal.Add("家政(高一上)");
-            retVal.Add("資訊科技概論(高一上)");
-            retVal.Add("健康與護理(高一上)");
-            retVal.Add("全民國防教育(高一上)");
-            retVal.Add("學業成績總平均(高一下)");
-            retVal.Add("國文(高一下)");
-            retVal.Add("英文(高一下)");
-            retVal.Add("數學(高一下)");
-            retVal.Add("物理(高一下)");
-            retVal.Add("化學(高一下)");
-            retVal.Add("生物(高一下)");
-            retVal.Add("地球科學(高一下)");
-            retVal.Add("歷史(高一下)");
-            retVal.Add("地理(高一下)");
-            retVal.Add("公民與社會(高一下)");
-            retVal.Add("音樂(高一下)");
-            retVal.Add("美術(高一下)");
-            retVal.Add("舞蹈(高一下)");
-            retVal.Add("體育(高一下)");
-            retVal.Add("藝術生活(高一下)");
-            retVal.Add("生活科技(高一下)");
-            retVal.Add("家政(高一下)");
-            retVal.Add("資訊科技概論(高一下)");
-            retVal.Add("健康與護理(高一下)");
-            retVal.Add("全民國防教育(高一下)");
-            retVal.Add("學業成績總平均(高二上)");
-            retVal.Add("國文(高二上)");
-            retVal.Add("英文(高二上)");
+            retVal.Add("學業總平均(高二上)");
+            retVal.Add("國語文(高二上)");
+            retVal.Add("英語文(高二上)");
             retVal.Add("數學(高二上)");
             retVal.Add("物理(高二上)");
             retVal.Add("化學(高二上)");
@@ -976,15 +1029,11 @@ namespace SHCollege.Forms
             retVal.Add("美術(高二上)");
             retVal.Add("舞蹈(高二上)");
             retVal.Add("體育(高二上)");
-            retVal.Add("藝術生活(高二上)");
             retVal.Add("生活科技(高二上)");
-            retVal.Add("家政(高二上)");
-            retVal.Add("資訊科技概論(高二上)");
-            retVal.Add("健康與護理(高二上)");
-            retVal.Add("全民國防教育(高二上)");
-            retVal.Add("學業成績總平均(高二下)");
-            retVal.Add("國文(高二下)");
-            retVal.Add("英文(高二下)");
+            retVal.Add("資訊科技(高二上)");
+            retVal.Add("學業總平均(高二下)");
+            retVal.Add("國語文(高二下)");
+            retVal.Add("英語文(高二下)");
             retVal.Add("數學(高二下)");
             retVal.Add("物理(高二下)");
             retVal.Add("化學(高二下)");
@@ -997,17 +1046,16 @@ namespace SHCollege.Forms
             retVal.Add("美術(高二下)");
             retVal.Add("舞蹈(高二下)");
             retVal.Add("體育(高二下)");
-            retVal.Add("藝術生活(高二下)");
             retVal.Add("生活科技(高二下)");
-            retVal.Add("家政(高二下)");
-            retVal.Add("資訊科技概論(高二下)");
-            retVal.Add("健康與護理(高二下)");
-            retVal.Add("全民國防教育(高二下)");
+            retVal.Add("資訊科技(高二下)");
             retVal.Add("就讀科、學程、班別");
-            retVal.Add("報名學測或術科考試情形");
+            retVal.Add("班級座號");
             retVal.Add("姓名");
+
+            #endregion
+
             return retVal;
-        
+
         }
 
         private void btnExportCSV_Click(object sender, EventArgs e)
@@ -1104,15 +1152,15 @@ namespace SHCollege.Forms
             }
             else
             {
- 
-               // 刪除舊資料
+
+                // 刪除舊資料
                 foreach (FieldConfig fc in _FieldConfigList)
                     fc.Deleted = true;
 
                 _FieldConfigList.SaveAll();
 
                 // 處理固定對照名稱讓使用者改也能依原本
-               
+
 
 
 
@@ -1126,7 +1174,7 @@ namespace SHCollege.Forms
                         continue;
 
                     FieldConfig fc = new FieldConfig();
-                    
+
 
                     if (dgvr.Cells[colFieldName.Index].Value != null)
                         fc.FieldName = dgvr.Cells[colFieldName.Index].Value.ToString();
@@ -1141,7 +1189,7 @@ namespace SHCollege.Forms
                     fiedNameList.Add(fc.FieldName);
                     _SaveFieldConfigList.Add(fc);
                 }
-            
+
                 // 儲存資料
                 _SaveFieldConfigList.SaveAll();
             }
@@ -1154,7 +1202,7 @@ namespace SHCollege.Forms
             // 檢查對照
             if (dgData.CurrentCell.ColumnIndex == colFieldMapping.Index)
             {
-                dgData.CurrentCell.ErrorText="";
+                dgData.CurrentCell.ErrorText = "";
                 if (dgData.CurrentCell.Value != null)
                 {
                     string value = dgData.CurrentCell.Value.ToString();
@@ -1173,7 +1221,7 @@ namespace SHCollege.Forms
             btnLoadDefaultField.Enabled = false;
             dgData.Rows.Clear();
             List<string> filedList = GetDefaultFieldName();
-            
+
             foreach (string str in filedList)
             {
                 int rowIdx = dgData.Rows.Add();

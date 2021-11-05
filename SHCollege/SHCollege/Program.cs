@@ -76,13 +76,13 @@ namespace SHCollege
 
             // 產生繁星成績
             Catalog catalog01 = RoleAclSource.Instance["學生"]["大學繁星"];
-            catalog01.Add(new RibbonFeature("SH_College_ScoreForm", "大學繁星推甄成績檔"));
+            catalog01.Add(new RibbonFeature("SH_College_ScoreForm", "大學繁星(高二在校學業成績檔案)"));
 
             RibbonBarItem item01 = K12.Presentation.NLDPanels.Student.RibbonBarItems["大學繁星"];
             item01["報表"].Image = Properties.Resources.Report;
             item01["報表"].Size = RibbonBarButton.MenuButtonSize.Large;
-            item01["報表"]["大學繁星推甄成績檔"].Enable = UserAcl.Current["SH_College_ScoreForm"].Executable;
-            item01["報表"]["大學繁星推甄成績檔"].Click += delegate
+            item01["報表"]["大學繁星(高二在校學業成績檔案)"].Enable = UserAcl.Current["SH_College_ScoreForm"].Executable;
+            item01["報表"]["大學繁星(高二在校學業成績檔案)"].Click += delegate
             {
                 if (K12.Presentation.NLDPanels.Student.SelectedSource.Count > 0)
                 {
