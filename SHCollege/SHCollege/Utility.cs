@@ -202,6 +202,7 @@ namespace SHCollege
             QueryHelper qh = new QueryHelper();
             if (sids.Count > 0)
             {
+                // 2021-11 Cynthia 只能取部定必修 https://3.basecamp.com/4399967/buckets/15765350/todos/4364984127
                 string query = @"select sems_subj_score.id,sems_subj_score.ref_student_id as sid,
 sems_subj_score.school_year as 學期科目成績學年度,
 sems_subj_score.semester as 學期科目成績學期,
@@ -234,7 +235,9 @@ CAST(regexp_replace(s0.d14, '^$', '0') as decimal) as 學期科目開課學分�
 |/SemesterSubjectScoreInfo/Subject/@開課分項類別
 |/SemesterSubjectScoreInfo/Subject/@開課學分數'
 ,'ref_student_id in(" + string.Join(",", sids.ToArray()) + @")')
-as s0(id integer,d1 text,d2 text,d3 text,d4 text,d5 text,d6 text,d7 text,d8 text,d9 text,d10 text,d11 text,d12 text,d13 text,d14 text) on sems_subj_score.id=s0.id order by sid,學期科目成績年級 asc,學期科目成績學年度 desc,學期科目成績學期";
+as s0(id integer,d1 text,d2 text,d3 text,d4 text,d5 text,d6 text,d7 text,d8 text,d9 text,d10 text,d11 text,d12 text,d13 text,d14 text) on sems_subj_score.id=s0.id 
+where s0.d5 ='必修' and s0.d6='部訂'
+order by sid,學期科目成績年級 asc,學期科目成績學年度 desc,學期科目成績學期";
                 dt = qh.Select(query);
 
 

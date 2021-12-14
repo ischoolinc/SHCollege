@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgData = new DevComponents.DotNetBar.Controls.DataGridViewX();
+            this.colFieldName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colFieldMapping = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.labelX1 = new DevComponents.DotNetBar.LabelX();
             this.cboSubjectScoreType = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.btnExportMaping = new DevComponents.DotNetBar.ButtonX();
@@ -38,8 +40,7 @@
             this.btnExportCSV = new DevComponents.DotNetBar.ButtonX();
             this.labelX2 = new DevComponents.DotNetBar.LabelX();
             this.btnLoadDefaultField = new DevComponents.DotNetBar.ButtonX();
-            this.colFieldName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colFieldMapping = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.labelX3 = new DevComponents.DotNetBar.LabelX();
             ((System.ComponentModel.ISupportInitialize)(this.dgData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -47,22 +48,22 @@
             // 
             this.dgData.AllowUserToAddRows = false;
             this.dgData.AllowUserToDeleteRows = false;
-            this.dgData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.dgData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgData.BackgroundColor = System.Drawing.Color.White;
             this.dgData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgData.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colFieldName,
             this.colFieldMapping});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgData.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgData.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgData.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgData.Location = new System.Drawing.Point(12, 39);
             this.dgData.Name = "dgData";
@@ -70,6 +71,19 @@
             this.dgData.Size = new System.Drawing.Size(481, 244);
             this.dgData.TabIndex = 0;
             this.dgData.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgData_CurrentCellDirtyStateChanged);
+            // 
+            // colFieldName
+            // 
+            this.colFieldName.HeaderText = "甄選欄位名稱";
+            this.colFieldName.Name = "colFieldName";
+            this.colFieldName.ReadOnly = true;
+            this.colFieldName.Width = 200;
+            // 
+            // colFieldMapping
+            // 
+            this.colFieldMapping.HeaderText = "名稱對應系統內";
+            this.colFieldMapping.Name = "colFieldMapping";
+            this.colFieldMapping.Width = 200;
             // 
             // labelX1
             // 
@@ -190,24 +204,28 @@
             this.btnLoadDefaultField.Text = "恢復預設欄位";
             this.btnLoadDefaultField.Click += new System.EventHandler(this.btnLoadDefaultField_Click);
             // 
-            // colFieldName
+            // labelX3
             // 
-            this.colFieldName.HeaderText = "甄選欄位名稱";
-            this.colFieldName.Name = "colFieldName";
-            this.colFieldName.ReadOnly = true;
-            this.colFieldName.Width = 200;
+            this.labelX3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelX3.AutoSize = true;
+            this.labelX3.BackColor = System.Drawing.Color.Transparent;
             // 
-            // colFieldMapping
             // 
-            this.colFieldMapping.HeaderText = "名稱對應系統內";
-            this.colFieldMapping.Name = "colFieldMapping";
-            this.colFieldMapping.Width = 200;
+            // 
+            this.labelX3.BackgroundStyle.Class = "";
+            this.labelX3.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX3.Location = new System.Drawing.Point(354, 305);
+            this.labelX3.Name = "labelX3";
+            this.labelX3.Size = new System.Drawing.Size(139, 21);
+            this.labelX3.TabIndex = 9;
+            this.labelX3.Text = "※只採計部定必修科目";
             // 
             // ScoreForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(511, 378);
+            this.Controls.Add(this.labelX3);
             this.Controls.Add(this.btnLoadDefaultField);
             this.Controls.Add(this.labelX2);
             this.Controls.Add(this.btnExit);
@@ -240,5 +258,6 @@
         private DevComponents.DotNetBar.ButtonX btnLoadDefaultField;
         private System.Windows.Forms.DataGridViewTextBoxColumn colFieldName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colFieldMapping;
+        private DevComponents.DotNetBar.LabelX labelX3;
     }
 }
