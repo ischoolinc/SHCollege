@@ -112,10 +112,31 @@ namespace SHCollege
                 }
                 else
                 {
-                    FISCA.Presentation.Controls.MsgBox.Show("請選擇!");
+                    FISCA.Presentation.Controls.MsgBox.Show("請選擇學生!");
                 }
             };
 
+
+            // 產生繁星成績
+            Catalog catalog111 = RoleAclSource.Instance["學生"]["大學繁星"];
+            catalog111.Add(new RibbonFeature("SH_College_ScoreForm111", "大學繁星(五學期在校學業成績檔案)"));
+
+            RibbonBarItem item111 = K12.Presentation.NLDPanels.Student.RibbonBarItems["大學繁星"];
+            item111["報表"].Image = Properties.Resources.Report;
+            item111["報表"].Size = RibbonBarButton.MenuButtonSize.Large;
+            item111["報表"]["大學繁星(五學期在校學業成績檔案)"].Enable = UserAcl.Current["SH_College_ScoreForm111"].Executable;
+            item111["報表"]["大學繁星(五學期在校學業成績檔案)"].Click += delegate
+            {
+                if (K12.Presentation.NLDPanels.Student.SelectedSource.Count > 0)
+                {
+                    ScoreForm111 sf = new ScoreForm111();
+                    sf.ShowDialog();
+                }
+                else
+                {
+                    FISCA.Presentation.Controls.MsgBox.Show("請選擇學生!");
+                }
+            };
 
             // 大學學科能力測驗報考資料檔
             Catalog catalog11 = RoleAclSource.Instance["學生"]["大學繁星"];
