@@ -73,6 +73,26 @@ namespace SHCollege
                 new ImportExport.ImportSATStudent_SNum().Execute();
             };
 
+            // 產生繁星成績
+            Catalog catalog011 = RoleAclSource.Instance["學生"]["大學繁星"];
+            catalog011.Add(new RibbonFeature("SH_College_ScoreForm103_1", "大學繁星(高一在校學業成績檔案)"));
+
+            RibbonBarItem item011 = K12.Presentation.NLDPanels.Student.RibbonBarItems["大學繁星"];
+            item011["報表"].Image = Properties.Resources.Report;
+            item011["報表"].Size = RibbonBarButton.MenuButtonSize.Large;
+            item011["報表"]["大學繁星(高一在校學業成績檔案)"].Enable = UserAcl.Current["SH_College_ScoreForm103_1"].Executable;
+            item011["報表"]["大學繁星(高一在校學業成績檔案)"].Click += delegate
+            {
+                if (K12.Presentation.NLDPanels.Student.SelectedSource.Count > 0)
+                {
+                    ScoreForm103_1 sf103 = new ScoreForm103_1();
+                    sf103.ShowDialog();
+                }
+                else
+                {
+                    FISCA.Presentation.Controls.MsgBox.Show("請選擇學生!");
+                }
+            };
 
             // 產生繁星成績
             Catalog catalog01 = RoleAclSource.Instance["學生"]["大學繁星"];
@@ -95,26 +115,7 @@ namespace SHCollege
                 }
             };
 
-            // 產生繁星成績
-            Catalog catalog011 = RoleAclSource.Instance["學生"]["大學繁星"];
-            catalog011.Add(new RibbonFeature("SH_College_ScoreForm103_1", "大學繁星(高一在校學業成績檔案)"));
 
-            RibbonBarItem item011 = K12.Presentation.NLDPanels.Student.RibbonBarItems["大學繁星"];
-            item011["報表"].Image = Properties.Resources.Report;
-            item011["報表"].Size = RibbonBarButton.MenuButtonSize.Large;
-            item011["報表"]["大學繁星(高一在校學業成績檔案)"].Enable = UserAcl.Current["SH_College_ScoreForm103_1"].Executable;
-            item011["報表"]["大學繁星(高一在校學業成績檔案)"].Click += delegate
-            {
-                if (K12.Presentation.NLDPanels.Student.SelectedSource.Count > 0)
-                {
-                    ScoreForm103_1 sf103 = new ScoreForm103_1();
-                    sf103.ShowDialog();
-                }
-                else
-                {
-                    FISCA.Presentation.Controls.MsgBox.Show("請選擇學生!");
-                }
-            };
 
 
             // 產生繁星成績
