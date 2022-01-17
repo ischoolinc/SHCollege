@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgData = new DevComponents.DotNetBar.Controls.DataGridViewX();
             this.colFieldName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colFieldMapping = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -40,7 +40,7 @@
             this.btnExportCSV = new DevComponents.DotNetBar.ButtonX();
             this.labelX2 = new DevComponents.DotNetBar.LabelX();
             this.btnLoadDefaultField = new DevComponents.DotNetBar.ButtonX();
-            this.labelX3 = new DevComponents.DotNetBar.LabelX();
+            this.ckReq = new DevComponents.DotNetBar.Controls.CheckBoxX();
             ((System.ComponentModel.ISupportInitialize)(this.dgData)).BeginInit();
             this.SuspendLayout();
             // 
@@ -51,25 +51,26 @@
             this.dgData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgData.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgData.BackgroundColor = System.Drawing.Color.White;
             this.dgData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgData.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colFieldName,
             this.colFieldMapping});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgData.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgData.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgData.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgData.Location = new System.Drawing.Point(12, 39);
             this.dgData.Name = "dgData";
             this.dgData.RowHeadersWidth = 51;
             this.dgData.RowTemplate.Height = 24;
-            this.dgData.Size = new System.Drawing.Size(481, 244);
+            this.dgData.Size = new System.Drawing.Size(481, 362);
             this.dgData.TabIndex = 0;
             this.dgData.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgData_CurrentCellDirtyStateChanged);
             // 
@@ -79,14 +80,12 @@
             this.colFieldName.MinimumWidth = 6;
             this.colFieldName.Name = "colFieldName";
             this.colFieldName.ReadOnly = true;
-            this.colFieldName.Width = 200;
             // 
             // colFieldMapping
             // 
             this.colFieldMapping.HeaderText = "名稱對應系統內";
             this.colFieldMapping.MinimumWidth = 6;
             this.colFieldMapping.Name = "colFieldMapping";
-            this.colFieldMapping.Width = 200;
             // 
             // labelX1
             // 
@@ -98,7 +97,7 @@
             // 
             this.labelX1.BackgroundStyle.Class = "";
             this.labelX1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX1.Location = new System.Drawing.Point(12, 305);
+            this.labelX1.Location = new System.Drawing.Point(12, 423);
             this.labelX1.Name = "labelX1";
             this.labelX1.Size = new System.Drawing.Size(75, 26);
             this.labelX1.TabIndex = 1;
@@ -111,7 +110,7 @@
             this.cboSubjectScoreType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.cboSubjectScoreType.FormattingEnabled = true;
             this.cboSubjectScoreType.ItemHeight = 23;
-            this.cboSubjectScoreType.Location = new System.Drawing.Point(72, 303);
+            this.cboSubjectScoreType.Location = new System.Drawing.Point(72, 422);
             this.cboSubjectScoreType.Name = "cboSubjectScoreType";
             this.cboSubjectScoreType.Size = new System.Drawing.Size(155, 29);
             this.cboSubjectScoreType.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -123,7 +122,7 @@
             this.btnExportMaping.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnExportMaping.BackColor = System.Drawing.Color.Transparent;
             this.btnExportMaping.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnExportMaping.Location = new System.Drawing.Point(12, 346);
+            this.btnExportMaping.Location = new System.Drawing.Point(12, 464);
             this.btnExportMaping.Name = "btnExportMaping";
             this.btnExportMaping.Size = new System.Drawing.Size(79, 25);
             this.btnExportMaping.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -137,7 +136,7 @@
             this.btnImportMapping.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnImportMapping.BackColor = System.Drawing.Color.Transparent;
             this.btnImportMapping.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnImportMapping.Location = new System.Drawing.Point(93, 346);
+            this.btnImportMapping.Location = new System.Drawing.Point(93, 464);
             this.btnImportMapping.Name = "btnImportMapping";
             this.btnImportMapping.Size = new System.Drawing.Size(79, 25);
             this.btnImportMapping.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -151,7 +150,7 @@
             this.btnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExit.BackColor = System.Drawing.Color.Transparent;
             this.btnExit.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnExit.Location = new System.Drawing.Point(419, 346);
+            this.btnExit.Location = new System.Drawing.Point(419, 464);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(75, 25);
             this.btnExit.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -165,7 +164,7 @@
             this.btnExportCSV.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExportCSV.BackColor = System.Drawing.Color.Transparent;
             this.btnExportCSV.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnExportCSV.Location = new System.Drawing.Point(333, 346);
+            this.btnExportCSV.Location = new System.Drawing.Point(342, 464);
             this.btnExportCSV.Name = "btnExportCSV";
             this.btnExportCSV.Size = new System.Drawing.Size(75, 25);
             this.btnExportCSV.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -194,7 +193,7 @@
             this.btnLoadDefaultField.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnLoadDefaultField.BackColor = System.Drawing.Color.Transparent;
             this.btnLoadDefaultField.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnLoadDefaultField.Location = new System.Drawing.Point(177, 346);
+            this.btnLoadDefaultField.Location = new System.Drawing.Point(174, 464);
             this.btnLoadDefaultField.Name = "btnLoadDefaultField";
             this.btnLoadDefaultField.Size = new System.Drawing.Size(118, 25);
             this.btnLoadDefaultField.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -202,32 +201,36 @@
             this.btnLoadDefaultField.Text = "恢復預設欄位";
             this.btnLoadDefaultField.Click += new System.EventHandler(this.btnLoadDefaultField_Click);
             // 
-            // labelX3
+            // ckReq
             // 
-            this.labelX3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelX3.AutoSize = true;
-            this.labelX3.BackColor = System.Drawing.Color.Transparent;
+            this.ckReq.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ckReq.AutoSize = true;
+            this.ckReq.BackColor = System.Drawing.Color.Transparent;
             // 
             // 
             // 
-            this.labelX3.BackgroundStyle.Class = "";
-            this.labelX3.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX3.Location = new System.Drawing.Point(354, 305);
-            this.labelX3.Name = "labelX3";
-            this.labelX3.Size = new System.Drawing.Size(173, 26);
-            this.labelX3.TabIndex = 9;
-            this.labelX3.Text = "※只採計部定必修科目";
+            this.ckReq.BackgroundStyle.Class = "";
+            this.ckReq.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.ckReq.Checked = true;
+            this.ckReq.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckReq.CheckValue = "Y";
+            this.ckReq.Location = new System.Drawing.Point(342, 423);
+            this.ckReq.Name = "ckReq";
+            this.ckReq.Size = new System.Drawing.Size(179, 26);
+            this.ckReq.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.ckReq.TabIndex = 11;
+            this.ckReq.Text = "只採計部定必修科目";
             // 
             // ScoreForm111
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(511, 378);
-            this.Controls.Add(this.labelX3);
-            this.Controls.Add(this.btnLoadDefaultField);
-            this.Controls.Add(this.labelX2);
+            this.ClientSize = new System.Drawing.Size(511, 496);
+            this.Controls.Add(this.ckReq);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnExportCSV);
+            this.Controls.Add(this.btnLoadDefaultField);
+            this.Controls.Add(this.labelX2);
             this.Controls.Add(this.btnImportMapping);
             this.Controls.Add(this.btnExportMaping);
             this.Controls.Add(this.cboSubjectScoreType);
@@ -256,6 +259,6 @@
         private DevComponents.DotNetBar.ButtonX btnLoadDefaultField;
         private System.Windows.Forms.DataGridViewTextBoxColumn colFieldName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colFieldMapping;
-        private DevComponents.DotNetBar.LabelX labelX3;
+        private DevComponents.DotNetBar.Controls.CheckBoxX ckReq;
     }
 }

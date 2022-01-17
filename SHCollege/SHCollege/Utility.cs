@@ -195,14 +195,17 @@ namespace SHCollege
         /// </summary>
         /// <param name="sids"></param>
         /// <returns></returns>
-        public static Dictionary<string, List<DataRow>> GetStudentSemsSubjScoreByStudentID(List<string> sids)
+        public static Dictionary<string, List<DataRow>> GetStudentSemsSubjScoreByStudentID(List<string> sids, bool req)
         {
             Dictionary<string, List<DataRow>> retVal = new Dictionary<string, List<DataRow>>();
             DataTable dt = new DataTable();
             QueryHelper qh = new QueryHelper();
+            string quWhere = "";
+            if (req)
+                quWhere = " WHERE s0.d5 ='必修' AND s0.d6='部訂'";
             if (sids.Count > 0)
             {
-                // 2021-11 Cynthia 只能取部定必修 https://3.basecamp.com/4399967/buckets/15765350/todos/4364984127
+                // 2022-01 Cynthia 增加勾選「只採計部定必修」
                 string query = @"select sems_subj_score.id,sems_subj_score.ref_student_id as sid,
 sems_subj_score.school_year as 學期科目成績學年度,
 sems_subj_score.semester as 學期科目成績學期,
@@ -236,8 +239,9 @@ CAST(regexp_replace(s0.d14, '^$', '0') as decimal) as 學期科目開課學分�
 |/SemesterSubjectScoreInfo/Subject/@開課學分數'
 ,'ref_student_id in(" + string.Join(",", sids.ToArray()) + @")')
 as s0(id integer,d1 text,d2 text,d3 text,d4 text,d5 text,d6 text,d7 text,d8 text,d9 text,d10 text,d11 text,d12 text,d13 text,d14 text) on sems_subj_score.id=s0.id 
-where s0.d5 ='必修' and s0.d6='部訂'
+{0}
 order by sid,學期科目成績年級 asc,學期科目成績學年度 desc,學期科目成績學期";
+                query = string.Format(query, quWhere);
                 dt = qh.Select(query);
 
 

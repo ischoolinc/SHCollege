@@ -138,7 +138,7 @@ namespace SHCollege.Forms
                 List<DataRow> StudBaseList = Utility.GetStudentBaseDataByID(StudentIDList);
                 _bgExporData.ReportProgress(30);
                 // 取得學生科目成績資料 key:studentID
-                Dictionary<string,List<DataRow>> SemsSubjDataDict = Utility.GetStudentSemsSubjScoreByStudentID(StudentIDList);
+                Dictionary<string,List<DataRow>> SemsSubjDataDict = Utility.GetStudentSemsSubjScoreByStudentID(StudentIDList, ckReq.Checked);
 
                 // 取得學生學期總成績
                 Dictionary<string, List<DataRow>> SemsEntryDataDict = Utility.GetStudentSemsEntryScoreByStudentID(StudentIDList);
