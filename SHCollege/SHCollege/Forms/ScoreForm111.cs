@@ -256,9 +256,9 @@ namespace SHCollege.Forms
                         List<DataRow> dd = SemsSubjDataDict[sid];
                         foreach (DataRow dr1 in dd)
                         {
-                            if ((dr1["學期科目成績年級"].ToString() == "1" || dr1["學期科目成績年級"].ToString() == "4") && dr1["學期科目成績學期"].ToString() == "1")
+                            if ((dr1["成績年級"].ToString() == "1" || dr1["成績年級"].ToString() == "4") && dr1["學期"].ToString() == "1")
                             {
-                                string subjName = dr1["學期科目名稱"].ToString().Trim();
+                                string subjName = dr1["科目"].ToString().Trim();
 
                                 foreach (string strKey in _ScoreNameMappingDict.Keys)
                                 {
@@ -302,8 +302,8 @@ namespace SHCollege.Forms
 
                                                 decimal ss = 0;
                                                 decimal cc = 0;
-                                                decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
-                                                decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
+                                                decimal.TryParse(dr1["原始成績"].ToString(), out ss);
+                                                decimal.TryParse(dr1["學分數"].ToString(), out cc);
                                                 ssScoreDict[strKey].AddScore(subjName, ss, cc);
                                                 break;
 
@@ -313,9 +313,9 @@ namespace SHCollege.Forms
                                 }
                             }
 
-                            if ((dr1["學期科目成績年級"].ToString() == "1" || dr1["學期科目成績年級"].ToString() == "4") && dr1["學期科目成績學期"].ToString() == "2")
+                            if ((dr1["成績年級"].ToString() == "1" || dr1["成績年級"].ToString() == "4") && dr1["學期"].ToString() == "2")
                             {
-                                string subjName = dr1["學期科目名稱"].ToString().Trim();
+                                string subjName = dr1["科目"].ToString().Trim();
 
                                 foreach (string strKey in _ScoreNameMappingDict.Keys)
                                 {
@@ -360,8 +360,8 @@ namespace SHCollege.Forms
 
                                                 decimal ss = 0;
                                                 decimal cc = 0;
-                                                decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
-                                                decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
+                                                decimal.TryParse(dr1["原始成績"].ToString(), out ss);
+                                                decimal.TryParse(dr1["學分數"].ToString(), out cc);
                                                 ssScoreDict[strKey].AddScore(subjName, ss, cc);
                                                 break;
 
@@ -371,9 +371,9 @@ namespace SHCollege.Forms
                                 }
                             }
 
-                            if ((dr1["學期科目成績年級"].ToString() == "2" || dr1["學期科目成績年級"].ToString() == "5") && dr1["學期科目成績學期"].ToString() == "1")
+                            if ((dr1["成績年級"].ToString() == "2" || dr1["成績年級"].ToString() == "5") && dr1["學期"].ToString() == "1")
                             {
-                                string subjName = dr1["學期科目名稱"].ToString().Trim();
+                                string subjName = dr1["科目"].ToString().Trim();
 
                                 foreach (string strKey in _ScoreNameMappingDict.Keys)
                                 {
@@ -418,8 +418,8 @@ namespace SHCollege.Forms
 
                                                 decimal ss = 0;
                                                 decimal cc = 0;
-                                                decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
-                                                decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
+                                                decimal.TryParse(dr1["原始成績"].ToString(), out ss);
+                                                decimal.TryParse(dr1["學分數"].ToString(), out cc);
                                                 ssScoreDict[strKey].AddScore(subjName, ss, cc);
                                                 break;
 
@@ -429,9 +429,9 @@ namespace SHCollege.Forms
                                 }
                             }
 
-                            if ((dr1["學期科目成績年級"].ToString() == "2" || dr1["學期科目成績年級"].ToString() == "5") && dr1["學期科目成績學期"].ToString() == "2")
+                            if ((dr1["成績年級"].ToString() == "2" || dr1["成績年級"].ToString() == "5") && dr1["學期"].ToString() == "2")
                             {
-                                string subjName = dr1["學期科目名稱"].ToString().Trim();
+                                string subjName = dr1["科目"].ToString().Trim();
                                 foreach (string strKey in _ScoreNameMappingDict.Keys)
                                 {
                                     if (strKey.Contains("二下"))
@@ -474,8 +474,8 @@ namespace SHCollege.Forms
 
                                                 decimal ss = 0;
                                                 decimal cc = 0;
-                                                decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
-                                                decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
+                                                decimal.TryParse(dr1["原始成績"].ToString(), out ss);
+                                                decimal.TryParse(dr1["學分數"].ToString(), out cc);
                                                 ssScoreDict[strKey].AddScore(subjName, ss, cc);
                                                 break;
 
@@ -486,9 +486,9 @@ namespace SHCollege.Forms
                             }
 
 
-                            if ((dr1["學期科目成績年級"].ToString() == "3" || dr1["學期科目成績年級"].ToString() == "6") && dr1["學期科目成績學期"].ToString() == "1")
+                            if ((dr1["成績年級"].ToString() == "3" || dr1["成績年級"].ToString() == "6") && dr1["學期"].ToString() == "1")
                             {
-                                string subjName = dr1["學期科目名稱"].ToString().Trim();
+                                string subjName = dr1["科目"].ToString().Trim();
 
                                 foreach (string strKey in _ScoreNameMappingDict.Keys)
                                 {
@@ -533,8 +533,8 @@ namespace SHCollege.Forms
 
                                                 decimal ss = 0;
                                                 decimal cc = 0;
-                                                decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
-                                                decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
+                                                decimal.TryParse(dr1["原始成績"].ToString(), out ss);
+                                                decimal.TryParse(dr1["學分數"].ToString(), out cc);
                                                 ssScoreDict[strKey].AddScore(subjName, ss, cc);
                                                 break;
 
@@ -545,9 +545,9 @@ namespace SHCollege.Forms
 
                             }
 
-                            if ((dr1["學期科目成績年級"].ToString() == "3" || dr1["學期科目成績年級"].ToString() == "6") && dr1["學期科目成績學期"].ToString() == "2")
+                            if ((dr1["成績年級"].ToString() == "3" || dr1["成績年級"].ToString() == "6") && dr1["學期"].ToString() == "2")
                             {
-                                string subjName = dr1["學期科目名稱"].ToString().Trim();
+                                string subjName = dr1["科目"].ToString().Trim();
 
                                 foreach (string strKey in _ScoreNameMappingDict.Keys)
                                 {
@@ -591,8 +591,8 @@ namespace SHCollege.Forms
 
                                                 decimal ss = 0;
                                                 decimal cc = 0;
-                                                decimal.TryParse(dr1["學期科目原始成績"].ToString(), out ss);
-                                                decimal.TryParse(dr1["學期科目開課學分數"].ToString(), out cc);
+                                                decimal.TryParse(dr1["原始成績"].ToString(), out ss);
+                                                decimal.TryParse(dr1["學分數"].ToString(), out cc);
                                                 ssScoreDict[strKey].AddScore(subjName, ss, cc);
                                                 break;
 
@@ -614,7 +614,7 @@ namespace SHCollege.Forms
                             if (_chkSScore)
                             {
                                 #region 學業原始
-                                if ((dr2["年級"].ToString() == "1" || dr2["年級"].ToString() == "4") && dr2["學期"].ToString() == "1" && dr2["分項"].ToString() == "學業(原始)")
+                                if ((dr2["成績年級"].ToString() == "1" || dr2["成績年級"].ToString() == "4") && dr2["學期"].ToString() == "1" && dr2["分項"].ToString() == "學業(原始)")
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
@@ -625,7 +625,7 @@ namespace SHCollege.Forms
                                         }
                                     }
                                 }
-                                if ((dr2["年級"].ToString() == "1" || dr2["年級"].ToString() == "4") && dr2["學期"].ToString() == "2" && dr2["分項"].ToString() == "學業(原始)")
+                                if ((dr2["成績年級"].ToString() == "1" || dr2["成績年級"].ToString() == "4") && dr2["學期"].ToString() == "2" && dr2["分項"].ToString() == "學業(原始)")
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
@@ -637,7 +637,7 @@ namespace SHCollege.Forms
                                     }
                                 }
 
-                                if ((dr2["年級"].ToString() == "2" || dr2["年級"].ToString() == "5") && dr2["學期"].ToString() == "1" && dr2["分項"].ToString() == "學業(原始)")
+                                if ((dr2["成績年級"].ToString() == "2" || dr2["成績年級"].ToString() == "5") && dr2["學期"].ToString() == "1" && dr2["分項"].ToString() == "學業(原始)")
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
@@ -649,7 +649,7 @@ namespace SHCollege.Forms
                                     }
                                 }
 
-                                if ((dr2["年級"].ToString() == "2" || dr2["年級"].ToString() == "5") && dr2["學期"].ToString() == "2" && dr2["分項"].ToString() == "學業(原始)")
+                                if ((dr2["成績年級"].ToString() == "2" || dr2["成績年級"].ToString() == "5") && dr2["學期"].ToString() == "2" && dr2["分項"].ToString() == "學業(原始)")
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
@@ -662,7 +662,7 @@ namespace SHCollege.Forms
                                 }
 
 
-                                if ((dr2["年級"].ToString() == "3" || dr2["年級"].ToString() == "6") && dr2["學期"].ToString() == "1" && dr2["分項"].ToString() == "學業(原始)")
+                                if ((dr2["成績年級"].ToString() == "3" || dr2["成績年級"].ToString() == "6") && dr2["學期"].ToString() == "1" && dr2["分項"].ToString() == "學業(原始)")
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
@@ -674,7 +674,7 @@ namespace SHCollege.Forms
                                     }
                                 }
 
-                                if ((dr2["年級"].ToString() == "3" || dr2["年級"].ToString() == "6") && dr2["學期"].ToString() == "2" && dr2["分項"].ToString() == "學業(原始)")
+                                if ((dr2["成績年級"].ToString() == "3" || dr2["成績年級"].ToString() == "6") && dr2["學期"].ToString() == "2" && dr2["分項"].ToString() == "學業(原始)")
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
@@ -690,7 +690,7 @@ namespace SHCollege.Forms
                             else
                             {
                                 #region 學業
-                                if ((dr2["年級"].ToString() == "1" || dr2["年級"].ToString() == "4") && dr2["學期"].ToString() == "1" && dr2["分項"].ToString() == "學業")
+                                if ((dr2["成績年級"].ToString() == "1" || dr2["成績年級"].ToString() == "4") && dr2["學期"].ToString() == "1" && dr2["分項"].ToString() == "學業")
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
@@ -702,7 +702,7 @@ namespace SHCollege.Forms
                                     }
                                 }
 
-                                if ((dr2["年級"].ToString() == "1" || dr2["年級"].ToString() == "4") && dr2["學期"].ToString() == "2" && dr2["分項"].ToString() == "學業")
+                                if ((dr2["成績年級"].ToString() == "1" || dr2["成績年級"].ToString() == "4") && dr2["學期"].ToString() == "2" && dr2["分項"].ToString() == "學業")
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
@@ -714,7 +714,7 @@ namespace SHCollege.Forms
                                     }
                                 }
 
-                                if ((dr2["年級"].ToString() == "2" || dr2["年級"].ToString() == "5") && dr2["學期"].ToString() == "1" && dr2["分項"].ToString() == "學業")
+                                if ((dr2["成績年級"].ToString() == "2" || dr2["成績年級"].ToString() == "5") && dr2["學期"].ToString() == "1" && dr2["分項"].ToString() == "學業")
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
@@ -726,7 +726,7 @@ namespace SHCollege.Forms
                                     }
                                 }
 
-                                if ((dr2["年級"].ToString() == "2" || dr2["年級"].ToString() == "5") && dr2["學期"].ToString() == "2" && dr2["分項"].ToString() == "學業")
+                                if ((dr2["成績年級"].ToString() == "2" || dr2["成績年級"].ToString() == "5") && dr2["學期"].ToString() == "2" && dr2["分項"].ToString() == "學業")
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
@@ -738,7 +738,7 @@ namespace SHCollege.Forms
                                     }
                                 }
 
-                                if ((dr2["年級"].ToString() == "3" || dr2["年級"].ToString() == "6") && dr2["學期"].ToString() == "1" && dr2["分項"].ToString() == "學業")
+                                if ((dr2["成績年級"].ToString() == "3" || dr2["成績年級"].ToString() == "6") && dr2["學期"].ToString() == "1" && dr2["分項"].ToString() == "學業")
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
@@ -750,7 +750,7 @@ namespace SHCollege.Forms
                                     }
                                 }
 
-                                if ((dr2["年級"].ToString() == "3" || dr2["年級"].ToString() == "6") && dr2["學期"].ToString() == "2" && dr2["分項"].ToString() == "學業")
+                                if ((dr2["成績年級"].ToString() == "3" || dr2["成績年級"].ToString() == "6") && dr2["學期"].ToString() == "2" && dr2["分項"].ToString() == "學業")
                                 {
                                     foreach (FieldConfig fc in _SaveFieldConfigList)
                                     {
@@ -791,13 +791,13 @@ namespace SHCollege.Forms
             decimal d1, d2;
             if (_chkSScore)
             {
-                decimal.TryParse(dr["學期科目原始成績"].ToString(), out d1);
+                decimal.TryParse(dr["原始成績"].ToString(), out d1);
                 return d1;
             }
             else
             {
-                decimal.TryParse(dr["學期科目原始成績"].ToString(), out d1);
-                decimal.TryParse(dr["學期科目補考成績"].ToString(), out d2);
+                decimal.TryParse(dr["原始成績"].ToString(), out d1);
+                decimal.TryParse(dr["補考成績"].ToString(), out d2);
 
                 if (d1 >= d2)
                     return d1;

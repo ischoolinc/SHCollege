@@ -195,53 +195,99 @@ namespace SHCollege
         /// </summary>
         /// <param name="sids"></param>
         /// <returns></returns>
-        public static Dictionary<string, List<DataRow>> GetStudentSemsSubjScoreByStudentID(List<string> sids, bool req)
+        public static Dictionary<string, List<DataRow>> GetStudentSemsSubjScoreByStudentID(List<string> sids, bool required)
         {
             Dictionary<string, List<DataRow>> retVal = new Dictionary<string, List<DataRow>>();
             DataTable dt = new DataTable();
             QueryHelper qh = new QueryHelper();
             string quWhere = "";
-            if (req)
-                quWhere = " WHERE s0.d5 ='必修' AND s0.d6='部訂'";
+            if (required)
+                //quWhere = " WHERE s0.d5 ='必修' AND s0.d6='部訂'";
+                quWhere = @"
+	                    WHERE 
+			                array_to_string(xpath('//Subject/@修課必選修', subj_score_ele), '')::TEXT ='必修'
+		                    AND array_to_string(xpath('//Subject/@修課校部訂', subj_score_ele), '')::TEXT ='部訂'
+";
             if (sids.Count > 0)
             {
-                // 2022-01 Cynthia 增加勾選「只採計部定必修」
-                string query = @"select sems_subj_score.id,sems_subj_score.ref_student_id as sid,
-sems_subj_score.school_year as 學期科目成績學年度,
-sems_subj_score.semester as 學期科目成績學期,
-sems_subj_score.grade_year as 學期科目成績年級,
-s0.d1 as 學期科目名稱,
-s0.d2 as 學期科目級別,
-s0.d3 as 學期科目不計學分,
-s0.d4 as 學期科目不需評分,
-s0.d5 as 學期科目修課必選修,
-s0.d6 as 學期科目修課校部訂,
-s0.d10 as 學期科目是否取得學分,
-CAST(regexp_replace(s0.d7, '^$', '0') as decimal) as 學期科目原始成績,
-CAST(regexp_replace(s0.d8, '^$', '0') as decimal) as 學期科目學年調整成績,
-CAST(regexp_replace(s0.d9, '^$', '0') as decimal) as 學期科目擇優採計成績,
-CAST(regexp_replace(s0.d11, '^$', '0') as decimal) as 學期科目補考成績,
-CAST(regexp_replace(s0.d12, '^$', '0') as decimal) as 學期科目重修成績,
-s0.d13 as 學期科目開課分項類別,
-CAST(regexp_replace(s0.d14, '^$', '0') as decimal) as 學期科目開課學分數 from sems_subj_score inner join xpath_table('id','score_info','sems_subj_score','/SemesterSubjectScoreInfo/Subject/@科目
-|/SemesterSubjectScoreInfo/Subject/@科目級別
-|/SemesterSubjectScoreInfo/Subject/@不計學分
-|/SemesterSubjectScoreInfo/Subject/@不需評分
-|/SemesterSubjectScoreInfo/Subject/@修課必選修
-|/SemesterSubjectScoreInfo/Subject/@修課校部訂
-|/SemesterSubjectScoreInfo/Subject/@原始成績
-|/SemesterSubjectScoreInfo/Subject/@學年調整成績
-|/SemesterSubjectScoreInfo/Subject/@擇優採計成績
-|/SemesterSubjectScoreInfo/Subject/@是否取得學分
-|/SemesterSubjectScoreInfo/Subject/@補考成績
-|/SemesterSubjectScoreInfo/Subject/@重修成績
-|/SemesterSubjectScoreInfo/Subject/@開課分項類別
-|/SemesterSubjectScoreInfo/Subject/@開課學分數'
-,'ref_student_id in(" + string.Join(",", sids.ToArray()) + @")')
-as s0(id integer,d1 text,d2 text,d3 text,d4 text,d5 text,d6 text,d7 text,d8 text,d9 text,d10 text,d11 text,d12 text,d13 text,d14 text) on sems_subj_score.id=s0.id 
-{0}
-order by sid,學期科目成績年級 asc,學期科目成績學年度 desc,學期科目成績學期";
-                query = string.Format(query, quWhere);
+                // 2022-01 Cynthia 增加勾選「只採計部定必修」，並依照恩正建議重寫這段SQL。
+                //恩正: (SQL使用了xpath_table，會造成資料庫當機，建議整段重寫。SQL樣板與傳入參數的搭配應該更標準化，並注意sql injection)
+
+                #region 舊SQL
+                //                string query = @"select sems_subj_score.id,sems_subj_score.ref_student_id as sid,
+                //sems_subj_score.school_year as 學期科目成績學年度,
+                //sems_subj_score.semester as 學期科目成績學期,
+                //sems_subj_score.grade_year as 學期科目成績年級,
+                //s0.d1 as 學期科目名稱,
+                //s0.d2 as 學期科目級別,
+                //s0.d3 as 學期科目不計學分,
+                //s0.d4 as 學期科目不需評分,
+                //s0.d5 as 學期科目修課必選修,
+                //s0.d6 as 學期科目修課校部訂,
+                //s0.d10 as 學期科目是否取得學分,
+                //CAST(regexp_replace(s0.d7, '^$', '0') as decimal) as 學期科目原始成績,
+                //CAST(regexp_replace(s0.d8, '^$', '0') as decimal) as 學期科目學年調整成績,
+                //CAST(regexp_replace(s0.d9, '^$', '0') as decimal) as 學期科目擇優採計成績,
+                //CAST(regexp_replace(s0.d11, '^$', '0') as decimal) as 學期科目補考成績,
+                //CAST(regexp_replace(s0.d12, '^$', '0') as decimal) as 學期科目重修成績,
+                //s0.d13 as 學期科目開課分項類別,
+                //CAST(regexp_replace(s0.d14, '^$', '0') as decimal) as 學期科目開課學分數 from sems_subj_score inner join xpath_table('id','score_info','sems_subj_score','/SemesterSubjectScoreInfo/Subject/@科目
+                //|/SemesterSubjectScoreInfo/Subject/@科目級別
+                //|/SemesterSubjectScoreInfo/Subject/@不計學分
+                //|/SemesterSubjectScoreInfo/Subject/@不需評分
+                //|/SemesterSubjectScoreInfo/Subject/@修課必選修
+                //|/SemesterSubjectScoreInfo/Subject/@修課校部訂
+                //|/SemesterSubjectScoreInfo/Subject/@原始成績
+                //|/SemesterSubjectScoreInfo/Subject/@學年調整成績
+                //|/SemesterSubjectScoreInfo/Subject/@擇優採計成績
+                //|/SemesterSubjectScoreInfo/Subject/@是否取得學分
+                //|/SemesterSubjectScoreInfo/Subject/@補考成績
+                //|/SemesterSubjectScoreInfo/Subject/@重修成績
+                //|/SemesterSubjectScoreInfo/Subject/@開課分項類別
+                //|/SemesterSubjectScoreInfo/Subject/@開課學分數'
+                //,'ref_student_id in(" + string.Join(",", sids.ToArray()) + @")')
+                //as s0(id integer,d1 text,d2 text,d3 text,d4 text,d5 text,d6 text,d7 text,d8 text,d9 text,d10 text,d11 text,d12 text,d13 text,d14 text) on sems_subj_score.id=s0.id 
+                //{0}
+                //order by sid,學期科目成績年級 asc,學期科目成績學年度 desc,學期科目成績學期";
+                #endregion
+
+                string query = @"
+SELECT
+	sems_subj_score_ext.ref_student_id AS sid
+	, sems_subj_score_ext.grade_year AS 成績年級
+	, sems_subj_score_ext.semester AS 學期
+	, sems_subj_score_ext.school_year AS 學年度
+	, array_to_string(xpath('//Subject/@開課分項類別', subj_score_ele), '')::text AS 分項類別
+	, array_to_string(xpath('//Subject/@科目', subj_score_ele), '')::text AS 科目
+	, array_to_string(xpath('//Subject/@科目級別', subj_score_ele), '')::text AS 科目級別
+	, array_to_string(xpath('//Subject/@開課學分數', subj_score_ele), '')::text AS 學分數
+	, array_to_string(xpath('//Subject/@是否取得學分', subj_score_ele), '')::text AS 取得學分
+	, array_to_string(xpath('//Subject/@修課必選修', subj_score_ele), '')::text AS 必選修
+	, array_to_string(xpath('//Subject/@修課校部訂', subj_score_ele), '')::text AS 校部訂
+	, array_to_string(xpath('//Subject/@是否補修成績', subj_score_ele), '')::text AS 補修成績
+	, array_to_string(xpath('//Subject/@原始成績', subj_score_ele), '')::text AS 原始成績
+	, array_to_string(xpath('//Subject/@補考成績', subj_score_ele), '')::text AS 補考成績
+	, array_to_string(xpath('//Subject/@重修成績', subj_score_ele), '')::text AS 重修成績
+	, array_to_string(xpath('//Subject/@重修學年度', subj_score_ele), '')::text AS 重修學年度
+	, array_to_string(xpath('//Subject/@重修學期', subj_score_ele), '')::text AS 重修學期
+	, array_to_string(xpath('//Subject/@學年調整成績', subj_score_ele), '')::text AS 學年調整成績
+	, array_to_string(xpath('//Subject/@擇優採計成績', subj_score_ele), '')::text AS 手動調整成績
+	, array_to_string(xpath('//Subject/@不計學分', subj_score_ele), '')::text AS 不計學分
+	, array_to_string(xpath('//Subject/@不需評分', subj_score_ele), '')::text AS 不需評分
+FROM (
+		SELECT 
+			sems_subj_score.*
+			, 	unnest(xpath('//SemesterSubjectScoreInfo/Subject', xmlparse(content score_info))) as subj_score_ele
+		FROM 
+			sems_subj_score 
+		WHERE ref_student_id IN ({0})
+	) AS sems_subj_score_ext
+	{1}
+ORDER BY grade_year ASC, semester DESC, school_year 
+";
+
+
+                query = string.Format(query, string.Join(",", sids), quWhere);
                 dt = qh.Select(query);
 
 
@@ -255,7 +301,7 @@ order by sid,學期科目成績年級 asc,學期科目成績學年度 desc,學�
                         retVal.Add(sid, new List<DataRow>());
 
                     // 檢查是否有重讀資料sid 年級、學期、科目名稱、科目級別
-                    string kk=sid+dr["學期科目成績年級"].ToString()+dr["學期科目成績學期"].ToString()+dr["學期科目名稱"].ToString()+dr["學期科目級別"].ToString();
+                    string kk=sid+dr["成績年級"].ToString()+dr["學期"].ToString()+dr["科目"].ToString()+dr["科目級別"].ToString();
                     if (!chkSameDict.ContainsKey(kk))
                     {
                         chkSameDict.Add(kk,true);
@@ -272,11 +318,36 @@ order by sid,學期科目成績年級 asc,學期科目成績學年度 desc,學�
             if (sids.Count > 0)
             {
                 QueryHelper qh = new QueryHelper();
-                string sKey = string.Join(",", sids.ToArray());
-                string query = @"select sems_entry_score.id as seid,ref_student_id as sid,school_year 
-as 學年度,semester as 學期,grade_year as 年級,se1.d1 as 分項, cast(regexp_replace(se1.d2, '^$', '0') as decimal) as 成績 
-from sems_entry_score inner join xpath_table('id','score_info','sems_entry_score','/SemesterEntryScore/Entry/@分項|/SemesterEntryScore/Entry/@成績',
-'ref_student_id in(" + sKey + @")') as se1(id integer,d1 text,d2 character varying(10)) on sems_entry_score.id=se1.id where sems_entry_score.ref_student_id in(" + sKey + @") and sems_entry_score.entry_group=1 order by sid,年級 asc,學年度 desc,學期 asc";
+                //string sKey = string.Join(",", sids.ToArray());
+
+                #region 舊SQL
+                //                string query = @"select sems_entry_score.id as seid,ref_student_id as sid,school_year 
+                //as 學年度,semester as 學期,grade_year as 年級,se1.d1 as 分項, cast(regexp_replace(se1.d2, '^$', '0') as decimal) as 成績 
+                //from sems_entry_score inner join xpath_table('id','score_info','sems_entry_score','/SemesterEntryScore/Entry/@分項|/SemesterEntryScore/Entry/@成績',
+                //'ref_student_id in(" + sKey + @")') as se1(id integer,d1 text,d2 character varying(10)) on sems_entry_score.id=se1.id where sems_entry_score.ref_student_id in(" + sKey + @") and sems_entry_score.entry_group=1 order by sid,年級 asc,學年度 desc,學期 asc";
+                #endregion
+
+                string query = @"
+SELECT
+	sems_entry_score_ext.ref_student_id AS sid
+	, sems_entry_score_ext.grade_year AS 成績年級
+	, sems_entry_score_ext.semester AS 學期
+	, sems_entry_score_ext.school_year AS 學年度
+	, array_to_string(xpath('//Entry/@分項', entry_score_ele), '')::text AS 分項
+	, array_to_string(xpath('//Entry/@成績', entry_score_ele), '')::text AS 成績
+FROM (
+		SELECT 
+			sems_entry_score.*
+			, 	unnest(xpath('//SemesterEntryScore/Entry', xmlparse(content score_info))) as entry_score_ele
+		FROM 
+			sems_entry_score 
+		WHERE 
+			entry_group=1
+			AND ref_student_id IN ({0})
+	) as sems_entry_score_ext
+ORDER BY grade_year ASC, semester DESC, school_year
+";
+                query = string.Format(query, string.Join(",", sids));
                 DataTable dt = qh.Select(query);
 
                 Dictionary<string, bool> chkSameDict = new Dictionary<string, bool>();
@@ -288,7 +359,7 @@ from sems_entry_score inner join xpath_table('id','score_info','sems_entry_score
                         retVal.Add(sid, new List<DataRow>());
 
                         // 檢查是否有重讀資料sid 年級、學期、分項
-                    string kk = sid + dr["年級"].ToString() + dr["學期"].ToString() + dr["分項"].ToString();
+                    string kk = sid + dr["成績年級"].ToString() + dr["學期"].ToString() + dr["分項"].ToString();
                     if (!chkSameDict.ContainsKey(kk))
                     {
                         chkSameDict.Add(kk, true);
