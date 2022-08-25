@@ -150,12 +150,13 @@ namespace SHCollege.Forms
                 _bgWorker.ReportProgress(50);
 
                 // 取得學生類別
-                Dictionary<string, string> StudTagRecDict = new Dictionary<string, string>();
+                Dictionary<string, List<string>> StudTagRecDict = new Dictionary<string, List<string>>();
                 List<StudentTagRecord> StudTagList = StudentTag.SelectByStudentIDs(_StudentIDList);
                 foreach (StudentTagRecord rec in StudTagList)
                 {
                     if (!StudTagRecDict.ContainsKey(rec.RefStudentID))
-                        StudTagRecDict.Add(rec.RefStudentID, rec.FullName);                
+                        StudTagRecDict.Add(rec.RefStudentID, new List<string>());
+                    StudTagRecDict[rec.RefStudentID].Add(rec.FullName);
                 } 
 
                 string GSchoolYear = (int.Parse(School.DefaultSchoolYear) + 1).ToString();
@@ -258,10 +259,10 @@ namespace SHCollege.Forms
                                     Value = "1";
                                     if (StudTagRecDict.ContainsKey(data.RefStudentID))
                                     {
-                                        if (_StudTagName1 == StudTagRecDict[data.RefStudentID])
+                                        if (StudTagRecDict[data.RefStudentID].Contains(_StudTagName1))
                                             Value = "2";
 
-                                        if (_StudTagName2 == StudTagRecDict[data.RefStudentID])
+                                        if (StudTagRecDict[data.RefStudentID].Contains(_StudTagName2))
                                             Value = "3";
                                     }
                                     break;
