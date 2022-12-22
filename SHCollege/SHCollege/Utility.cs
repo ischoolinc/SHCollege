@@ -283,7 +283,7 @@ FROM (
 		WHERE ref_student_id IN ({0})
 	) AS sems_subj_score_ext
 	{1}
-ORDER BY grade_year ASC, semester DESC, school_year 
+ORDER BY grade_year ASC,  school_year DESC, semester  DESC
 ";
 
 
@@ -345,7 +345,7 @@ FROM (
 			entry_group=1
 			AND ref_student_id IN ({0})
 	) as sems_entry_score_ext
-ORDER BY grade_year ASC, semester DESC, school_year
+ORDER BY grade_year ASC,  school_year DESC, semester DESC
 ";
                 query = string.Format(query, string.Join(",", sids));
                 DataTable dt = qh.Select(query);
