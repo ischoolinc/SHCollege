@@ -88,7 +88,7 @@ namespace SHCollege
             path = Path.Combine(path, reportName + ".xls");
 
             Workbook wb = inputXls;
-         
+
             try
             {
                 wb.Save(path, SaveFormat.Excel97To2003);
@@ -290,7 +290,7 @@ ORDER BY grade_year ASC,  school_year DESC, semester  DESC
                 query = string.Format(query, string.Join(",", sids), quWhere);
                 dt = qh.Select(query);
 
-
+                // 科目重讀判斷
                 Dictionary<string, bool> chkSameDict = new Dictionary<string, bool>();
 
                 foreach (DataRow dr in dt.Rows)
@@ -301,13 +301,21 @@ ORDER BY grade_year ASC,  school_year DESC, semester  DESC
                         retVal.Add(sid, new List<DataRow>());
 
                     // 檢查是否有重讀資料sid 年級、學期、科目名稱、科目級別
-                    string kk=sid+dr["成績年級"].ToString()+dr["學期"].ToString()+dr["科目"].ToString()+dr["科目級別"].ToString();
+                    //string kk = sid + dr["成績年級"].ToString() + dr["學期"].ToString() + dr["科目"].ToString() + dr["科目級別"].ToString();
+
+                    //2023-01-06
+                    //https://3.basecamp.com/4399967/buckets/15765350/todos/5620389814#__recording_5701708410
+                    //重讀後對開課程可能會開在不同學期，因此需要將      原key 成績年級+學期 + 科目 + 級別→改為 成績年級+科目 + 級別
+                    //Q: 108 - 1 2 年級 國文III 80分，  108 - 2 2年級 國文IV 90分， 109 - 2 2年級 國文III 100分，這樣高二下國文 要算多少分? (重修高二下，但是 原本的國文III從上學期改到下學期修，而國文IV又沒有重複key，故有兩個成績)
+                    //A: 可為和華商確認過不會有這種情境。
+                    string kk = sid + dr["成績年級"].ToString() +  dr["科目"].ToString() + dr["科目級別"].ToString();
                     if (!chkSameDict.ContainsKey(kk))
                     {
-                        chkSameDict.Add(kk,true);
+                        chkSameDict.Add(kk, true);
                         retVal[sid].Add(dr);
                     }
                 }
+
             }
             return retVal;
         }
@@ -358,14 +366,14 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
                     if (!retVal.ContainsKey(sid))
                         retVal.Add(sid, new List<DataRow>());
 
-                        // 檢查是否有重讀資料sid 年級、學期、分項
+                    //檢查是否有重讀資料sid 年級、學期、分項
                     string kk = sid + dr["成績年級"].ToString() + dr["學期"].ToString() + dr["分項"].ToString();
                     if (!chkSameDict.ContainsKey(kk))
                     {
                         chkSameDict.Add(kk, true);
                         retVal[sid].Add(dr);
                     }
-                    
+
                 }
             }
             return retVal;
