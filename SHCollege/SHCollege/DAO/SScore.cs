@@ -30,7 +30,7 @@ namespace SHCollege.DAO
             if (Credit > 0)
             {
                 // 取到整數位
-                return Math.Round((SumScore / Credit), 0);
+                return Math.Round((SumScore / Credit), 0, MidpointRounding.AwayFromZero);
 
             }
             else
