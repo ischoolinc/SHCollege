@@ -142,6 +142,10 @@
       <HintPath>Library\SmartSchool.ErrorReporting.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SmartSchool.Evaluation.HS, Version=1.0.7.121, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Library\SmartSchool.Evaluation.HS.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -295,6 +299,8 @@
     <Content Include="Library\SmartSchool.ErrorReporting.dll" />
     <Content Include="Library\SmartSchool.ErrorReporting.pdb" />
     <Content Include="Library\SmartSchool.ErrorReporting.xml" />
+    <Content Include="Library\SmartSchool.Evaluation.HS.dll" />
+    <Content Include="Library\SmartSchool.Evaluation.HS.pdb" />
     <Content Include="Report.png" />
     <Content Include="匯出.png" />
     <Content Include="設定.png" />

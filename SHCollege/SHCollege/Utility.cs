@@ -595,4 +595,251 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
             return Value;
         }
     }
+
+    public class RetakeScoreInfo
+    {
+        public string StudentID { get; set; }
+        public string SchoolYear { get; set; }
+        public string Semester { get; set; }
+        public string Subject { get; set; }
+        public string SubjectLevel { get; set; }
+        public string RetakeScore { get; set; }
+    }
+
+    public static class RetakeScoreHelper
+    {
+        /// <summary>
+        /// 取得多位學生的再次修習成績資料
+        /// </summary>
+        /// <param name="studentIDs">學生ID清單</param>
+        /// <returns>List of 再次修習成績資料</returns>
+        public static List<RetakeScoreInfo> GetRetakeScores(List<string> studentIDs)
+        {
+            List<RetakeScoreInfo> result = new List<RetakeScoreInfo>();
+            if (studentIDs == null || studentIDs.Count == 0)
+                return result;
+
+            string idList = string.Join(",", studentIDs.Select(id => $"'{id}'"));
+
+            string sql = $@"
+            WITH student_score AS (
+                SELECT
+                    ref_student_id AS student_id,
+                    school_year,
+                    semester,
+                    subject,
+                    subj_level,
+                    jsonb_array_elements(detail) AS detail
+                FROM
+                    student_learning_history
+                WHERE
+                    serial_no = '5.3'
+                    AND name = '重讀成績'
+                    AND ref_student_id IN ({idList})
+            ),
+            ranked_scores AS (
+                SELECT
+                    student_id,
+                    school_year,
+                    semester,
+                    subject,
+                    subj_level,
+                    detail->>'name' AS name,
+                    detail->>'value' AS value,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY student_id, subject, subj_level 
+                        ORDER BY school_year DESC, semester DESC
+                    ) AS rn
+                FROM student_score
+                WHERE detail->>'name' = '再次修習成績'
+            )
+            SELECT
+                student_id,
+                school_year,
+                semester,
+                subject,
+                subj_level,
+                name,
+                value
+            FROM ranked_scores
+            WHERE rn = 1
+            ORDER BY student_id, school_year, semester, subject;
+        ";
+
+            FISCA.Data.QueryHelper qh = new FISCA.Data.QueryHelper();
+            System.Data.DataTable dt = qh.Select(sql);
+
+            foreach (System.Data.DataRow dr in dt.Rows)
+            {
+                result.Add(new RetakeScoreInfo
+                {
+                    StudentID = dr["student_id"] + "",
+                    SchoolYear = dr["school_year"] + "",
+                    Semester = dr["semester"] + "",
+                    Subject = dr["subject"] + "",
+                    SubjectLevel = dr["subj_level"] + "",
+                    RetakeScore = dr["value"] + ""
+                });
+            }
+
+            return result;
+        }
+    }
+
+    public enum RoundMode
+    {
+        四捨五入,
+        無條件捨去,
+        無條件進位
+    }
+
+    public static class ScoreCalcHelper
+    {
+        /// <summary>
+        /// 計算所有學生各年級學期的分項成績（如學業、體育等），回傳可供比對的結果。
+        /// </summary>
+        /// <param name="SemsSubjDataDict">學生ID對應的所有科目成績資料</param>
+        /// <param name="getScoreCalcRule">取得指定學生的成績計算規則方法</param>
+        /// <returns>Dictionary<sid, Dictionary<(年級,學期), Dictionary<分項,分數>>> </returns>
+        public static Dictionary<string, Dictionary<(int, int), Dictionary<string, decimal>>>
+            CalculateAllStudentSemesterEntryScores(
+                Dictionary<string, List<DataRow>> SemsSubjDataDict,
+                Func<string, System.Xml.XmlElement> getScoreCalcRule)
+        {
+            var resultDict = new Dictionary<string, Dictionary<(int, int), Dictionary<string, decimal>>>();
+
+            foreach (var sid in SemsSubjDataDict.Keys)
+            {
+                var subjRows = SemsSubjDataDict[sid];
+                var gradeSemesterGroups = subjRows
+                    .GroupBy(dr => new
+                    {
+                        GradeYear = dr["成績年級"].ToString(),
+                        Semester = dr["學期"].ToString()
+                    });
+
+                foreach (var group in gradeSemesterGroups)
+                {
+                    int gradeYear = int.Parse(group.Key.GradeYear);
+                    int semester = int.Parse(group.Key.Semester);
+
+                    var entryScores = CalcSemesterEntryScore(subjRows, sid, gradeYear, semester, getScoreCalcRule, true);
+
+                    if (!resultDict.ContainsKey(sid))
+                        resultDict[sid] = new Dictionary<(int, int), Dictionary<string, decimal>>();
+
+                    resultDict[sid][(gradeYear, semester)] = entryScores;
+                }
+            }
+            return resultDict;
+        }
+
+        /// <summary>
+        /// 依據學生成績計算規則，計算該生指定成績年級學期的分項成績（如學業、體育等）。
+        /// </summary>
+        public static Dictionary<string, decimal> CalcSemesterEntryScore(
+            List<DataRow> subjScoreRows,
+            string studentID,
+            int gradeYear,
+            int semester,
+            Func<string, System.Xml.XmlElement> getScoreCalcRule,
+            bool chkSScore)
+        {
+            var ruleElement = getScoreCalcRule(studentID);
+            int decimals = 2;
+            RoundMode mode = RoundMode.四捨五入; // 預設
+            var takeScoreFields = new List<string> { "原始成績" };
+
+            // 解析規則
+            if (ruleElement != null)
+            {
+                var node = ruleElement.SelectSingleNode("各項成績計算位數/學期分項成績計算位數");
+                if (node != null && int.TryParse((node as System.Xml.XmlElement)?.GetAttribute("位數"), out int d))
+                    decimals = d;
+                bool tryParsebool;
+                if (bool.TryParse((node as System.Xml.XmlElement)?.GetAttribute("四捨五入"), out tryParsebool) && tryParsebool)
+                    mode = RoundMode.四捨五入;
+                if (bool.TryParse((node as System.Xml.XmlElement)?.GetAttribute("無條件捨去"), out tryParsebool) && tryParsebool)
+                    mode = RoundMode.無條件捨去;
+                if (bool.TryParse((node as System.Xml.XmlElement)?.GetAttribute("無條件進位"), out tryParsebool) && tryParsebool)
+                    mode = RoundMode.無條件進位;
+                var takeNode = ruleElement.SelectSingleNode("分項成績計算採計成績欄位");
+                if (takeNode != null)
+                {
+                    takeScoreFields.Clear();
+                    foreach (string field in new[] { "原始成績", "補考成績" })
+                    {
+                        if (((System.Xml.XmlElement)takeNode).GetAttribute(field) == "True")
+                            takeScoreFields.Add(field);
+                    }
+                }
+            }
+            // 根據 chkSScore 覆蓋 takeScoreFields
+            if (chkSScore)
+            {
+                takeScoreFields.Clear();
+                takeScoreFields.Add("原始成績");
+            }
+            else
+            {
+                takeScoreFields.Clear();
+                takeScoreFields.AddRange(new[] { "原始成績", "補考成績" });
+            }
+
+            var entryCreditCount = new Dictionary<string, decimal>();
+            var entryDividend = new Dictionary<string, decimal>();
+
+            foreach (var dr in subjScoreRows)
+            {
+                if (dr["成績年級"].ToString() == gradeYear.ToString() && dr["學期"].ToString() == semester.ToString())
+                {
+                    if (dr.Table.Columns.Contains("不需評分") && dr["不需評分"].ToString() == "是")
+                        continue;
+                    if (dr.Table.Columns.Contains("不計學分") && dr["不計學分"].ToString() == "是")
+                        continue;
+                    if (dr.Table.Columns.Contains("補修成績") && dr["補修成績"].ToString() == "是")
+                        continue;
+
+                    string entry = dr["分項類別"].ToString();
+                    if (entry == "學業")
+                        entry = "學業成績總平均";
+                    decimal credit = 0, maxScore = 0, tryScore = 0;
+                    decimal.TryParse(dr["學分數"].ToString(), out credit);
+
+                    foreach (var field in takeScoreFields)
+                    {
+                        if (dr.Table.Columns.Contains(field) && decimal.TryParse(dr[field].ToString(), out tryScore))
+                            if (tryScore > maxScore) maxScore = tryScore;
+                    }
+
+                    if (!entryCreditCount.ContainsKey(entry))
+                        entryCreditCount[entry] = 0;
+                    if (!entryDividend.ContainsKey(entry))
+                        entryDividend[entry] = 0;
+
+                    entryCreditCount[entry] += credit;
+                    entryDividend[entry] += maxScore * credit;
+                }
+            }
+
+            var result = new Dictionary<string, decimal>();
+            foreach (var entry in entryCreditCount.Keys)
+            {
+                if (entryCreditCount[entry] > 0)
+                {
+                    decimal avg = entryDividend[entry] / entryCreditCount[entry];
+                    decimal pow = (decimal)Math.Pow(10, decimals);
+                    decimal rounded;
+                    if (mode == RoundMode.無條件捨去)
+                        rounded = Math.Floor(avg * pow) / pow;
+                    else if (mode == RoundMode.無條件進位)
+                        rounded = Math.Ceiling(avg * pow) / pow;
+                    else // 四捨五入
+                        rounded = Math.Round(avg, decimals, MidpointRounding.AwayFromZero);
+                    result[entry] = rounded;
+                }
+            }
+            return result;
+        }
+    }
 }
