@@ -745,6 +745,30 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
             Func<string, System.Xml.XmlElement> getScoreCalcRule,
             bool chkSScore)
         {
+                    // Todo 2: 新增 Debug 功能 - 清空 debug.txt 檔案
+        // try
+        // {
+        //     if (System.IO.File.Exists("debug.txt"))
+        //         System.IO.File.Delete("debug.txt");
+        // }
+        // catch (Exception ex)
+        // {
+        //     // 如果無法刪除檔案，可以選擇忽略或記錄錯誤
+        //     Console.WriteLine($"[WARNING] 無法清空 debug.txt: {ex.Message}");
+        // }
+
+        // Todo 2: 記錄方法開始資訊
+        // try
+        // {
+        //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] ===== CalcSemesterEntryScore 開始 =====\n");
+        //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 學生ID: {studentID}, 年級: {gradeYear}, 學期: {semester}\n");
+        //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 使用成績類型: {(chkSScore ? "原始成績" : "原始及補考成績擇優")}\n\n");
+        // }
+        // catch (Exception ex)
+        // {
+        //     Console.WriteLine($"[ERROR] 無法寫入 debug.txt: {ex.Message}");
+        // }
+
             var ruleElement = getScoreCalcRule(studentID);
             int decimals = 2;
             RoundMode mode = RoundMode.四捨五入; // 預設
@@ -788,6 +812,8 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
 
             var entryCreditCount = new Dictionary<string, decimal>();
             var entryDividend = new Dictionary<string, decimal>();
+            // Todo 1: 新增科目名稱記錄字典
+            var entrySubjects = new Dictionary<string, List<string>>();
 
             foreach (var dr in subjScoreRows)
             {
@@ -803,6 +829,30 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
                     string entry = dr["分項類別"].ToString();
                     if (entry == "學業")
                         entry = "學業成績總平均";
+
+                    // Todo 1: 取得科目名稱
+                    string subjectName = "";
+                    if (dr.Table.Columns.Contains("科目"))
+                        subjectName = dr["科目"].ToString();
+                    else if (dr.Table.Columns.Contains("subject"))
+                        subjectName = dr["subject"].ToString();
+
+                    // Todo 1: 記錄科目名稱到對應的分項
+                    if (!entrySubjects.ContainsKey(entry))
+                        entrySubjects[entry] = new List<string>();
+                    if (!string.IsNullOrEmpty(subjectName) && !entrySubjects[entry].Contains(subjectName))
+                        entrySubjects[entry].Add(subjectName);
+
+                                // Todo 2: Debug 記錄科目名稱到檔案
+            // try
+            // {
+            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 科目名稱: {subjectName}\n");
+            // }
+            // catch (Exception ex)
+            // {
+            //     Console.WriteLine($"[ERROR] 無法寫入 debug.txt: {ex.Message}");
+            // }
+
                     decimal credit = 0, maxScore = 0, tryScore = 0;
                     decimal.TryParse(dr["學分數"].ToString(), out credit);
 
@@ -811,6 +861,19 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
                         if (dr.Table.Columns.Contains(field) && decimal.TryParse(dr[field].ToString(), out tryScore))
                             if (tryScore > maxScore) maxScore = tryScore;
                     }
+
+                                // Todo 2: Debug 記錄所有計算值到檔案
+            // try
+            // {
+            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 最高成績 (maxScore): {maxScore}\n");
+            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 學分數 (credit): {maxScore}\n");
+            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 加權分數 (maxScore * credit): {maxScore * credit}\n");
+            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 科目:{subjectName} | 最高成績:{maxScore} | 學分數:{credit} | 加權分數:{maxScore * credit}\n\n");
+            // }
+            // catch (Exception ex)
+            // {
+            //     Console.WriteLine($"[ERROR] 無法寫入 debug.txt: {ex.Message}");
+            // }
 
                     if (!entryCreditCount.ContainsKey(entry))
                         entryCreditCount[entry] = 0;
@@ -839,6 +902,23 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
                     result[entry] = rounded;
                 }
             }
+
+            // Todo 2: 記錄分項成績計算結果
+            // try
+            // {
+            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] ===== 分項成績計算結果 =====\n");
+            //     foreach (var entry in result.Keys)
+            //     {
+            //     //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] {entry}: {result[entry]}\n");
+            //     }
+            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] ===============================\n");
+            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] ===== CalcSemesterEntryScore 結束 =====\n\n");
+            // }
+            // catch (Exception ex)
+            // {
+            //     Console.WriteLine($"[ERROR] 無法寫入 debug.txt: {ex.Message}");
+            // }
+
             return result;
         }
     }

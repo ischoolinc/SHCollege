@@ -1319,23 +1319,15 @@ namespace SHCollege.Forms
             }
             return "";
         }
-        // 工具方法：取得分項欄位名稱
-        private string GetEntryFieldName(string fieldName, int gradeYear, int semester)
+        // 工具方法：分項欄位命名（如學業成績總平均(高二下)）
+        private string GetEntryFieldName(string entry, int gradeYear, int semester)
         {
-            string retVal = fieldName;
-            if (fieldName.Contains("(高一上)"))
-                retVal = fieldName.Replace("(高一上)", $"({GetGradeSemesterString(gradeYear, semester)})");
-            else if (fieldName.Contains("(高一下)"))
-                retVal = fieldName.Replace("(高一下)", $"({GetGradeSemesterString(gradeYear, semester)})");
-            else if (fieldName.Contains("(高二上)"))
-                retVal = fieldName.Replace("(高二上)", $"({GetGradeSemesterString(gradeYear, semester)})");
-            else if (fieldName.Contains("(高二下)"))
-                retVal = fieldName.Replace("(高二下)", $"({GetGradeSemesterString(gradeYear, semester)})");
-            else if (fieldName.Contains("(高三上)"))
-                retVal = fieldName.Replace("(高三上)", $"({GetGradeSemesterString(gradeYear, semester)})");
-            else if (fieldName.Contains("(高三下)"))
-                retVal = fieldName.Replace("(高三下)", $"({GetGradeSemesterString(gradeYear, semester)})");
-            return retVal;
+            string[] gradeMap = { "", "高一", "高二", "高三", "高四", "高五", "高六" };
+            string[] semMap = { "", "上", "下" };
+            string postfix = "";
+            if (gradeYear >= 1 && gradeYear <= 6 && semester >= 1 && semester <= 2)
+                postfix = $"({gradeMap[gradeYear]}{semMap[semester]})";
+            return entry + postfix;
         }
         // 工具方法：取得年級與學期字串
         private string GetGradeSemesterString(int gradeYear, int semester)
