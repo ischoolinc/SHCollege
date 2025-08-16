@@ -9,7 +9,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Data;
 
 namespace SHCollege.Forms
 {
@@ -20,7 +19,7 @@ namespace SHCollege.Forms
 
         List<UDT_SHSATStudent> _SATStudentList;
         string _RegCode = "";
-        string _LocalCode = "";
+        
         List<string> _ColumnList;
         DataTable _dt;
         ErrorProvider _errorP;

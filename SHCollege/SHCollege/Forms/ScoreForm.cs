@@ -782,6 +782,12 @@ namespace SHCollege.Forms
                         }
                     }
 
+                    // 取得再次修習學生 ID
+                    List<string> retakeSidList = retakeDict.Keys.ToList();
+
+                    // 取得再次修習學生學期科目成績，全部都要計算
+                    Dictionary<string, List<DataRow>> retakeSemsSubjDataDict = Utility.GetStudentSemsSubjScoreByStudentID(retakeSidList, false);
+
                     // --- 再次修習成績覆蓋 ---
                     if (retakeDict.ContainsKey(sid))
                     {
@@ -789,8 +795,9 @@ namespace SHCollege.Forms
                         foreach (var retake in retakeDict[sid])
                         {
                             string gradeYear = GetGradeYearFromSemsSubjData(SemsSubjDataDict, sid, retake.Subject, retake.Semester, retake.SubjectLevel);
-                            int g, s;
+                            int g;
                             int.TryParse(gradeYear, out g);
+                            int s;
                             int.TryParse(retake.Semester, out s);
                             string colName = $"{retake.Subject}({GetGradeSemesterString(g, s)})";
                             if (exportDT.Columns.Contains(colName))
@@ -813,6 +820,23 @@ namespace SHCollege.Forms
                                     match["補考成績"] = retake.RetakeScore;
                                 }
                             }
+
+                            // 需要重新計算使用
+                            if (retakeSemsSubjDataDict.ContainsKey(sid))
+                            {
+                                var subjRows = retakeSemsSubjDataDict[sid];
+                                var match = subjRows.FirstOrDefault(r =>
+                                    r["科目"].ToString().Trim() == retake.Subject &&
+                                    r["學期"].ToString() == retake.Semester &&
+                                    (string.IsNullOrEmpty(gradeYear) || r["成績年級"].ToString() == gradeYear) &&
+                                    (string.IsNullOrEmpty(retake.SubjectLevel) || (r.Table.Columns.Contains("科目級別") && r["科目級別"].ToString() == retake.SubjectLevel))
+                                );
+                                if (match != null)
+                                {
+                                    match["原始成績"] = retake.RetakeScore;
+                                    match["補考成績"] = retake.RetakeScore;
+                                }
+                            }
                         }
                         // 2. 整理所有需要重新計算的 (gradeYear, semester)
                         var recalcSet = new HashSet<(string, string)>();
@@ -822,9 +846,9 @@ namespace SHCollege.Forms
                             recalcSet.Add((gradeYear, retake.Semester));
                         }
                         // 3. 針對每個 (gradeYear, semester) 重新計算分項成績
-                        if (SemsSubjDataDict.ContainsKey(sid))
+                        if (retakeSemsSubjDataDict.ContainsKey(sid))
                         {
-                            var subjRows = SemsSubjDataDict[sid];
+                            var subjRows = retakeSemsSubjDataDict[sid];
                             foreach (var (gradeYear, semester) in recalcSet)
                             {
                                 int g, s;
@@ -834,9 +858,16 @@ namespace SHCollege.Forms
                                     // 依現有分項欄位命名規則覆蓋 newRow
                                     foreach (var entry in entryScores)
                                     {
+                                        // 五學期成績
                                         string entryColName = GetEntryFieldName(entry.Key, g, s);
                                         if (exportDT.Columns.Contains(entryColName))
                                             newRow[entryColName] = entry.Value.ToString();
+
+                                        // 高一、高二在校名稱不同
+                                        string entryColName1 = GetEntryFieldName(entry.Key, g, s);
+                                        entryColName1 = entryColName1.Replace("成績", "");
+                                        if (exportDT.Columns.Contains(entryColName1))
+                                            newRow[entryColName1] = entry.Value.ToString();
                                     }
                                 }
                             }

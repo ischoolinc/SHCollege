@@ -308,7 +308,7 @@ ORDER BY grade_year ASC,  school_year DESC, semester  DESC
                     //重讀後對開課程可能會開在不同學期，因此需要將      原key 成績年級+學期 + 科目 + 級別→改為 成績年級+科目 + 級別
                     //Q: 108 - 1 2 年級 國文III 80分，  108 - 2 2年級 國文IV 90分， 109 - 2 2年級 國文III 100分，這樣高二下國文 要算多少分? (重修高二下，但是 原本的國文III從上學期改到下學期修，而國文IV又沒有重複key，故有兩個成績)
                     //A: 可為和華商確認過不會有這種情境。
-                    string kk = sid + dr["成績年級"].ToString() +  dr["科目"].ToString() + dr["科目級別"].ToString();
+                    string kk = sid + dr["成績年級"].ToString() + dr["科目"].ToString() + dr["科目級別"].ToString();
                     if (!chkSameDict.ContainsKey(kk))
                     {
                         chkSameDict.Add(kk, true);
@@ -594,6 +594,55 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
             Value.Add("班級");
             return Value;
         }
+
+        /// <summary>
+        /// 取得學生成績計算規則
+        /// 依多筆學生 ID，回傳每位學生的成績計算規則內容
+        /// 優先使用學生的 ref_score_calc_rule_id，否則使用班級的 ref_score_calc_rule_id
+        /// </summary>
+        /// <param name="studentIds">學生ID列表</param>
+        /// <returns>學生ID和成績計算規則XML內容的字典</returns>
+        public static Dictionary<string, string> GetStudentScoreCalcRules(List<string> studentIds)
+        {
+            Dictionary<string, string> retVal = new Dictionary<string, string>();
+
+            if (studentIds == null || studentIds.Count == 0)
+                return retVal;
+
+            try
+            {
+                QueryHelper qh = new QueryHelper();
+
+                // 根據 大學繁星調整0815.md 的 Todo 1 實作
+                // 優先使用學生的 ref_score_calc_rule_id，否則使用班級的 ref_score_calc_rule_id
+                string query = @"
+SELECT 
+    s.id AS student_id,
+    scr.content
+FROM student s
+LEFT JOIN class c ON c.id = s.ref_class_id
+LEFT JOIN score_calc_rule scr 
+    ON scr.id = COALESCE(s.ref_score_calc_rule_id, c.ref_score_calc_rule_id)
+WHERE s.id = ANY(ARRAY[" + string.Join(",", studentIds) + "])";
+
+                DataTable dt = qh.Select(query);
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    string studentId = dr["student_id"].ToString();
+                    string content = dr["content"]?.ToString() ?? null;
+
+                    retVal[studentId] = content;
+                }
+            }
+            catch (Exception ex)
+            {
+                // 記錄錯誤但不中斷程序
+                System.Diagnostics.Debug.WriteLine($"GetStudentScoreCalcRules 執行錯誤: {ex.Message}");
+            }
+
+            return retVal;
+        }
     }
 
     public class RetakeScoreInfo
@@ -684,6 +733,8 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
 
             return result;
         }
+
+
     }
 
     public enum RoundMode
@@ -692,6 +743,8 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
         無條件捨去,
         無條件進位
     }
+
+
 
     public static class ScoreCalcHelper
     {
@@ -745,32 +798,32 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
             Func<string, System.Xml.XmlElement> getScoreCalcRule,
             bool chkSScore)
         {
-                    // Todo 2: 新增 Debug 功能 - 清空 debug.txt 檔案
-        // try
-        // {
-        //     if (System.IO.File.Exists("debug.txt"))
-        //         System.IO.File.Delete("debug.txt");
-        // }
-        // catch (Exception ex)
-        // {
-        //     // 如果無法刪除檔案，可以選擇忽略或記錄錯誤
-        //     Console.WriteLine($"[WARNING] 無法清空 debug.txt: {ex.Message}");
-        // }
+            //// Todo 2: 新增 Debug 功能 - 清空 debug.txt 檔案
+            //try
+            //{
+            //    if (System.IO.File.Exists("debug.txt"))
+            //        System.IO.File.Delete("debug.txt");
+            //}
+            //catch (Exception ex)
+            //{
+            //    // 如果無法刪除檔案，可以選擇忽略或記錄錯誤
+            //    Console.WriteLine($"[WARNING] 無法清空 debug.txt: {ex.Message}");
+            //}
 
-        // Todo 2: 記錄方法開始資訊
-        // try
-        // {
-        //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] ===== CalcSemesterEntryScore 開始 =====\n");
-        //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 學生ID: {studentID}, 年級: {gradeYear}, 學期: {semester}\n");
-        //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 使用成績類型: {(chkSScore ? "原始成績" : "原始及補考成績擇優")}\n\n");
-        // }
-        // catch (Exception ex)
-        // {
-        //     Console.WriteLine($"[ERROR] 無法寫入 debug.txt: {ex.Message}");
-        // }
+            //// Todo 2: 記錄方法開始資訊
+            //try
+            //{
+            //    System.IO.File.AppendAllText("debug.txt", $"[DEBUG] ===== CalcSemesterEntryScore 開始 =====\n");
+            //    System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 學生ID: {studentID}, 年級: {gradeYear}, 學期: {semester}\n");
+            //    System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 使用成績類型: {(chkSScore ? "原始成績" : "原始及補考成績擇優")}\n\n");
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine($"[ERROR] 無法寫入 debug.txt: {ex.Message}");
+            //}
 
             var ruleElement = getScoreCalcRule(studentID);
-            int decimals = 2;
+            int decimals = 1;
             RoundMode mode = RoundMode.四捨五入; // 預設
             var takeScoreFields = new List<string> { "原始成績" };
 
@@ -843,15 +896,15 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
                     if (!string.IsNullOrEmpty(subjectName) && !entrySubjects[entry].Contains(subjectName))
                         entrySubjects[entry].Add(subjectName);
 
-                                // Todo 2: Debug 記錄科目名稱到檔案
-            // try
-            // {
-            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 科目名稱: {subjectName}\n");
-            // }
-            // catch (Exception ex)
-            // {
-            //     Console.WriteLine($"[ERROR] 無法寫入 debug.txt: {ex.Message}");
-            // }
+                    ////Todo 2: Debug 記錄科目名稱到檔案
+                    //try
+                    //{
+                    //    System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 科目名稱: {subjectName}\n");
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    Console.WriteLine($"[ERROR] 無法寫入 debug.txt: {ex.Message}");
+                    //}
 
                     decimal credit = 0, maxScore = 0, tryScore = 0;
                     decimal.TryParse(dr["學分數"].ToString(), out credit);
@@ -862,18 +915,18 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
                             if (tryScore > maxScore) maxScore = tryScore;
                     }
 
-                                // Todo 2: Debug 記錄所有計算值到檔案
-            // try
-            // {
-            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 最高成績 (maxScore): {maxScore}\n");
-            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 學分數 (credit): {maxScore}\n");
-            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 加權分數 (maxScore * credit): {maxScore * credit}\n");
-            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 科目:{subjectName} | 最高成績:{maxScore} | 學分數:{credit} | 加權分數:{maxScore * credit}\n\n");
-            // }
-            // catch (Exception ex)
-            // {
-            //     Console.WriteLine($"[ERROR] 無法寫入 debug.txt: {ex.Message}");
-            // }
+                    //// Todo 2: Debug 記錄所有計算值到檔案
+                    //try
+                    //{
+                    //    System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 最高成績 (maxScore): {maxScore}\n");
+                    //    System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 學分數 (credit): {maxScore}\n");
+                    //    System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 加權分數 (maxScore * credit): {maxScore * credit}\n");
+                    //    System.IO.File.AppendAllText("debug.txt", $"[DEBUG] 科目:{subjectName} | 最高成績:{maxScore} | 學分數:{credit} | 加權分數:{maxScore * credit}\n\n");
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    Console.WriteLine($"[ERROR] 無法寫入 debug.txt: {ex.Message}");
+                    //}
 
                     if (!entryCreditCount.ContainsKey(entry))
                         entryCreditCount[entry] = 0;
@@ -903,21 +956,21 @@ ORDER BY grade_year ASC,  school_year DESC, semester DESC
                 }
             }
 
-            // Todo 2: 記錄分項成績計算結果
-            // try
-            // {
-            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] ===== 分項成績計算結果 =====\n");
-            //     foreach (var entry in result.Keys)
-            //     {
-            //     //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] {entry}: {result[entry]}\n");
-            //     }
-            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] ===============================\n");
-            //     System.IO.File.AppendAllText("debug.txt", $"[DEBUG] ===== CalcSemesterEntryScore 結束 =====\n\n");
-            // }
-            // catch (Exception ex)
-            // {
-            //     Console.WriteLine($"[ERROR] 無法寫入 debug.txt: {ex.Message}");
-            // }
+            //// Todo 2: 記錄分項成績計算結果
+            //try
+            //{
+            //    System.IO.File.AppendAllText("debug.txt", $"[DEBUG] ===== 分項成績計算結果 =====\n");
+            //    foreach (var entry in result.Keys)
+            //    {
+            //        System.IO.File.AppendAllText("debug.txt", $"[DEBUG] {entry}: {result[entry]}\n");
+            //    }
+            //    System.IO.File.AppendAllText("debug.txt", $"[DEBUG] ===============================\n");
+            //    System.IO.File.AppendAllText("debug.txt", $"[DEBUG] ===== CalcSemesterEntryScore 結束 =====\n\n");
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine($"[ERROR] 無法寫入 debug.txt: {ex.Message}");
+            //}
 
             return result;
         }
