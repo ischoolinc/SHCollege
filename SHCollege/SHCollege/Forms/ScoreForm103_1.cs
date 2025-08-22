@@ -29,6 +29,12 @@ namespace SHCollege.Forms
         // 使用原始成績
         bool _chkSScore = true;
 
+        // 學生成績計算規則字典
+        Dictionary<string, string> StudentScoreCalcRules;
+
+        // 再次修習成績欄位名稱對照字典
+        Dictionary<string, string> retakeScoreNameMappingDict;
+
         public ScoreForm103_1()
         {
             InitializeComponent();
@@ -223,6 +229,32 @@ namespace SHCollege.Forms
                     }
                 }
 
+                // 建立再次修習成績欄位名稱對照字典
+                retakeScoreNameMappingDict = new Dictionary<string, string>();
+                foreach (var fieldMapping in _ScoreNameMappingDict)
+                {
+                    string fieldName = fieldMapping.Key;           // 欄位名稱 (如: "國語文(高一上)")
+                    List<string> subjectList = fieldMapping.Value; // 科目列表 (如: ["國語文"])
+                    
+                    // 提取學期資訊
+                    string semesterInfo = ExtractSemesterInfo(fieldName);
+                    
+                    // 如果成功提取到學期資訊
+                    if (!string.IsNullOrEmpty(semesterInfo))
+                    {
+                        foreach (string subject in subjectList)
+                        {
+                            // 建立複合 key：科目名稱 + 學期資訊
+                            string compositeKey = subject + semesterInfo;  // 如: "國語文(高一上)"
+                            
+                            if (!retakeScoreNameMappingDict.ContainsKey(compositeKey))
+                            {
+                                retakeScoreNameMappingDict.Add(compositeKey, fieldName);
+                            }
+                        }
+                    }
+                }
+
                 Dictionary<string, SScore> ssScoreDict = new Dictionary<string, SScore>();
 
                 _bgExporData.ReportProgress(75);
@@ -232,6 +264,9 @@ namespace SHCollege.Forms
                 var retakeDict = retakeScores.GroupBy(r => r.StudentID)
                                             .ToDictionary(g => g.Key, g => g.ToList());
                 var retakeStudentIDs = new HashSet<string>(retakeScores.Select(r => r.StudentID));
+
+                // 取得學生成績計算規則
+                StudentScoreCalcRules = Utility.GetStudentScoreCalcRules(StudentIDList);
                 foreach (DataRow dr in StudBaseList)
                 {
                     ssScoreDict.Clear();
@@ -825,15 +860,27 @@ namespace SHCollege.Forms
                         // 1. 先覆蓋科目成績
                         foreach (var retake in retakeDict[sid])
                         {
-                            string gradeYear = GetGradeYearFromSemsSubjData(SemsSubjDataDict, sid, retake.Subject, retake.Semester, retake.SubjectLevel);
-                            int g;
-                            int.TryParse(gradeYear, out g);
-                            int s;
-                            int.TryParse(retake.Semester, out s);
-                            string colName = $"{retake.Subject}({GetGradeSemesterString(g, s)})";
-                            if (exportDT.Columns.Contains(colName))
+                            string gradeYear = GetGradeYearFromSemsSubjData(retakeSemsSubjDataDict, sid, retake.Subject, retake.Semester, retake.SubjectLevel);
+
+                            // 使用 retakeScoreNameMappingDict 進行欄位名稱比對
+                            string compositeKey = $"{retake.Subject}({GetGradeSemesterString(gradeYear, retake.Semester)})";
+
+                            if (retakeScoreNameMappingDict.ContainsKey(compositeKey))
                             {
-                                newRow[colName] = retake.RetakeScore;
+                                string actualFieldName = retakeScoreNameMappingDict[compositeKey];
+                                if (exportDT.Columns.Contains(actualFieldName))
+                                {
+                                    newRow[actualFieldName] = retake.RetakeScore;
+                                }
+                            }
+                            else
+                            {
+                                // 如果對照字典中沒有找到，則使用原本的字串拼接方式作為備用
+                                string colName = $"{retake.Subject}({GetGradeSemesterString(gradeYear, retake.Semester)})";
+                                if (exportDT.Columns.Contains(colName))
+                                {
+                                    newRow[colName] = retake.RetakeScore;
+                                }
                             }
                             // 覆蓋 subjScoreRows 的原始成績與補考成績
                             if (SemsSubjDataDict.ContainsKey(sid))
@@ -874,7 +921,7 @@ namespace SHCollege.Forms
                         var recalcSet = new HashSet<(string, string)>();
                         foreach (var retake in retakeDict[sid])
                         {
-                            string gradeYear = GetGradeYearFromSemsSubjData(SemsSubjDataDict, sid, retake.Subject, retake.Semester, retake.SubjectLevel);
+                            string gradeYear = GetGradeYearFromSemsSubjData(retakeSemsSubjDataDict, sid, retake.Subject, retake.Semester, retake.SubjectLevel);
                             recalcSet.Add((gradeYear, retake.Semester));
                         }
                         // 3. 針對每個 (gradeYear, semester) 重新計算分項成績
@@ -896,9 +943,8 @@ namespace SHCollege.Forms
                                         if (exportDT.Columns.Contains(entryColName))
                                             newRow[entryColName] = entry.Value.ToString();
 
-                                        // 高一、高二在校名稱不同
-                                        string entryColName1 = GetEntryFieldName(entry.Key, g, s); // 需實作
-                                        entryColName1 = entryColName1.Replace("成績", "");
+                                        // 高一、高二在校名稱不同 (移除"成績"字樣)
+                                        string entryColName1 = entryColName.Replace("成績", "");
                                         if (exportDT.Columns.Contains(entryColName1))
                                             newRow[entryColName1] = entry.Value.ToString();
                                     }
@@ -1305,30 +1351,68 @@ namespace SHCollege.Forms
             return entry + postfix;
         }
 
-        // 工具方法：取得年級與學期字串
-        private string GetGradeSemesterString(int gradeYear, int semester)
+        // 工具方法：年級+學期轉欄位名稱
+        private string GetGradeSemesterString(string gradeYear, string semester)
         {
-            string retVal = "";
-            if (gradeYear == 1)
-                retVal = "高一";
-            else if (gradeYear == 2)
-                retVal = "高二";
-            else if (gradeYear == 3)
-                retVal = "高三";
+            string[] gradeMap = { "", "高一", "高二", "高三", "高四", "高五", "高六" };
+            string[] semMap = { "", "上", "下" };
+            int g, s;
+            if (int.TryParse(gradeYear, out g) && int.TryParse(semester, out s))
+            {
+                if (g >= 1 && g <= 6 && s >= 1 && s <= 2)
+                    return gradeMap[g] + semMap[s];
+            }
+            return gradeYear + "_" + semester;
+        }
 
-            if (semester == 1)
-                retVal += "上";
-            else if (semester == 2)
-                retVal += "下";
-
-            return retVal;
+        // 工具方法：從欄位名稱提取學期資訊
+        private string ExtractSemesterInfo(string fieldName)
+        {
+            // 檢查欄位名稱包含的學期資訊
+            if (fieldName.Contains("(高一上)")) return "(高一上)";
+            if (fieldName.Contains("(高一下)")) return "(高一下)";
+            if (fieldName.Contains("(高二上)")) return "(高二上)";
+            if (fieldName.Contains("(高二下)")) return "(高二下)";
+            if (fieldName.Contains("(高三上)")) return "(高三上)";
+            if (fieldName.Contains("(高三下)")) return "(高三下)";
+            
+            // 如果沒有找到學期資訊，回傳空字串
+            return "";
         }
 
         // 請確認 class ScoreForm103_1 內有如下委派方法：
         private System.Xml.XmlElement _getScoreCalcRule(string studentID)
         {
-            // 請依實際需求取得計算規則，這裡僅為範例
-            return null;
+            try
+            {
+                // 檢查是否有學生成績計算規則資料
+                if (StudentScoreCalcRules == null || !StudentScoreCalcRules.ContainsKey(studentID))
+                {
+                    return null;
+                }
+
+                // 取得學生的成績計算規則 XML 內容
+                string xmlContent = StudentScoreCalcRules[studentID];
+
+                // 如果沒有規則內容，回傳 null
+                if (string.IsNullOrEmpty(xmlContent))
+                {
+                    return null;
+                }
+
+                // 建立 XML 文件並載入內容
+                System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
+                xmlDoc.LoadXml(xmlContent);
+
+                // 回傳根元素
+                return xmlDoc.DocumentElement;
+            }
+            catch (Exception ex)
+            {
+                // 記錄錯誤訊息
+                System.Diagnostics.Debug.WriteLine($"解析學生成績計算規則時發生錯誤: {ex.Message}");
+                return null;
+            }
         }
     }
 }

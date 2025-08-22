@@ -35,6 +35,9 @@ namespace SHCollege.Forms
         // 學生成績計算規則字典
         Dictionary<string, string> StudentScoreCalcRules;
 
+        // 再次修習成績欄位名稱對照字典
+        Dictionary<string, string> retakeScoreNameMappingDict;
+
         public ScoreForm111()
         {
             InitializeComponent();
@@ -206,6 +209,32 @@ namespace SHCollege.Forms
 
                         foreach (string ss in strS)
                             _CalScoreNameMappingDict[fc.FieldName].Add(ss.Trim());
+                    }
+                }
+
+                // 建立再次修習成績欄位名稱對照字典
+                retakeScoreNameMappingDict = new Dictionary<string, string>();
+                foreach (var fieldMapping in _ScoreNameMappingDict)
+                {
+                    string fieldName = fieldMapping.Key;           // 欄位名稱 (如: "國語文(高一上)")
+                    List<string> subjectList = fieldMapping.Value; // 科目列表 (如: ["國語文"])
+
+                    // 提取學期資訊
+                    string semesterInfo = ExtractSemesterInfo(fieldName);
+
+                    // 如果成功提取到學期資訊
+                    if (!string.IsNullOrEmpty(semesterInfo))
+                    {
+                        foreach (string subject in subjectList)
+                        {
+                            // 建立複合 key：科目名稱 + 學期資訊
+                            string compositeKey = subject + semesterInfo;  // 如: "國語文(高一上)"
+
+                            if (!retakeScoreNameMappingDict.ContainsKey(compositeKey))
+                            {
+                                retakeScoreNameMappingDict.Add(compositeKey, fieldName);
+                            }
+                        }
                     }
                 }
 
@@ -802,11 +831,27 @@ namespace SHCollege.Forms
                         // 1. 先覆蓋科目成績
                         foreach (var retake in retakeDict[sid])
                         {
-                            string gradeYear = GetGradeYearFromSemsSubjData(SemsSubjDataDict, sid, retake.Subject, retake.Semester, retake.SubjectLevel);
-                            string colName = $"{retake.Subject}({GetGradeSemesterString(gradeYear, retake.Semester)})";
-                            if (exportDT.Columns.Contains(colName))
+                            string gradeYear = GetGradeYearFromSemsSubjData(retakeSemsSubjDataDict, sid, retake.Subject, retake.Semester, retake.SubjectLevel);
+
+                            // 使用 retakeScoreNameMappingDict 進行欄位名稱比對
+                            string compositeKey = $"{retake.Subject}({GetGradeSemesterString(gradeYear, retake.Semester)})";
+
+                            if (retakeScoreNameMappingDict.ContainsKey(compositeKey))
                             {
-                                newRow[colName] = retake.RetakeScore;
+                                string actualFieldName = retakeScoreNameMappingDict[compositeKey];
+                                if (exportDT.Columns.Contains(actualFieldName))
+                                {
+                                    newRow[actualFieldName] = retake.RetakeScore;
+                                }
+                            }
+                            else
+                            {
+                                // 如果對照字典中沒有找到，則使用原本的字串拼接方式作為備用
+                                string colName = $"{retake.Subject}({GetGradeSemesterString(gradeYear, retake.Semester)})";
+                                if (exportDT.Columns.Contains(colName))
+                                {
+                                    newRow[colName] = retake.RetakeScore;
+                                }
                             }
                             // --- Todo 6: 覆蓋 subjScoreRows 的原始成績與補考成績 ---
                             if (SemsSubjDataDict.ContainsKey(sid))
@@ -848,7 +893,7 @@ namespace SHCollege.Forms
                         var recalcSet = new HashSet<(string, string)>();
                         foreach (var retake in retakeDict[sid])
                         {
-                            string gradeYear = GetGradeYearFromSemsSubjData(SemsSubjDataDict, sid, retake.Subject, retake.Semester, retake.SubjectLevel);
+                            string gradeYear = GetGradeYearFromSemsSubjData(retakeSemsSubjDataDict, sid, retake.Subject, retake.Semester, retake.SubjectLevel);
                             recalcSet.Add((gradeYear, retake.Semester));
                         }
                         // 3. 針對每個 (gradeYear, semester) 重新計算分項成績
@@ -870,11 +915,8 @@ namespace SHCollege.Forms
                                         if (exportDT.Columns.Contains(entryColName))
                                             newRow[entryColName] = entry.Value.ToString();
 
-                                        // 高一、高二在校名稱不同
-                                        string entryColName1 = GetEntryFieldName(entry.Key, g, s); // 需實作
-
-                                        entryColName1 = entryColName1.Replace("成績", "");
-
+                                        // 高一、高二在校名稱不同 (移除"成績"字樣)
+                                        string entryColName1 = entryColName.Replace("成績", "");
                                         if (exportDT.Columns.Contains(entryColName1))
                                             newRow[entryColName1] = entry.Value.ToString();
 
@@ -1302,6 +1344,21 @@ namespace SHCollege.Forms
             }
             return gradeYear + "_" + semester;
         }
+
+        // 工具方法：從欄位名稱提取學期資訊
+        private string ExtractSemesterInfo(string fieldName)
+        {
+            // 檢查欄位名稱包含的學期資訊
+            if (fieldName.Contains("(高一上)")) return "(高一上)";
+            if (fieldName.Contains("(高一下)")) return "(高一下)";
+            if (fieldName.Contains("(高二上)")) return "(高二上)";
+            if (fieldName.Contains("(高二下)")) return "(高二下)";
+            if (fieldName.Contains("(高三上)")) return "(高三上)";
+            if (fieldName.Contains("(高三下)")) return "(高三下)";
+
+            // 如果沒有找到學期資訊，回傳空字串
+            return "";
+        }
         // 工具方法：分項欄位命名（如學業成績總平均(高二下)）
         private string GetEntryFieldName(string entry, int gradeYear, int semester)
         {
@@ -1351,6 +1408,35 @@ namespace SHCollege.Forms
         // 工具方法：由 SemsSubjDataDict 取得年級
         private string GetGradeYearFromSemsSubjData(Dictionary<string, List<DataRow>> semsSubjDataDict, string sid, string subject, string semester, string subjectLevel = null)
         {
+            //// 將 semsSubjDataDict 內容存成 debug1.txt
+            //try
+            //{
+            //    string debugContent = "=== semsSubjDataDict 內容 ===\n";
+            //    debugContent += $"總學生數: {semsSubjDataDict.Count}\n\n";
+                
+            //    foreach (var kvp in semsSubjDataDict)
+            //    {
+            //        string studentId = kvp.Key;
+            //        List<DataRow> rows = kvp.Value;
+            //        debugContent += $"學生ID: {studentId}, 科目數: {rows.Count}\n";
+                    
+            //        foreach (DataRow row in rows)
+            //        {
+            //            debugContent += $"  科目: {row["科目"]}, 學期: {row["學期"]}, 成績年級: {row["成績年級"]}";
+            //            if (row.Table.Columns.Contains("科目級別"))
+            //                debugContent += $", 科目級別: {row["科目級別"]}";
+            //            debugContent += "\n";
+            //        }
+            //        debugContent += "\n";
+            //    }
+                
+            //    System.IO.File.WriteAllText("debug1.txt", debugContent, System.Text.Encoding.UTF8);
+            //}
+            //catch (Exception ex)
+            //{
+            //    System.Diagnostics.Debug.WriteLine($"寫入 debug1.txt 時發生錯誤: {ex.Message}");
+            //}
+            
             if (semsSubjDataDict.ContainsKey(sid))
             {
                 var rows = semsSubjDataDict[sid];
