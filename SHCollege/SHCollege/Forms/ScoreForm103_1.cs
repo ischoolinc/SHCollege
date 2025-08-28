@@ -862,24 +862,37 @@ namespace SHCollege.Forms
                         {
                             string gradeYear = GetGradeYearFromSemsSubjData(retakeSemsSubjDataDict, sid, retake.Subject, retake.Semester, retake.SubjectLevel);
 
-                            // 使用 retakeScoreNameMappingDict 進行欄位名稱比對
+                            // 先確認主資料中是否存在相同科目/學期/(可選)年級/(可選)科目級別
+                            bool existsInMain = SemsSubjDataDict.ContainsKey(sid) &&
+                                SemsSubjDataDict[sid].Any(r =>
+                                    r["科目"].ToString().Trim() == retake.Subject &&
+                                    r["學期"].ToString() == retake.Semester &&
+                                    (string.IsNullOrEmpty(gradeYear) || r["成績年級"].ToString() == gradeYear) &&
+                                    (string.IsNullOrEmpty(retake.SubjectLevel) ||
+                                     (r.Table.Columns.Contains("科目級別") && r["科目級別"].ToString() == retake.SubjectLevel))
+                                );
+
+                            // 使用 retakeScoreNameMappingDict 進行欄位名稱比對（僅在 existsInMain 時寫入）
                             string compositeKey = $"{retake.Subject}({GetGradeSemesterString(gradeYear, retake.Semester)})";
 
-                            if (retakeScoreNameMappingDict.ContainsKey(compositeKey))
+                            if (existsInMain)
                             {
-                                string actualFieldName = retakeScoreNameMappingDict[compositeKey];
-                                if (exportDT.Columns.Contains(actualFieldName))
+                                if (retakeScoreNameMappingDict.ContainsKey(compositeKey))
                                 {
-                                    newRow[actualFieldName] = retake.RetakeScore;
+                                    string actualFieldName = retakeScoreNameMappingDict[compositeKey];
+                                    if (exportDT.Columns.Contains(actualFieldName))
+                                    {
+                                        newRow[actualFieldName] = retake.RetakeScore;
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                // 如果對照字典中沒有找到，則使用原本的字串拼接方式作為備用
-                                string colName = $"{retake.Subject}({GetGradeSemesterString(gradeYear, retake.Semester)})";
-                                if (exportDT.Columns.Contains(colName))
+                                else
                                 {
-                                    newRow[colName] = retake.RetakeScore;
+                                    // 如果對照字典中沒有找到，則使用原本的字串拼接方式作為備用
+                                    string colName = $"{retake.Subject}({GetGradeSemesterString(gradeYear, retake.Semester)})";
+                                    if (exportDT.Columns.Contains(colName))
+                                    {
+                                        newRow[colName] = retake.RetakeScore;
+                                    }
                                 }
                             }
                             // 覆蓋 subjScoreRows 的原始成績與補考成績
